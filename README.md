@@ -16,7 +16,7 @@ Learn modern C++ through building a library management system.
 ## Progress
 
 - [x] Project Setup
-- [ ] Book Class
+- [x] Book Class
 - [ ] User Class
 - [ ] Library Class
 - [ ] File Storage
