@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 
 class Book {
 private:
@@ -20,4 +21,10 @@ public:
     bool isBorrowed() const;
 
     void setPrice(double price);
+
+    bool borrow();
+
+    bool returnBook();
+
+    void showBookInfo();
 };

@@ -10,4 +10,4 @@ include_directories(include)
 add_executable(
     LibrarySystem
     src/main.cpp
- "include/Book.h" "src/Book.cpp")
+ "include/Book.h" "src/Book.cpp" "include/User.h" "src/User.cpp" "src/Library.cpp")
