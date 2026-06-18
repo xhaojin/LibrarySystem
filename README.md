@@ -17,8 +17,8 @@ Learn modern C++ through building a library management system.
 
 - [x] Project Setup
 - [x] Book Class
-- [ ] User Class
-- [ ] Library Class
+- [x] User Class
+- [x] Library Class
 - [ ] File Storage
 - [ ] Logger
 - [ ] Multithreading
