@@ -29,9 +29,9 @@ public:
     int getAge() const;
     const std::string& getPhone() const;
 
-    void addBorrowedBook(int bookId); //借书
+    bool addBorrowedBook(int bookId); //借书
 
-    void removeBorrowedBook(int bookId); //还书
+    bool removeBorrowedBook(int bookId); //还书
 
     const std::unordered_set<int>& getBorrowedBookIds() const; //查询用户的借阅记录
 

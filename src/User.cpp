@@ -20,14 +20,20 @@ const std::string& User::getPhone() const {
     return this->phone;
 }
 
-void User::addBorrowedBook(int bookId) {
+bool User::addBorrowedBook(int bookId) {
     if(std::find(this->borrowedBookIds.begin(),this->borrowedBookIds.end(),bookId) == this->borrowedBookIds.end()) {
         this->borrowedBookIds.insert(bookId);
+		return true; // Successfully added
     }
+    return false;
 }
 
-void User::removeBorrowedBook(int bookId) {
-	this->borrowedBookIds.erase(bookId);
+bool User::removeBorrowedBook(int bookId) {
+    if (std::find(this->borrowedBookIds.begin(), this->borrowedBookIds.end(), bookId) != this->borrowedBookIds.end()) {
+        this->borrowedBookIds.erase(bookId);
+        return true; // Successfully added
+    }
+    return false;
 }
 
 const std::unordered_set<int>& User::getBorrowedBookIds() const {

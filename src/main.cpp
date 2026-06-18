@@ -1,40 +1,42 @@
-#include <iostream>
-#include <Library.h>
+#include "Library.h"
+
+using namespace std;
 
 int main()
 {
-	Library library;
-	Book book1(1, "The Great Gatsby", "F. Scott Fitzgerald", "Scribner", 10.99);
-	Book book2(2, "To Kill a Mockingbird", "Harper Lee", "J.B. Lippincott & Co.", 7.99);
-	library.addBook(std::make_shared<Book>(book1));
-	library.addBook(std::make_shared<Book>(book2));
-	User user1(1, "John Doe", Gender::Male, 30, "123-456-7890");
-	User user2(2, "Jane Smith", Gender::Female, 25, "098-765-4321");
-	library.addUser(std::make_shared<User>(user1));
-	library.addUser(std::make_shared<User>(user2));
-	library.showAllBooks();
-	library.showAllUsers();
-	if(library.borrowBook(1, 1)) { // John Doe borrows "The Great Gatsby"
-		std::cout << "Book borrowed successfully!" << std::endl;
-	} else {
-		std::cout << "Failed to borrow book." << std::endl;
-	}
-	if (library.borrowBook(2, 1)) { // Jane Smith borrows "The Great Gatsby"
-		std::cout << "Book borrowed successfully!" << std::endl;
-	}
-	else {
-		std::cout << "Failed to borrow book." << std::endl;
-	}
-	if (library.returnBook(1, 1)) { // John Doe returns "The Great Gatsby"
-		std::cout << "Book returned successfully!" << std::endl;
-	} else {
-		std::cout << "Failed to return book." << std::endl;
-	}
-	if (library.borrowBook(2, 1)) { // Jane Smith borrows "The Great Gatsby"
-		std::cout << "Book borrowed successfully!" << std::endl;
-	}
-	else {
-		std::cout << "Failed to borrow book." << std::endl;
-	}
+    cout << "===== Library System Test =====" << endl;
+
+
+    // 创建图书馆
+    Library library;
+    
+    library.loadBooksFromFile("books.csv"); // 从文件加载书籍信息
+    library.loadUsersFromFile("users.csv"); // 从文件加载用户信息
+    library.restoreBorrowStatus(); // 恢复书籍的借阅状态
+
+    cout << "\nBooks in library:" << endl;
+    library.showAllBooks();
+
+    cout << "\nUsers in library:" << endl;
+    library.showAllUsers();
+
+    // ======================
+    // 测试文件保存
+    // ======================
+
+    cout << "\nSaving data..." << endl;
+
+    if (library.saveUsersToFile("users.csv")) {
+        cout<<"Users saved successfully." << endl;
+    }
+
+    if (library.saveBooksToFile("books.csv")) {
+        cout << "Books saved successfully." << endl;
+    }
+
+
+    cout << "Finish!" << endl;
+
+
     return 0;
 }
