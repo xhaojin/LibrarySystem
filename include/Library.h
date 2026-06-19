@@ -2,8 +2,10 @@
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include "Book.h"
 #include "User.h"
+#include "Logger.h"
 
 class Library
 {
@@ -29,9 +31,9 @@ public:
 
 	std::vector<std::shared_ptr<User>> findUsersByName(const std::string& keyword) const; //根据关键词模糊查找用户
 
-	bool borrowBook(int userId, int bookId); //借书
+	void borrowBook(int userId, int bookId); //借书
 
-	bool returnBook(int userId, int bookId);  //还书
+	void returnBook(int userId, int bookId);  //还书
 
 	void showAllBooks() const;  //显示所有书籍
 

@@ -45,20 +45,8 @@ void Book::setPrice(double price) {
 	}
 }
 
-bool Book::borrow() {
-	if (!this->BorrowedStatus) {
-		this->BorrowedStatus = true;
-		return true; // Successfully borrowed
-	}
-	return false; // Book is already borrowed
-}
-
-bool Book::returnBook() {
-	if (this->BorrowedStatus) {
-		this->BorrowedStatus = false;
-		return true; // Successfully returned
-	}
-	return false; // Book was not borrowed
+void Book::setBorrowedStatus(bool status) {
+	this->BorrowedStatus = status;
 }
 
 void Book::showBookInfo() {

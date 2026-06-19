@@ -46,30 +46,52 @@ std::shared_ptr<User> Library::findUser(int userId) const {
 	return nullptr;
 }
 
-bool Library::borrowBook(int userId, int bookId) {
+void Library::borrowBook(int userId, int bookId) {
 	auto user = findUser(userId);
+	if (!user) {
+		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
+	}
 	auto book = findBook(bookId);
-	if (!user || !book) {
-		return false; // User or book not found
+	if (!book) {
+		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
 	}
-	if (book->borrow()) {
-		user->addBorrowedBook(bookId);
-		return true;
+	if (book->isBorrowed()) {
+		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
 	}
-	return false;
+	book->setBorrowedStatus(true);
+	user->addBorrowedBook(bookId);
+	Logger::log("User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId)); // Log the borrowing action
 }
 
-bool Library::returnBook(int userId, int bookId) {
+void Library::returnBook(int userId, int bookId) {
 	auto user = findUser(userId);
+	if (!user) {
+		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
+	}
 	auto book = findBook(bookId);
-	if (!user || !book) {
-		return false; // User or book not found
+	if (!book) {
+		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
 	}
-	if (user->getBorrowedBookIds().find(bookId) != user->getBorrowedBookIds().end() && book->returnBook()) {
+	if (!book->isBorrowed()) {
+		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
+		Logger::log(msg);
+		throw std::runtime_error(msg);
+	}
+	if (user->getBorrowedBookIds().find(bookId) != user->getBorrowedBookIds().end()) {
+		book->setBorrowedStatus(false);
 		user->removeBorrowedBook(bookId);
-		return true;
+		Logger::log("User " + std::to_string(userId) + " returned book " + std::to_string(bookId)); // Log the returning action
 	}
-	return false;
 }
 
 void Library::showAllBooks() const {
@@ -194,7 +216,7 @@ void Library::restoreBorrowStatus() {
 		for (int bookId : user->getBorrowedBookIds()) {
 			auto book = findBook(bookId);
 			if (book) {
-				book->borrow();
+				book->setBorrowedStatus(true);
 			}
 		}
 	}

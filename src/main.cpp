@@ -4,39 +4,41 @@ using namespace std;
 
 int main()
 {
-    cout << "===== Library System Test =====" << endl;
+    try {
+        cout << "===== Library System Test =====" << endl;
 
+        // 创建图书馆
+        Library library;
 
-    // 创建图书馆
-    Library library;
-    
-    library.loadBooksFromFile("books.csv"); // 从文件加载书籍信息
-    library.loadUsersFromFile("users.csv"); // 从文件加载用户信息
-    library.restoreBorrowStatus(); // 恢复书籍的借阅状态
+        library.loadBooksFromFile("books.csv"); // 从文件加载书籍信息
+        library.loadUsersFromFile("users.csv"); // 从文件加载用户信息
+        library.restoreBorrowStatus(); // 恢复书籍的借阅状态
 
-    cout << "\nBooks in library:" << endl;
-    library.showAllBooks();
+        cout << "\nBooks in library:" << endl;
+        library.showAllBooks();
 
-    cout << "\nUsers in library:" << endl;
-    library.showAllUsers();
+        cout << "\nUsers in library:" << endl;
+        library.showAllUsers();
 
-    // ======================
-    // 测试文件保存
-    // ======================
+        // ======================
+        // 测试文件保存
+        // ======================
 
-    cout << "\nSaving data..." << endl;
+        cout << "\nSaving data..." << endl;
 
-    if (library.saveUsersToFile("users.csv")) {
-        cout<<"Users saved successfully." << endl;
+        if (library.saveUsersToFile("users.csv")) {
+            cout << "Users saved successfully." << endl;
+        }
+
+        if (library.saveBooksToFile("books.csv")) {
+            cout << "Books saved successfully." << endl;
+        }
+
+        cout << "Finish!" << endl;
+
+        return 0;
+    }catch(const std::exception& ex) {
+        cerr << "Error: " << ex.what() << endl;
+        return 1; // Exit with error code
     }
-
-    if (library.saveBooksToFile("books.csv")) {
-        cout << "Books saved successfully." << endl;
-    }
-
-
-    cout << "Finish!" << endl;
-
-
-    return 0;
 }

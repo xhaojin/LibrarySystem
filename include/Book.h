@@ -22,9 +22,7 @@ public:
 
     void setPrice(double price); //设置图书价格
 
-    bool borrow(); //借书
-
-    bool returnBook(); //还书
+    void setBorrowedStatus(bool status); //设置图书的借阅状态S
 
     void showBookInfo();
 };
