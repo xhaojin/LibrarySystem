@@ -23,7 +23,11 @@ public:
 
 	std::shared_ptr<Book> findBook(int bookId) const; //查找书籍
 
+	std::vector<std::shared_ptr<Book>> findBooksByTitle(const std::string& keyword) const; //根据关键词模糊查找书籍
+
 	std::shared_ptr<User> findUser(int userId) const; //查找用户
+
+	std::vector<std::shared_ptr<User>> findUsersByName(const std::string& keyword) const; //根据关键词模糊查找用户
 
 	bool borrowBook(int userId, int bookId); //借书
 

@@ -199,3 +199,24 @@ void Library::restoreBorrowStatus() {
 		}
 	}
 }
+
+std::vector<std::shared_ptr<Book>> Library::findBooksByTitle(const std::string& keyword) const {
+	std::vector<std::shared_ptr<Book>> result;
+	for (const auto& pair : books) {
+		if (pair.second->getTitle().find(keyword) != std::string::npos) {
+			result.push_back(pair.second);
+		}
+	}
+	return result;
+}
+
+
+std::vector<std::shared_ptr<User>> Library::findUsersByName(const std::string& keyword) const {
+	std::vector<std::shared_ptr<User>> result;
+	for (const auto& pair : users) {
+		if (pair.second->getName().find(keyword) != std::string::npos) {
+			result.push_back(pair.second);
+		}
+	}
+	return result;
+}
