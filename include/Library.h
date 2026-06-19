@@ -46,4 +46,14 @@ public:
 	bool loadUsersFromFile(const std::string& filename); //从文件加载用户信息
 
 	void restoreBorrowStatus(); //根据用户的借阅记录恢复书籍的借阅状态
+
+	std::vector<std::shared_ptr<Book>> getBooksSortedByPrice() const; //根据价格排序书籍
+
+	std::vector<std::shared_ptr<Book>> getBooksSortedByTitle() const; //根据标题排序书籍
+
+	int getTotalBooks() const; //获取图书馆总书籍数量
+	int getBorrowedBooksCount() const; //获取已借出的书籍数量
+	int getAvailableBooksCount() const; //获取可借阅的书籍数量
+	int getUserCount() const; //获取图书馆总用户数量
+	double getBorrowRate() const; //获取图书馆的借阅率
 };
