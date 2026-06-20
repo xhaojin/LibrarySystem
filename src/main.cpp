@@ -1,44 +1,26 @@
-#include "Library.h"
+#include <QApplication>
 
-using namespace std;
+#include "MainWindow.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-    try {
-        cout << "===== Library System Test =====" << endl;
+    QApplication app(argc, argv);
 
-        // 创建图书馆
-        Library library;
+    // 数据层
+    Library library;
 
-        library.loadBooksFromFile("books.csv"); // 从文件加载书籍信息
-        library.loadUsersFromFile("users.csv"); // 从文件加载用户信息
-        library.restoreBorrowStatus(); // 恢复书籍的借阅状态
+    library.loadBooksFromFile("books.csv");
+    library.loadUsersFromFile("users.csv");
 
-        cout << "\nBooks in library:" << endl;
-        library.showAllBooks();
+    // 业务层
+    LibraryService service(library);
 
-        cout << "\nUsers in library:" << endl;
-        library.showAllUsers();
+    // 控制层
+    UIController controller(service);
 
-        // ======================
-        // 测试文件保存
-        // ======================
+    // UI层
+    MainWindow window(controller);
+    window.show();
 
-        cout << "\nSaving data..." << endl;
-
-        if (library.saveUsersToFile("users.csv")) {
-            cout << "Users saved successfully." << endl;
-        }
-
-        if (library.saveBooksToFile("books.csv")) {
-            cout << "Books saved successfully." << endl;
-        }
-
-        cout << "Finish!" << endl;
-
-        return 0;
-    }catch(const std::exception& ex) {
-        cerr << "Error: " << ex.what() << endl;
-        return 1; // Exit with error code
-    }
+    return app.exec();
 }

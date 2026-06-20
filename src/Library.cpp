@@ -1,5 +1,13 @@
 #include "Library.h"
 
+std::unordered_map<int, std::shared_ptr<Book>> Library::getBooks() const {
+	return books;
+}
+
+std::unordered_map<int, std::shared_ptr<User>> Library::getUsers() const {
+	return users;
+}
+
 bool Library::addBook(std::shared_ptr<Book> book) {
 	if (books.find(book->getId()) != books.end()) {
 		return false; // Book already exists
@@ -46,66 +54,6 @@ std::shared_ptr<User> Library::findUser(int userId) const {
 	return nullptr;
 }
 
-void Library::borrowBook(int userId, int bookId) {
-	auto user = findUser(userId);
-	if (!user) {
-		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	auto book = findBook(bookId);
-	if (!book) {
-		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	if (book->isBorrowed()) {
-		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	book->setBorrowedStatus(true);
-	user->addBorrowedBook(bookId);
-	Logger::log("User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId)); // Log the borrowing action
-}
-
-void Library::returnBook(int userId, int bookId) {
-	auto user = findUser(userId);
-	if (!user) {
-		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	auto book = findBook(bookId);
-	if (!book) {
-		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	if (!book->isBorrowed()) {
-		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	if (user->getBorrowedBookIds().find(bookId) != user->getBorrowedBookIds().end()) {
-		book->setBorrowedStatus(false);
-		user->removeBorrowedBook(bookId);
-		Logger::log("User " + std::to_string(userId) + " returned book " + std::to_string(bookId)); // Log the returning action
-	}
-}
-
-void Library::showAllBooks() const {
-	for (const auto& pair : books) {
-		pair.second->showBookInfo();
-	}
-}
-
-void Library::showAllUsers() const {
-	for (const auto& pair : users) {
-		pair.second->showUserInfo();
-	}
-}
-
 bool Library::saveBooksToFile(const std::string& filename) const {
 	std::ofstream outFile(filename);
 	if (!outFile) {
@@ -120,7 +68,7 @@ bool Library::saveBooksToFile(const std::string& filename) const {
 			<< book->getAuthor() << ","
 			<< book->getPublisher() << ","
 			<< book->getPrice() << ","
-			<< (book->isBorrowed() ? "true" : "false") << "\n";
+			<< (book->isBorrowed() ? "1" : "0") << "\n";
 	}
 	outFile.close();
 	return true;
@@ -241,54 +189,4 @@ std::vector<std::shared_ptr<User>> Library::findUsersByName(const std::string& k
 		}
 	}
 	return result;
-}
-
-std::vector<std::shared_ptr<Book>> Library::getBooksSortedByPrice() const {
-	std::vector<std::shared_ptr<Book>> sortedBooks;
-	for (const auto& pair : books) {
-		sortedBooks.push_back(pair.second);
-	}
-	std::sort(sortedBooks.begin(), sortedBooks.end(), [](const std::shared_ptr<Book>& a, const std::shared_ptr<Book>& b) {
-		return a->getPrice() < b->getPrice();
-	});
-	return sortedBooks;
-}
-
-std::vector<std::shared_ptr<Book>> Library::getBooksSortedByTitle() const {
-	std::vector<std::shared_ptr<Book>> sortedBooks;
-	for (const auto& pair : books) {
-		sortedBooks.push_back(pair.second);
-	}
-	std::sort(sortedBooks.begin(), sortedBooks.end(), [](const std::shared_ptr<Book>& a, const std::shared_ptr<Book>& b) {
-		return a->getTitle() < b->getTitle();
-		});
-	return sortedBooks;
-}
-
-int Library::getTotalBooks() const {
-	return books.size();
-}
-int Library::getBorrowedBooksCount() const {
-	int count = 0;
-	for (const auto& pair: books) {
-		if(pair.second->isBorrowed()){
-			count++;
-		}
-	}
-	return count;
-}
-int Library::getAvailableBooksCount() const {
-	int count = 0;
-	for (const auto& pair : books) {
-		if (!pair.second->isBorrowed()) {
-			count++;
-		}
-	}
-	return count;
-}
-int Library::getUserCount() const {
-	return users.size();
-}
-double Library::getBorrowRate() const {
-	return getTotalBooks() == 0 ? 0.0 : static_cast<double>(getBorrowedBooksCount()) / getTotalBooks();
 }
