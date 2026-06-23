@@ -1,15 +1,26 @@
-#include "Library.h"
-#include "BookDTO.h"
-#include "UserDTO.h"
+#include "domain/Library.h"
+#include "repository/interfaces/IBookRepository.h"
+#include "repository/interfaces/IUserRepository.h"
+#include "repository/interfaces/IBorrowRecordRepository.h"
+#include "dto/BookDTO.h"
+#include "dto/UserDTO.h"
+#include "utils/logger.h"
 
 class LibraryService
 {
 private:
-	Library& library; //图书馆的实例，使用引用以便在类中访问图书馆的成员
+
+	IBookRepository& bookRepo;
+
+	IUserRepository& userRepo;
+
+	IBorrowRecordRepository& borrowRepo;
 
 public:
 
-	LibraryService(Library& library); //构造函数，接受一个Library实例的引用
+	LibraryService(IBookRepository& bookRepo, IUserRepository& userRepo, IBorrowRecordRepository& borrowRepo); //构造函数，接受一个Library实例的引用
+
+	UserDTO login(const std::string& username, const std::string& password); //登录
 
 	void borrowBook(int userId, int bookId); //借书
 

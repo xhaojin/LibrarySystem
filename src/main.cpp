@@ -1,26 +1,48 @@
 #include <QApplication>
 
-#include "MainWindow.h"
+#include "ui/MainWindow.h"
+#include "ui/LoginWindow.h"
+#include <QSqlDatabase>
+#include <QDebug>
+#include <QSqlError>
+#include "../include/database/SQLiteDatabase.h"
 
 int main(int argc, char* argv[])
 {
-    QApplication app(argc, argv);
+	QApplication app(argc, argv);
 
-    // 数据层
-    Library library;
+	// 数据层
+	Library library;
 
-    library.loadBooksFromFile("books.csv");
-    library.loadUsersFromFile("users.csv");
+	library.loadBooksFromFile("books.csv");
+	library.loadUsersFromFile("users.csv");
 
-    // 业务层
-    LibraryService service(library);
+	// 业务层
 
-    // 控制层
-    UIController controller(service);
 
-    // UI层
-    MainWindow window(controller);
-    window.show();
+	// 控制层
+	//UIController controller(service);
 
-    return app.exec();
+	// UI层
+	//LoginWindow loginwindow(controller);
+	//loginwindow.show();
+
+	//test
+	SQLiteDatabase db;
+
+	if (!db.open("library.db"))
+	{
+		qDebug() << "open failed";
+		return -1;
+	}
+
+	if (!db.initialize())
+	{
+		qDebug() << "init failed";
+		return -1;
+	}
+
+	qDebug() << "database ready";
+
+	return app.exec();
 }

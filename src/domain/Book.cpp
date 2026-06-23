@@ -1,4 +1,4 @@
-#include "Book.h"
+#include "domain/Book.h"
 
 Book::Book(
 	int id,
@@ -47,13 +47,4 @@ void Book::setPrice(double price) {
 
 void Book::setBorrowedStatus(bool status) {
 	this->BorrowedStatus = status;
-}
-
-void Book::showBookInfo() {
-	std::cout << "Book ID: " << this->id << std::endl;
-	std::cout << "Title: " << this->title << std::endl;
-	std::cout << "Author: " << this->author << std::endl;
-	std::cout << "Publisher: " << this->publisher << std::endl;
-	std::cout << "Price: $" << this->price << std::endl;
-	std::cout << "Borrowed Status: " << (this->BorrowedStatus ? "Yes" : "No") << std::endl;
 }

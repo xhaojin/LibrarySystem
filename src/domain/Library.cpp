@@ -1,4 +1,4 @@
-#include "Library.h"
+#include "domain/Library.h"
 
 std::unordered_map<int, std::shared_ptr<Book>> Library::getBooks() const {
 	return books;
@@ -54,12 +54,39 @@ std::shared_ptr<User> Library::findUser(int userId) const {
 	return nullptr;
 }
 
+
+bool Library::addBorrowRecord(std::shared_ptr<BorrowRecord> record) {
+	if (this->findBorrowRecord(record->getId())) {
+		borrowRecords[record->getId()] = record;
+		return true;
+	}
+	return false;
+}
+
+std::shared_ptr<BorrowRecord> Library::findBorrowRecord(int recordId) {
+	for (const auto& pair : borrowRecords) {
+		auto record = pair.second;
+		if (record->getId() == recordId) {
+			return record;
+		}
+	}
+	return nullptr;
+}
+
+const auto& Library::getBorrowRecords() const {
+	return this->borrowRecords;
+}
+
+int Library::getNextBorrowRecordId(){
+	return ++this->nextBorrowRecordId;
+}
+
 bool Library::saveBooksToFile(const std::string& filename) const {
 	std::ofstream outFile(filename);
 	if (!outFile) {
 		return false; // Failed to open file
 	}
-	outFile << "bookId" << "," << "title" << "," << "author" << "," << "publisher" << "," 
+	outFile << "bookId" << "," << "title" << "," << "author" << "," << "publisher" << ","
 		<< "price" << "," << "borrowedStatus" << "\n"; // Write header line
 	for (const auto& pair : books) {
 		const auto& book = pair.second;
@@ -81,7 +108,7 @@ bool Library::loadBooksFromFile(const std::string& filename) {
 	}
 	std::string line;
 	std::getline(inFile, line); // Skip header line
-	while (std::getline(inFile,line)) {
+	while (std::getline(inFile, line)) {
 		std::stringstream ss(line);
 		std::string token;
 		std::getline(ss, token, ',');
@@ -104,16 +131,19 @@ bool Library::saveUsersToFile(const std::string& filename) const {
 	if (!outFile) {
 		return false;
 	}
-	outFile << "userId" << "," << "name" << "," << "gender" << "," << "age" << "," 
-		<< "phone" << "," << "borrowedBookIds" << "\n"; // Write header line
-	for (const auto& pair: users) {
+	outFile << "userId" << "," << "name" << "," << "gender" << "," << "age" << ","
+		<< "phone" << "," << "username" << "," << "password" << "," << "borrowedBookIds" << "\n"; // Write header line
+	for (const auto& pair : users) {
 		const auto& user = pair.second;
 		outFile << user->getId() << ","
 			<< user->getName() << ","
 			<< ((user->getGender() == Gender::Male) ? "Male" : "Female") << ","
 			<< user->getAge() << ','
-			<< user->getPhone() << ',';
-		for (int bookId: user->getBorrowedBookIds()) {
+			<< user->getPhone() << ','
+			<< user->getUsername() << ','
+			<< user->getPassword() << ','
+			<< (user->getRole() == Role::User ? "User" : "Admin") << ',';
+		for (int bookId : user->getBorrowedBookIds()) {
 			outFile << bookId << "|";
 		}
 		outFile << "\n";
@@ -142,7 +172,13 @@ bool Library::loadUsersFromFile(const std::string& filename) {
 		int age = std::stoi(token);
 		std::getline(ss, token, ',');
 		std::string phone = token;
-		auto user = std::make_shared<User>(userId, name, gender, age, phone);
+		std::getline(ss, token, ',');
+		std::string username = token;
+		std::getline(ss, token, ',');
+		std::string password = token;
+		std::getline(ss, token, ',');
+		Role role = (token == "User") ? Role::User : Role::Admin;
+		auto user = std::make_shared<User>(userId, name, gender, age, phone, username, password, role);
 		std::getline(ss, token);
 		if (!token.empty()) {
 			std::stringstream borrowedBooksStream(token);
@@ -189,4 +225,15 @@ std::vector<std::shared_ptr<User>> Library::findUsersByName(const std::string& k
 		}
 	}
 	return result;
+}
+
+std::shared_ptr<User> Library::findUserByUsername(const std::string& username) {
+	std::shared_ptr<User> result;
+	for (const auto& pair : users) {
+		if (pair.second->getUsername() == username) {
+			result = pair.second;
+			return result;
+		}
+	}
+	return nullptr;
 }

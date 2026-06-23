@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <iostream>
 
@@ -18,11 +20,10 @@ public:
     const std::string& getAuthor() const; //查询图书的作者
     const std::string& getPublisher() const; //查询图书的出版社
     double getPrice() const; //查询图书的价格
-    bool isBorrowed() const; //查询图书的借阅状态
-
     void setPrice(double price); //设置图书价格
 
-    void setBorrowedStatus(bool status); //设置图书的借阅状态S
+    bool isBorrowed() const; //查询图书的借阅状态
 
-    void showBookInfo();
+    void setBorrowedStatus(bool status); //设置图书的借阅状态
+
 };

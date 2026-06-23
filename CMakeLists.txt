@@ -8,11 +8,20 @@ set(CMAKE_AUTOMOC ON) # Enable automatic MOC for Qt
 
 include_directories(include)
 
+file(GLOB_RECURSE SOURCES
+    src/*.cpp
+)
+
+file(GLOB_RECURSE HEADERS
+    include/*.h
+)
+
 add_executable(
     LibrarySystem
-    src/main.cpp
- "include/Book.h" "src/Book.cpp" "include/User.h" "src/User.cpp" "src/Library.cpp" "include/Logger.h" "src/Logger.cpp" "include/LibraryService.h" "src/LibraryService.cpp" "include/BookDTO.h" "include/UserDTO.h" "src/UIController.cpp" "include/MainWindow.h" "src/MainWindow.cpp")
+    ${SOURCES}
+    ${HEADERS}
+)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets) # Find the Qt6 Widgets module
+find_package(Qt6 REQUIRED COMPONENTS Widgets Sql) # Find the Qt6 Widgets module
 set_target_properties(LibrarySystem PROPERTIES WIN32_EXECUTABLE TRUE) # Set the executable property for Windows (optional, but can help with certain configurations)
-target_link_libraries(LibrarySystem Qt6::Widgets) # Link the Qt6 Widgets library to your executable
+target_link_libraries(LibrarySystem Qt6::Widgets Qt6::Sql) # Link the Qt6 Widgets library to your executable

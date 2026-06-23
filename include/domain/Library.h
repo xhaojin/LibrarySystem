@@ -5,21 +5,26 @@
 #include <stdexcept>
 #include "Book.h"
 #include "User.h"
-#include "Logger.h"
+#include "utils/Logger.h"
+#include "BorrowRecord.h"
 
 class Library
 {
 private:
-    std::unordered_map<int,std::shared_ptr<Book>> books; //图书馆的书籍集合，使用unordered_map以便快速查找
+	std::unordered_map<int, std::shared_ptr<Book>> books; //图书馆的书籍集合，使用unordered_map以便快速查找
 
-    std::unordered_map<int,std::shared_ptr<User>> users; //图书馆的用户集合，使用unordered_map以便快速查找
+	std::unordered_map<int, std::shared_ptr<User>> users; //图书馆的用户集合，使用unordered_map以便快速查找
+
+	std::unordered_map<int, std::shared_ptr<BorrowRecord>> borrowRecords;
+
+	int nextBorrowRecordId = 1;
 
 public:
 	std::unordered_map<int, std::shared_ptr<Book>> getBooks() const; //获取图书馆的书籍集合
 
 	std::unordered_map<int, std::shared_ptr<User>> getUsers() const; //获取图书馆的用户集合
 
-    bool addBook(std::shared_ptr<Book> book); //添加书籍
+	bool addBook(std::shared_ptr<Book> book); //添加书籍
 
 	bool addUser(std::shared_ptr<User> user); //添加用户
 
@@ -34,6 +39,16 @@ public:
 	std::shared_ptr<User> findUser(int userId) const; //查找用户
 
 	std::vector<std::shared_ptr<User>> findUsersByName(const std::string& keyword) const; //根据关键词模糊查找用户
+
+	std::shared_ptr<User> findUserByUsername(const std::string& username); //根据用户名查找用户
+
+	bool addBorrowRecord(std::shared_ptr<BorrowRecord> record);
+
+	std::shared_ptr<BorrowRecord> findBorrowRecord(int recordId);
+
+	const auto& getBorrowRecords() const;
+
+	int getNextBorrowRecordId();
 
 	bool saveBooksToFile(const std::string& filename) const; //将书籍信息保存到文件
 
