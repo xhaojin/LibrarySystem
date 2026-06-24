@@ -22,6 +22,8 @@ public:
 
 	BorrowRecord(int id, int userId, int bookId, QDateTime borrowTime);
 
+	BorrowRecord(int id, int userId, int bookId, QDateTime borrowTime, std::optional<QDateTime> returnTime);
+
 	int getId() const;
 
 	int getUserId() const;

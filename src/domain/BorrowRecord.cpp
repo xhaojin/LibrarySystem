@@ -4,6 +4,11 @@ BorrowRecord::BorrowRecord(int id, int userId, int bookId, QDateTime borrowTime)
 {
 }
 
+BorrowRecord::BorrowRecord(int id, int userId, int bookId, QDateTime borrowTime, std::optional<QDateTime> returnTime)
+	:id(id), userId(userId), bookId(bookId), borrowTime(borrowTime),returnTime(returnTime)
+{}
+
+
 int BorrowRecord::getId() const {
 	return  this->id;
 }

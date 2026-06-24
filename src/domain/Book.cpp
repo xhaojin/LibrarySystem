@@ -15,6 +15,16 @@ Book::Book(
 {
 }
 
+Book::Book(int id, const std::string& title, const std::string& author, const std::string& publisher, double price, bool borrowedStatus)
+	: id(id),
+	title(title),
+	author(author),
+	publisher(publisher),
+	price(price),
+	BorrowedStatus(borrowedStatus)
+{}
+
+
 int Book::getId() const {
 	return this->id;
 }
