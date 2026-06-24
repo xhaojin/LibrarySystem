@@ -4,7 +4,6 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include <unordered_set>
 #include "domain/Role.h"
 
 enum class Gender
@@ -27,7 +26,6 @@ private:
 
 	Role role;
 
-	std::unordered_set<int> borrowedBookIds;
 public:
 	User(int id, const std::string& name, Gender gender, int age, const std::string& phone, const std::string& username, const std::string& password, Role role);
 
@@ -52,7 +50,4 @@ public:
 	bool addBorrowedBook(int bookId); //借书
 
 	bool removeBorrowedBook(int bookId); //还书
-
-	const std::unordered_set<int>& getBorrowedBookIds() const; //查询用户的借阅记录
-
 };

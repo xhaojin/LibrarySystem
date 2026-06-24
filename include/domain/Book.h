@@ -18,10 +18,15 @@ public:
 	Book(int id, const std::string& title, const std::string& author, const std::string& publisher, double price, bool borrowedStatus);
 
 	int getId() const; //查询图书的编号
+
 	const std::string& getTitle() const; //查询图书的标题
+
 	const std::string& getAuthor() const; //查询图书的作者
+
 	const std::string& getPublisher() const; //查询图书的出版社
+
 	double getPrice() const; //查询图书的价格
+
 	void setPrice(double price); //设置图书价格
 
 	bool isBorrowed() const; //查询图书的借阅状态

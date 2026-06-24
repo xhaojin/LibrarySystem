@@ -1,4 +1,3 @@
-#include "domain/Library.h"
 #include "repository/interfaces/IBookRepository.h"
 #include "repository/interfaces/IUserRepository.h"
 #include "repository/interfaces/IBorrowRecordRepository.h"
@@ -33,11 +32,16 @@ public:
 	std::vector<BookDTO> getBooksSortedByTitle() const; //根据标题排序书籍
 
 	int getTotalBooks() const; //获取图书馆总书籍数量
+
 	int getBorrowedBooksCount() const; //获取已借出的书籍数量
+
 	int getAvailableBooksCount() const; //获取可借阅的书籍数量
+
 	int getUserCount() const; //获取图书馆总用户数量
+
 	double getBorrowRate() const; //获取图书馆的借阅率
 
 	std::vector<BookDTO> getAllBooksDTO() const; //获取所有书籍的DTO列表
+
 	std::vector<UserDTO> getAllUsersDTO() const; //获取所有用户的DTO列表
 };

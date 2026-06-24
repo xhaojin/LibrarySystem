@@ -1,7 +1,7 @@
 #include "service/LibraryService.h"
 
-LibraryService::LibraryService(IBookRepository& bookRepo,IUserRepository& userRepo,IBorrowRecordRepository& borrowRepo)
-	: bookRepo(bookRepo),userRepo(userRepo),borrowRepo(borrowRepo) {
+LibraryService::LibraryService(IBookRepository& bookRepo, IUserRepository& userRepo, IBorrowRecordRepository& borrowRepo)
+	: bookRepo(bookRepo), userRepo(userRepo), borrowRepo(borrowRepo) {
 }
 
 UserDTO LibraryService::login(const std::string& username, const std::string& password) {
@@ -24,7 +24,6 @@ UserDTO LibraryService::login(const std::string& username, const std::string& pa
 	userDTO.gender = (user->getGender() == Gender::Male ? "男" : "女");
 	userDTO.age = user->getAge();
 	userDTO.phone = user->getPhone();
-	userDTO.borrowedCount = (int)user->getBorrowedBookIds().size();
 	Logger::log("[LOGIN_SUCCESS] Username: " + username);
 	return userDTO;
 }
@@ -49,9 +48,6 @@ void LibraryService::borrowBook(int userId, int bookId) {
 		throw std::runtime_error(msg);
 	}
 
-	//auto record = std::make_shared<BorrowRecord>(library.getNextBorrowRecordId(), userId, bookId, QDateTime::currentDateTime());
-	//library.getBorrowRecords().borrowRecords.emplace(record->getId(), record);
-
 	book->setBorrowedStatus(true);
 	user->addBorrowedBook(bookId);
 	Logger::log("User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId)); // Log the borrowing action
@@ -75,22 +71,11 @@ void LibraryService::returnBook(int userId, int bookId) {
 		Logger::log(msg);
 		throw std::runtime_error(msg);
 	}
-	//for (auto& pair : library.getBorrowRecords())
-	//{
-	//	auto record = pair.second;
 
-	//	if (record->getUserId() == userId && record->getBookId() == bookId && !record->isReturned())
-	//	{
-	//		record->returnBook();
+	book->setBorrowedStatus(false);
+	user->removeBorrowedBook(bookId);
+	Logger::log("User " + std::to_string(userId) + " returned book " + std::to_string(bookId)); // Log the returning action
 
-	//		break;
-	//	}
-	//}
-	if (user->getBorrowedBookIds().find(bookId) != user->getBorrowedBookIds().end()) {
-		book->setBorrowedStatus(false);
-		user->removeBorrowedBook(bookId);
-		Logger::log("User " + std::to_string(userId) + " returned book " + std::to_string(bookId)); // Log the returning action
-	}
 }
 
 std::vector<BookDTO> LibraryService::findBooksByTitle(const std::string& keyword) {
@@ -199,8 +184,7 @@ std::vector<UserDTO> LibraryService::getAllUsersDTO() const {
 			user->getRole(),
 			(user->getGender() == Gender::Male ? "男" : "女"),
 			user->getAge(),
-			user->getPhone(),
-			(int)user->getBorrowedBookIds().size()
+			user->getPhone()
 			});
 	}
 	return userDTOs;

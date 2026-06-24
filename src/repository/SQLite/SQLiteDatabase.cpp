@@ -1,4 +1,4 @@
-#include "../../include/database/SQLiteDatabase.h"
+#include "../../../include/repository/SQLite/SQLiteDatabase.h"
 
 SQLiteDatabase::SQLiteDatabase()
 {

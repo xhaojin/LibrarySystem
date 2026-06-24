@@ -5,17 +5,12 @@
 #include <QSqlDatabase>
 #include <QDebug>
 #include <QSqlError>
-#include "../include/database/SQLiteDatabase.h"
 
 int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 
 	// 数据层
-	Library library;
-
-	library.loadBooksFromFile("books.csv");
-	library.loadUsersFromFile("users.csv");
 
 	// 业务层
 
@@ -28,21 +23,21 @@ int main(int argc, char* argv[])
 	//loginwindow.show();
 
 	//test
-	SQLiteDatabase db;
+	//SQLiteDatabase db;
 
-	if (!db.open("library.db"))
-	{
-		qDebug() << "open failed";
-		return -1;
-	}
+	//if (!db.open("library.db"))
+	//{
+	//	qDebug() << "open failed";
+	//	return -1;
+	//}
 
-	if (!db.initialize())
-	{
-		qDebug() << "init failed";
-		return -1;
-	}
+	//if (!db.initialize())
+	//{
+	//	qDebug() << "init failed";
+	//	return -1;
+	//}
 
-	qDebug() << "database ready";
+	//qDebug() << "database ready";
 
 	return app.exec();
 }
