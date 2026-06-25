@@ -8,7 +8,6 @@ class UIController
 {
 private:
     LibraryService& service;
-    SessionManager sessionManager;
 
 public:
     UIController(LibraryService& s);
@@ -22,10 +21,6 @@ public:
 
     //登录类
     UserDTO login(const std::string& username,const std::string& password);
-    bool isLoggedIn() const;
-    bool isAdmin() const;
-    void logout();
-    const Session* getSession() const;
 
     // UI数据类
     std::vector<BookDTO> getAllBooks() const;

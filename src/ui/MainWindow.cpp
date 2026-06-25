@@ -4,6 +4,8 @@ MainWindow::MainWindow(UIController& controller,QWidget* parent): QMainWindow(pa
 {
     setupUI();
 
+    setupPermissions();
+
     refreshBooksTable();
 }
 
@@ -110,7 +112,7 @@ void MainWindow::setupUI()
 
     connect(refreshButton,&QPushButton::clicked,this,&MainWindow::refreshBooksTable);
 
-    connect(searchButton,&QPushButton::clicked,this,&MainWindow::onSearchClicked);
+    connect(searchButton,&QPushButton::clicked,this,&MainWindow::onFindByTitleClicked);
 
     connect(bookTable,&QTableWidget::cellClicked,this,&MainWindow::onTableCellClicked);
 
@@ -118,6 +120,16 @@ void MainWindow::setupUI()
 
     connect(sortTitleButton,&QPushButton::clicked,this,&MainWindow::onSortTitleClicked);
  
+}
+
+void MainWindow::setupPermissions() {
+    auto role = SessionManager::currentUser().role;
+    borrowButton->setVisible(true);
+    returnButton->setVisible(true);
+    refreshButton->setVisible(true);
+    searchButton->setVisible(true);
+    sortPriceButton->setVisible(true);
+    sortTitleButton->setVisible(true);
 }
 
 void MainWindow::refreshBooksTable() {
@@ -146,6 +158,7 @@ void MainWindow::onBorrowClicked()
         QMessageBox::warning(this,"借书失败",e.what());
     }
 }
+
 void MainWindow::onReturnClicked()
 {
     int userId = userIdEdit->text().toInt();
@@ -169,7 +182,7 @@ void MainWindow::onReturnClicked()
     }
 }
 
-void MainWindow::onSearchClicked() {
+void MainWindow::onFindByTitleClicked() {
     QString keyword = searchEdit->text();
     searchEdit->clear();
     auto books = controller.searchBooksByTitle(keyword.toStdString());

@@ -2,23 +2,23 @@
 
 #include <optional>
 
-#include "Session.h"
+#include "../dto/UserDTO.h"
 
 class SessionManager
 {
 public:
 
-	bool isLoggedIn() const; // 判断是否有用户登录
+	static void login(const UserDTO& user);
 
-	bool isAdmin() const; // 判断当前登录用户是否是管理员
+	static void logout();
 
-	void login(int userId, const std::string& username, Role role); // 登录
+	static bool isLoggedIn();
 
-	void logout(); // 登出
+	static const UserDTO& currentUser();
 
-	const Session* getSession() const; // 获取当前会话信息，返回nullptr表示没有用户登录
+	static bool isAdmin();
 
 private:
 
-	std::optional<Session> currentSession;
+	static std::optional<UserDTO> currentUserInfo;
 };

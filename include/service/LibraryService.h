@@ -4,44 +4,52 @@
 #include "dto/BookDTO.h"
 #include "dto/UserDTO.h"
 #include "utils/logger.h"
+#include <QSqlQuery>
 
 class LibraryService
 {
 private:
 
-	IBookRepository& bookRepo;
-
-	IUserRepository& userRepo;
-
-	IBorrowRecordRepository& borrowRepo;
+    IBookRepository& bookRepo;
+    IUserRepository& userRepo;
+    IBorrowRecordRepository& borrowRepo;
 
 public:
 
-	LibraryService(IBookRepository& bookRepo, IUserRepository& userRepo, IBorrowRecordRepository& borrowRepo); //构造函数，接受一个Library实例的引用
+    LibraryService(IBookRepository& bookRepo,IUserRepository& userRepo,IBorrowRecordRepository& borrowRepo);
 
-	UserDTO login(const std::string& username, const std::string& password); //登录
+    UserDTO login(const std::string& username,const std::string& password);
 
-	void borrowBook(int userId, int bookId); //借书
+    // 借阅业务
+    void borrowBook(int userId, int bookId);
+    void returnBook(int userId, int bookId);
 
-	void returnBook(int userId, int bookId);  //还书
+    // 图书管理
+    void addBook(const BookDTO& dto);
+    void removeBook(int bookId);
+    void updateBook(const BookDTO& dto);
 
-	std::vector<BookDTO> findBooksByTitle(const std::string& keyword); //根据关键词模糊查找书籍
+    // 用户管理
+    void addUser(const UserDTO& dto);
+    void removeUser(int userId);
+    void updateUser(const UserDTO& dto);
 
-	std::vector<BookDTO> getBooksSortedByPrice() const; //根据价格排序书籍
+    // 查询
+    std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
 
-	std::vector<BookDTO> getBooksSortedByTitle() const; //根据标题排序书籍
+    std::vector<BookDTO> getAllBooksDTO() const;
 
-	int getTotalBooks() const; //获取图书馆总书籍数量
+    std::vector<UserDTO> getAllUsersDTO() const;
 
-	int getBorrowedBooksCount() const; //获取已借出的书籍数量
+    // 排序
+    std::vector<BookDTO> getBooksSortedByPrice() const;
 
-	int getAvailableBooksCount() const; //获取可借阅的书籍数量
+    std::vector<BookDTO> getBooksSortedByTitle() const;
 
-	int getUserCount() const; //获取图书馆总用户数量
-
-	double getBorrowRate() const; //获取图书馆的借阅率
-
-	std::vector<BookDTO> getAllBooksDTO() const; //获取所有书籍的DTO列表
-
-	std::vector<UserDTO> getAllUsersDTO() const; //获取所有用户的DTO列表
+    // 统计
+    int getTotalBooks() const;
+    int getBorrowedBooksCount() const;
+    int getAvailableBooksCount() const;
+    int getUserCount() const;
+    double getBorrowRate() const;
 };

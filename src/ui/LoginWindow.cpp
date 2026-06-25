@@ -32,8 +32,11 @@ void LoginWindow::onLoginClicked()
 	try
 	{
 		auto user = controller.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
-
-		QMessageBox::information(this, "Success", "Login Success");
+		SessionManager::login(user);
+		QMessageBox::information(this, "Success", QString::fromStdString(user.name));
+		mainWindow = std::make_unique<MainWindow>(controller);
+		mainWindow->show();
+		this->close();
 	}
 	catch (const std::exception& e)
 	{

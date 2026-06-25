@@ -47,10 +47,23 @@ void LibraryService::borrowBook(int userId, int bookId) {
 		Logger::log(msg);
 		throw std::runtime_error(msg);
 	}
-
+	// 修改图书状态
 	book->setBorrowedStatus(true);
-	user->addBorrowedBook(bookId);
-	Logger::log("User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId)); // Log the borrowing action
+
+	if (!bookRepo.update(*book))
+	{
+		throw std::runtime_error("Failed to update book status");
+	}
+
+	// 创建借阅记录
+	auto record = std::make_shared<BorrowRecord>(0, userId, bookId, QDateTime::currentDateTime(), std::nullopt);
+
+	if (!borrowRepo.add(record))
+	{
+		throw std::runtime_error("Failed to create borrow record");
+	}
+
+	Logger::log("[BORROW_SUCCESS] User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId));
 }
 
 void LibraryService::returnBook(int userId, int bookId) {
@@ -71,11 +84,34 @@ void LibraryService::returnBook(int userId, int bookId) {
 		Logger::log(msg);
 		throw std::runtime_error(msg);
 	}
+	auto record = borrowRepo.findActiveRecord(userId, bookId);
 
+	if (!record)
+	{
+		std::string msg = "[RECORD_ERROR] Active borrow record not found";
+
+		Logger::log(msg);
+
+		throw std::runtime_error(msg);
+	}
+
+	// 更新借阅记录
+	record->setReturnTime(QDateTime::currentDateTime());
+
+	if (!borrowRepo.update(*record))
+	{
+		throw std::runtime_error("Failed to update borrow record");
+	}
+
+	// 更新图书状态
 	book->setBorrowedStatus(false);
-	user->removeBorrowedBook(bookId);
-	Logger::log("User " + std::to_string(userId) + " returned book " + std::to_string(bookId)); // Log the returning action
 
+	if (!bookRepo.update(*book))
+	{
+		throw std::runtime_error("Failed to update book status");
+	}
+
+	Logger::log("[RETURN_SUCCESS] User " + std::to_string(userId) + " returned book " + std::to_string(bookId));
 }
 
 std::vector<BookDTO> LibraryService::findBooksByTitle(const std::string& keyword) {

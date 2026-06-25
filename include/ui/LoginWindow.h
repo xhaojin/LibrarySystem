@@ -4,11 +4,16 @@
 
 #include <QLineEdit>
 #include <QPushButton>
+#pragma once
+
 #include <QVBoxLayout>
+#pragma once
+
 #include <QLabel>
-#include <QMessagebox>
+#include <QMessageBox>
 
 #include "UIController.h"
+#include "MainWindow.h"
 
 class LoginWindow : public QWidget
 {
@@ -26,4 +31,6 @@ private:
 	QLineEdit* passwordEdit;
 
 	QPushButton* loginButton;
+
+	std::unique_ptr<MainWindow> mainWindow;
 };

@@ -34,7 +34,7 @@ bool SQLiteDatabase::initialize()
 
     success &= query.exec(
         "CREATE TABLE IF NOT EXISTS books ("
-        "id INTEGER PRIMARY KEY,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "title TEXT NOT NULL,"
         "author TEXT,"
         "publisher TEXT,"
@@ -44,7 +44,7 @@ bool SQLiteDatabase::initialize()
 
     success &= query.exec(
         "CREATE TABLE IF NOT EXISTS users ("
-        "id INTEGER PRIMARY KEY,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "name TEXT NOT NULL,"
         "gender TEXT,"
         "age INTEGER,"
@@ -56,7 +56,7 @@ bool SQLiteDatabase::initialize()
 
     success &= query.exec(
         "CREATE TABLE IF NOT EXISTS borrow_records ("
-        "id INTEGER PRIMARY KEY,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
         "user_id INTEGER,"
         "book_id INTEGER,"
         "borrow_time TEXT,"

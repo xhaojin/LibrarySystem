@@ -1,41 +1,33 @@
 #include "auth/SessionManager.h"
+#include <iostream>
 
-bool SessionManager::isLoggedIn() const
+std::optional<UserDTO> SessionManager::currentUserInfo;
+
+void SessionManager::login(const UserDTO& user)
 {
-	return currentSession.has_value();
-}
-
-bool SessionManager::isAdmin() const
-{
-	return currentSession.has_value() && currentSession->role == Role::Admin;
-}
-
-void SessionManager::login(int userId, const std::string& username, Role role)
-{
-	Session session;
-
-	session.userId = userId;
-
-	session.username = username;
-
-	session.role = role;
-
-	session.loginTime = std::chrono::system_clock::now();
-
-	currentSession = session;
+    currentUserInfo = user;
 }
 
 void SessionManager::logout()
 {
-	currentSession.reset();
+    currentUserInfo.reset();
 }
 
-const Session* SessionManager::getSession() const
+bool SessionManager::isLoggedIn()
 {
-	if (!currentSession)
-	{
-		return nullptr;
-	}
+    return currentUserInfo.has_value();
+}
 
-	return &(*currentSession);
+const UserDTO& SessionManager::currentUser()
+{
+    if (!currentUserInfo)
+    {
+        throw std::runtime_error("No user logged in");
+    }
+
+    return *currentUserInfo;
+}
+
+bool SessionManager::isAdmin() {
+    return currentUserInfo.has_value() && currentUserInfo->role == Role::Admin;
 }

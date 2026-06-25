@@ -34,12 +34,13 @@ private:
 
 private:
     void setupUI();
+    void setupPermissions();
     void refreshBooksTable();
 
 private slots:
     void onBorrowClicked();
     void onReturnClicked();
-    void onSearchClicked();
+    void onFindByTitleClicked();
     void onTableCellClicked(int row, int column);
     void onSortPriceClicked();
     void onSortTitleClicked();

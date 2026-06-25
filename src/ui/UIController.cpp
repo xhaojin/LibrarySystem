@@ -85,7 +85,6 @@ UserDTO UIController::login(const std::string& username, const std::string& pass
 	try
 	{
 		auto user = service.login(username, password);
-		sessionManager.login(user.id, user.username, user.role);
 		return user;
 	}
 	catch (const std::exception& e)
@@ -93,24 +92,4 @@ UserDTO UIController::login(const std::string& username, const std::string& pass
 		Logger::log(std::string("[UI_ERROR] ") + e.what());
 		throw;
 	}
-}
-
-bool UIController::isLoggedIn() const
-{
-	return sessionManager.isLoggedIn();
-}
-
-bool UIController::isAdmin() const
-{
-	return sessionManager.isAdmin();
-}
-
-void UIController::logout()
-{
-	sessionManager.logout();
-}
-
-const Session* UIController::getSession() const
-{
-	return sessionManager.getSession();
 }

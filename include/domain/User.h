@@ -46,8 +46,4 @@ public:
 	Role getRole() const;
 
 	bool isAdmin() const;
-
-	bool addBorrowedBook(int bookId); //借书
-
-	bool removeBorrowedBook(int bookId); //还书
 };

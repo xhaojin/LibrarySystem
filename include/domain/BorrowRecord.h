@@ -34,6 +34,8 @@ public:
 
 	const std::optional<QDateTime>& getReturnTime() const;
 
+	void setReturnTime(const QDateTime& returnTime);
+
 	bool isReturned() const;
 
 	void returnBook();

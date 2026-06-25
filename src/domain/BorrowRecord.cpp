@@ -29,6 +29,10 @@ const std::optional<QDateTime>& BorrowRecord::getReturnTime() const {
 	return this->returnTime;
 }
 
+void BorrowRecord::setReturnTime(const QDateTime& returnTime) {
+	this->returnTime = returnTime;
+}
+
 void BorrowRecord::returnBook()
 {
 	returnTime = QDateTime::currentDateTimeUtc();
