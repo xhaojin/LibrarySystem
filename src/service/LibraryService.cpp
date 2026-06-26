@@ -133,7 +133,7 @@ std::vector<BookDTO> LibraryService::findBooksByTitle(const std::string& keyword
 
 std::vector<BookDTO> LibraryService::getBooksSortedByPrice() const {
 	std::vector<BookDTO> sortedBooks;
-	for (const auto& book : bookRepo.findAll()) {
+	for (const auto& book : bookRepo.sortByPrice()) {
 		sortedBooks.push_back(BookDTO{
 			book->getId(),
 			book->getTitle(),
@@ -143,15 +143,12 @@ std::vector<BookDTO> LibraryService::getBooksSortedByPrice() const {
 			book->isBorrowed()
 			});
 	}
-	std::sort(sortedBooks.begin(), sortedBooks.end(), [](const BookDTO& a, const BookDTO& b) {
-		return a.price < b.price;
-		});
 	return sortedBooks;
 }
 
 std::vector<BookDTO> LibraryService::getBooksSortedByTitle() const {
 	std::vector<BookDTO> sortedBooks;
-	for (const auto& book : bookRepo.findAll()) {
+	for (const auto& book : bookRepo.sortByTitle()) {
 		sortedBooks.push_back(BookDTO{
 			book->getId(),
 			book->getTitle(),
@@ -161,32 +158,17 @@ std::vector<BookDTO> LibraryService::getBooksSortedByTitle() const {
 			book->isBorrowed()
 			});
 	}
-	std::sort(sortedBooks.begin(), sortedBooks.end(), [](const BookDTO& a, const BookDTO& b) {
-		return a.title < b.title;
-		});
 	return sortedBooks;
 }
 
 int LibraryService::getTotalBooks() const {
-	return bookRepo.findAll().size();
+	return bookRepo.getTotalBooks();
 }
 int LibraryService::getBorrowedBooksCount() const {
-	int count = 0;
-	for (const auto& book : bookRepo.findAll()) {
-		if (book->isBorrowed()) {
-			count++;
-		}
-	}
-	return count;
+	return bookRepo.getBorrowedBooksCount();
 }
 int LibraryService::getAvailableBooksCount() const {
-	int count = 0;
-	for (const auto& book : bookRepo.findAll()) {
-		if (!book->isBorrowed()) {
-			count++;
-		}
-	}
-	return count;
+	return bookRepo.getAvailableBooksCount();
 }
 int LibraryService::getUserCount() const {
 	return userRepo.findAll().size();
