@@ -11,9 +11,9 @@ bool SQLiteBorrowRecordRepository::add(std::shared_ptr<BorrowRecord> record)
 
 	query.prepare(
 		"INSERT INTO borrow_records "
-		"(id,user_id,book_id,borrow_time,return_time)"
+		"(user_id,book_id,borrow_time,return_time)"
 		"VALUES "
-		"(:id,:userId,:bookId,:borrowTime,:returnTime)");
+		"(:user_id,:book_id,:borrow_time,:return_time)");
 
 	BorrowRecordMapper::bindToQuery(query, *record);
 
@@ -27,10 +27,10 @@ bool SQLiteBorrowRecordRepository::update(const BorrowRecord& record)
 	query.prepare(
 		"UPDATE borrow_records "
 		"SET "
-		"user_id=:userId,"
-		"book_id=:bookId,"
-		"borrow_time=:borrowTime,"
-		"return_time=:returnTime "
+		"user_id=:user_id,"
+		"book_id=:book_id,"
+		"borrow_time=:borrow_time,"
+		"return_time=:return_time "
 		"WHERE id=:id");
 
 	BorrowRecordMapper::bindToQuery(query, record);
@@ -77,9 +77,9 @@ std::vector<std::shared_ptr<BorrowRecord>> SQLiteBorrowRecordRepository::findByU
 
 	QSqlQuery query(db.database());
 
-	query.prepare("SELECT * FROM borrow_records WHERE user_id=:userId");
+	query.prepare("SELECT * FROM borrow_records WHERE user_id=:user_id");
 
-	query.bindValue(":userId", userId);
+	query.bindValue(":user_id", userId);
 
 	query.exec();
 
@@ -97,9 +97,9 @@ std::vector<std::shared_ptr<BorrowRecord>> SQLiteBorrowRecordRepository::findByB
 
 	QSqlQuery query(db.database());
 
-	query.prepare("SELECT * FROM borrow_records WHERE book_id=:bookId");
+	query.prepare("SELECT * FROM borrow_records WHERE book_id=:book_id");
 
-	query.bindValue(":bookId", bookId);
+	query.bindValue(":book_id", bookId);
 
 	query.exec();
 
@@ -118,14 +118,14 @@ std::shared_ptr<BorrowRecord> SQLiteBorrowRecordRepository::findActiveRecord(int
 	query.prepare(
 		"SELECT * "
 		"FROM borrow_records "
-		"WHERE user_id=:userId "
-		"AND book_id=:bookId "
+		"WHERE user_id=:user_id "
+		"AND book_id=:book_id "
 		"AND return_time IS NULL "
 		"LIMIT 1");
 
-	query.bindValue(":userId", userId);
+	query.bindValue(":user_id", userId);
 
-	query.bindValue(":bookId", bookId);
+	query.bindValue(":book_id", bookId);
 
 	if (!query.exec())
 		return nullptr;

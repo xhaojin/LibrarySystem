@@ -185,7 +185,7 @@ void MainWindow::onReturnClicked()
 void MainWindow::onFindByTitleClicked() {
     QString keyword = searchEdit->text();
     searchEdit->clear();
-    auto books = controller.searchBooksByTitle(keyword.toStdString());
+    auto books = controller.findBooksByTitle(keyword.toStdString());
     showBooks(books);
 }
 

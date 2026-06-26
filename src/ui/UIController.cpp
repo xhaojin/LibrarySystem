@@ -43,7 +43,7 @@ std::vector<UserDTO> UIController::getAllUsers() const
 	return service.getAllUsersDTO();
 }
 
-std::vector<BookDTO> UIController::searchBooksByTitle(const std::string& keyword)
+std::vector<BookDTO> UIController::findBooksByTitle(const std::string& keyword)
 {
 	try
 	{

@@ -7,166 +7,168 @@ SQLiteBookRepository::SQLiteBookRepository(SQLiteDatabase& database) :db(databas
 
 bool SQLiteBookRepository::add(std::shared_ptr<Book> book)
 {
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.prepare(
-        "INSERT INTO books "
-        "(id,title,author,publisher,"
-        "price,borrowed)"
-        "VALUES "
-        "(:id,:title,:author,"
-        ":publisher,:price,"
-        ":borrowed)");
+	query.prepare(
+		"INSERT INTO books "
+		"(id,title,author,publisher,"
+		"price,borrowed)"
+		"VALUES "
+		"(:id,:title,:author,"
+		":publisher,:price,"
+		":borrowed)");
 
-    BookMapper::bindToQuery(query, *book);
+	BookMapper::bindToQuery(query, *book);
 
-    return query.exec();
+	return query.exec();
 }
 
-bool SQLiteBookRepository::remove(int bookId){
-    QSqlQuery query(db.database());
+bool SQLiteBookRepository::remove(int bookId) {
+	QSqlQuery query(db.database());
 
-    query.prepare("DELETE FROM books WHERE id=:id");
+	query.prepare("DELETE FROM books WHERE id=:id");
 
-    query.bindValue(":id", bookId);
+	query.bindValue(":id", bookId);
 
-    return query.exec();
+	return query.exec();
 }
 
-bool SQLiteBookRepository::update(const Book& book){
+bool SQLiteBookRepository::update(const Book& book) {
 
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.prepare("UPDATE books SET title = :title, author = :author, "
-        "publisher = :publisher, price = :price, borrowed = :borrowed "
-        "WHERE id = :id");
+	query.prepare("UPDATE books SET title = :title, author = :author, "
+		"publisher = :publisher, price = :price, borrowed = :borrowed "
+		"WHERE id = :id");
 
-    BookMapper::bindToQuery(query, book);
+	BookMapper::bindToQuery(query, book);
 
-    return query.exec();
+	return query.exec();
 }
 
 std::shared_ptr<Book> SQLiteBookRepository::findById(int bookId) const
 {
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.prepare("SELECT * FROM books WHERE id=:id");
+	query.prepare("SELECT * FROM books WHERE id=:id");
 
-    query.bindValue(":id",bookId);
+	query.bindValue(":id", bookId);
 
-    if (!query.exec())
-    {
-        return nullptr;
-    }
+	if (!query.exec())
+	{
+		return nullptr;
+	}
 
-    if (!query.next())
-    {
-        return nullptr;
-    }
+	if (!query.next())
+	{
+		return nullptr;
+	}
 
-    return BookMapper::fromQuery(query);
+	return BookMapper::fromQuery(query);
 }
 
 std::vector<std::shared_ptr<Book>> SQLiteBookRepository::findByTitle(const std::string& titleKeyWord) const {
-    std::vector<std::shared_ptr<Book>> books;
+	std::vector<std::shared_ptr<Book>> books;
 
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.prepare("SELECT * FROM books WHERE title LIKE :keyword");
+	query.prepare("SELECT * FROM books WHERE title LIKE :keyword");
 
-    query.bindValue(":keyword", QString::fromStdString(titleKeyWord));
+	query.bindValue(":keyword", "%" + QString::fromStdString(titleKeyWord) + "%");
 
-    while (query.next())
-    {
-        books.push_back(BookMapper::fromQuery(query));
-    }
+	if (query.exec()) {
+		while (query.next())
+		{
+			books.push_back(BookMapper::fromQuery(query));
+		}
+	}
 
-    return books;
+	return books;
 }
 
 std::vector<std::shared_ptr<Book>> SQLiteBookRepository::findAll() const
 {
-    std::vector<std::shared_ptr<Book>> books;
+	std::vector<std::shared_ptr<Book>> books;
 
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.exec("SELECT * FROM books");
+	query.exec("SELECT * FROM books");
 
-    while (query.next())
-    {
-        books.push_back(BookMapper::fromQuery(query));
-    }
+	while (query.next())
+	{
+		books.push_back(BookMapper::fromQuery(query));
+	}
 
-    return books;
+	return books;
 }
 
 std::vector<std::shared_ptr<Book>> SQLiteBookRepository::sortByTitle() const {
-    std::vector<std::shared_ptr<Book>> books;
+	std::vector<std::shared_ptr<Book>> books;
 
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.exec("SELECT * FROM books ORDER BY title ASC");
+	query.exec("SELECT * FROM books ORDER BY title ASC");
 
-    while (query.next())
-    {
-        books.push_back(BookMapper::fromQuery(query));
-    }
+	while (query.next())
+	{
+		books.push_back(BookMapper::fromQuery(query));
+	}
 
-    return books;
+	return books;
 }
 std::vector<std::shared_ptr<Book>> SQLiteBookRepository::sortByPrice() const {
-    std::vector<std::shared_ptr<Book>> books;
+	std::vector<std::shared_ptr<Book>> books;
 
-    QSqlQuery query(db.database());
+	QSqlQuery query(db.database());
 
-    query.exec("SELECT * FROM books ORDER BY price ASC");
+	query.exec("SELECT * FROM books ORDER BY price ASC");
 
-    while (query.next())
-    {
-        books.push_back(BookMapper::fromQuery(query));
-    }
+	while (query.next())
+	{
+		books.push_back(BookMapper::fromQuery(query));
+	}
 
-    return books;
+	return books;
 }
 
-int SQLiteBookRepository::getTotalBooks() const{
-    QSqlQuery query(db.database());
+int SQLiteBookRepository::getTotalBooks() const {
+	QSqlQuery query(db.database());
 
-    if (!query.exec("SELECT COUNT(*) FROM books")) {
-        return -1;
-    }
+	if (!query.exec("SELECT COUNT(*) FROM books")) {
+		return -1;
+	}
 
-    if (query.next()) {
-        return query.value(0).toInt();
-    }
+	if (query.next()) {
+		return query.value(0).toInt();
+	}
 
-    return 0;
+	return 0;
 }
 
-int SQLiteBookRepository::getBorrowedBooksCount() const{
-    QSqlQuery query(db.database());
+int SQLiteBookRepository::getBorrowedBooksCount() const {
+	QSqlQuery query(db.database());
 
-    if (!query.exec("SELECT COUNT(*) FROM books WHERE borrowed = 1")) {
-        return -1;
-    }
+	if (!query.exec("SELECT COUNT(*) FROM books WHERE borrowed = 1")) {
+		return -1;
+	}
 
-    if (query.next()) {
-        return query.value(0).toInt();
-    }
+	if (query.next()) {
+		return query.value(0).toInt();
+	}
 
-    return 0;
+	return 0;
 }
 
-int	SQLiteBookRepository::getAvailableBooksCount() const{
-    QSqlQuery query(db.database());
+int	SQLiteBookRepository::getAvailableBooksCount() const {
+	QSqlQuery query(db.database());
 
-    if (!query.exec("SELECT COUNT(*) FROM books WHERE borrowed = 0")) {
-        return -1;
-    }
+	if (!query.exec("SELECT COUNT(*) FROM books WHERE borrowed = 0")) {
+		return -1;
+	}
 
-    if (query.next()) {
-        return query.value(0).toInt();
-    }
+	if (query.next()) {
+		return query.value(0).toInt();
+	}
 
-    return 0;
+	return 0;
 }

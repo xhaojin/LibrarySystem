@@ -15,7 +15,7 @@ public:
     // 操作类
     void borrowBook(int userId, int bookId);
     void returnBook(int userId, int bookId);
-    std::vector<BookDTO> searchBooksByTitle(const std::string& keyword);
+    std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
     std::vector<BookDTO> getBooksSortedByPrice() const;
     std::vector<BookDTO> getBooksSortedByTitle() const;
 
