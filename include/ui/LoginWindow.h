@@ -1,14 +1,9 @@
 #pragma once
 
 #include <QWidget>
-
 #include <QLineEdit>
 #include <QPushButton>
-#pragma once
-
 #include <QVBoxLayout>
-#pragma once
-
 #include <QLabel>
 #include <QMessageBox>
 
@@ -22,6 +17,9 @@ class LoginWindow : public QWidget
 public:
 	explicit LoginWindow(UIController& controller, QWidget* parent = nullptr);
 
+signals:
+	void loginSuccess();
+
 private slots:
 	void onLoginClicked();
 
@@ -31,6 +29,4 @@ private:
 	QLineEdit* passwordEdit;
 
 	QPushButton* loginButton;
-
-	std::unique_ptr<MainWindow> mainWindow;
 };

@@ -3,6 +3,7 @@
 #include "repository/interfaces/IBorrowRecordRepository.h"
 #include "dto/BookDTO.h"
 #include "dto/UserDTO.h"
+#include "dto/BorrowRecordDTO.h"
 #include "utils/logger.h"
 #include <QSqlQuery>
 
@@ -40,6 +41,8 @@ public:
     std::vector<BookDTO> getAllBooksDTO() const;
 
     std::vector<UserDTO> getAllUsersDTO() const;
+
+    std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 
     // 排序
     std::vector<BookDTO> getBooksSortedByPrice() const;

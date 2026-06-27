@@ -18,10 +18,15 @@ file(GLOB_RECURSE HEADERS
 
 add_executable(
     LibrarySystem
+    WIN32
     ${SOURCES}
     ${HEADERS}
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Sql) # Find the Qt6 Widgets module
 set_target_properties(LibrarySystem PROPERTIES WIN32_EXECUTABLE TRUE) # Set the executable property for Windows (optional, but can help with certain configurations)
-target_link_libraries(LibrarySystem Qt6::Widgets Qt6::Sql) # Link the Qt6 Widgets library to your executable
+target_link_libraries(LibrarySystem 
+    Qt6::Widgets 
+    Qt6::Sql
+    Qt6::Core
+) # Link the Qt6 Widgets library to your executable

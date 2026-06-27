@@ -25,4 +25,5 @@ public:
     // UI数据类
     std::vector<BookDTO> getAllBooks() const;
     std::vector<UserDTO> getAllUsers() const;
+    std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 };

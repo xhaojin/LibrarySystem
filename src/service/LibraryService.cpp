@@ -207,3 +207,18 @@ std::vector<UserDTO> LibraryService::getAllUsersDTO() const {
 	}
 	return userDTOs;
 }
+
+std::vector<BorrowRecordDTO> LibraryService::getAllBorrowRecords() const {
+	std::vector<BorrowRecordDTO> recordDTOs;
+	for (const auto& record : borrowRepo.findAll()) {
+		recordDTOs.push_back(BorrowRecordDTO{
+			record->getId(),
+			record->getUserId(),
+			record->getBookId(),
+			record->getBorrowTime().toString().toStdString(),
+			record->getReturnTime().value().toString().toStdString(),
+			record->getReturnTime().has_value()
+			});
+	}
+	return recordDTOs;
+}

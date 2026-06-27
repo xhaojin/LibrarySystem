@@ -42,23 +42,3 @@ Role User::getRole() const {
 bool User::isAdmin() const {
 	return this->role == Role::Admin;
 }
-
-bool User::addBorrowedBook(int bookId) {
-	if (std::find(this->borrowedBookIds.begin(), this->borrowedBookIds.end(), bookId) == this->borrowedBookIds.end()) {
-		this->borrowedBookIds.insert(bookId);
-		return true; // Successfully added
-	}
-	return false;
-}
-
-bool User::removeBorrowedBook(int bookId) {
-	if (std::find(this->borrowedBookIds.begin(), this->borrowedBookIds.end(), bookId) != this->borrowedBookIds.end()) {
-		this->borrowedBookIds.erase(bookId);
-		return true; // Successfully added
-	}
-	return false;
-}
-
-const std::unordered_set<int>& User::getBorrowedBookIds() const {
-	return this->borrowedBookIds;
-}
