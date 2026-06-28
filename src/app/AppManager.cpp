@@ -8,7 +8,12 @@ int AppManager::run(int argc, char* argv[]) {
 
 	// 初始化数据库
 	database = std::make_unique<SQLiteDatabase>();
-	if (!database->open("library.db") && !database->initialize())
+	if (!database->open("library.db"))
+	{
+		return -1;
+	}
+
+	if (!database->initialize())
 	{
 		return -1;
 	}
@@ -28,7 +33,7 @@ int AppManager::run(int argc, char* argv[]) {
 }
 
 void AppManager::onLoginSuccess() {
-	loginWindow->close();
+	loginWindow->hide();
 	mainWindow = std::make_unique<MainWindow>(*controller);
 	mainWindow->show();
 }

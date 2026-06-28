@@ -4,7 +4,7 @@ MainWindow::MainWindow(UIController& controller, QWidget* parent) : QMainWindow(
 {
 	setupUI();
 
-	setupPermissions();
+	applyRolePermission();
 
 	refreshBooksTable();
 	refreshBorrowRecordTable();
@@ -14,202 +14,153 @@ MainWindow::MainWindow(UIController& controller, QWidget* parent) : QMainWindow(
 void MainWindow::setupUI()
 {
 	auto* centralWidget = new QWidget(this);
-
 	setCentralWidget(centralWidget);
 
-	auto* mainLayout = new QVBoxLayout(centralWidget);
+	auto* rootLayout = new QHBoxLayout(centralWidget);
 
-	//------------------------
-	// 用户ID
-	//------------------------
+	// =========================
+	// 1. 左侧导航栏（菜单）
+	// =========================
+	auto* navLeftLayout = new QVBoxLayout();
 
-	auto* userLayout = new QHBoxLayout();
+	bookBtn = new QPushButton("图书管理");
+	userBtn = new QPushButton("用户管理");
+	borrowBtn = new QPushButton("借阅记录管理");
 
-	userLayout->addWidget(new QLabel("User ID:"));
+	navLeftLayout->addWidget(bookBtn);
+	navLeftLayout->addWidget(userBtn);
+	navLeftLayout->addWidget(borrowBtn);
+	navLeftLayout->addStretch(); // ⭐关键：把按钮顶上去
 
-	userIdEdit = new QLineEdit();
+	rootLayout->addLayout(navLeftLayout,1);
 
-	userLayout->addWidget(userIdEdit);
+	// =========================
+	// 2. stackedWidget
+	// =========================
+	stackedWidget = new QStackedWidget(centralWidget);
 
-	mainLayout->addLayout(userLayout);
+	// =========================
+	// Book Page
+	// =========================
+	bookpage = new BookPage(stackedWidget);
+	//auto* bookLayout = new QVBoxLayout(bookPage);
 
-	//------------------------
-	// 图书ID
-	//------------------------
+	//bookLayout->addWidget(new QLabel("图书管理"));
 
-	auto* bookLayout = new QHBoxLayout();
+	//// 工具栏
+	//auto* toolbar = new QHBoxLayout();
 
-	bookLayout->addWidget(new QLabel("Book ID:"));
+	//addBookButton = new QPushButton("添加图书");
+	//removeBookButton = new QPushButton("删除图书");
+	//updateBookButton = new QPushButton("更新图书");
+	//borrowButton = new QPushButton("借阅书籍");
+	//returnButton = new QPushButton("归还书籍");
+	//refreshBookButton = new QPushButton("刷新");
 
-	bookIdEdit = new QLineEdit();
+	//toolbar->addWidget(addBookButton);
+	//toolbar->addWidget(removeBookButton);
+	//toolbar->addWidget(updateBookButton);
+	//toolbar->addSpacing(20);
+	//toolbar->addWidget(borrowButton);
+	//toolbar->addWidget(returnButton);
+	//toolbar->addStretch();
+	//toolbar->addWidget(refreshBookButton);
 
-	bookLayout->addWidget(bookIdEdit);
+	//bookLayout->addLayout(toolbar);
 
-	mainLayout->addLayout(bookLayout);
+	////搜索排序栏
+	//auto* searchbar = new QHBoxLayout();
+	//searchbar->addWidget(new QLabel("图书名称："));
+	//searchEdit = new QLineEdit();
+	//searchEdit->setPlaceholderText("请输入书名");
+	//searchButton = new QPushButton("搜索");
+	//sortTitleButton = new QPushButton("标题排序");
+	//sortPriceButton = new QPushButton("价格排序");
+	//searchbar->addWidget(searchEdit);
+	//searchbar->addWidget(searchButton);
+	//searchbar->addStretch();
+	//searchbar->addWidget(sortTitleButton);
+	//searchbar->addWidget(sortPriceButton);
+	//bookLayout->addLayout(searchbar);
 
-	//------------------------
-	// 按钮(借书，还书，刷新，排序)
-	//------------------------
+	////表格
+	//bookTable = new QTableWidget(bookPage);
+	//bookTable->setColumnCount(6);
+	//bookTable->setHorizontalHeaderLabels({"Book ID","Title","Author","Publisher","Price","Status"});
+	//bookTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	//bookLayout->addWidget(bookTable);
 
-	auto* buttonLayout1 = new QHBoxLayout();
+	// =========================
+	// User Page
+	// =========================
+	QWidget* userPage = new QWidget(stackedWidget);
+	auto* userLayout = new QVBoxLayout(userPage);
 
-	borrowButton = new QPushButton("Borrow");
-
-	returnButton = new QPushButton("Return");
-
-	refreshBookButton = new QPushButton("RefreshBook");
-
-	refreshUserButton = new QPushButton("RefreshUser");
-
-	refreshBorrowRecordButton = new QPushButton("RefreshBorrowRecord");
-
-	sortPriceButton = new QPushButton("Sort by Price");
-
-	sortTitleButton = new QPushButton("Sort by Title");
-
-	buttonLayout1->addWidget(borrowButton);
-	buttonLayout1->addWidget(returnButton);
-	buttonLayout1->addWidget(refreshBookButton);
-	buttonLayout1->addWidget(refreshUserButton);
-	buttonLayout1->addWidget(refreshBorrowRecordButton);
-	buttonLayout1->addWidget(sortPriceButton);
-	buttonLayout1->addWidget(sortTitleButton);
-
-	mainLayout->addLayout(buttonLayout1);
-
-	//------------------------
-	// 搜索
-	//------------------------
-
-	auto* searchLayout = new QHBoxLayout();
-
-	searchLayout->addWidget(new QLabel("SearchByTitle:"));
-
-	searchEdit = new QLineEdit();
-
-	searchButton = new QPushButton("Search");
-
-	searchLayout->addWidget(searchEdit);
-	searchLayout->addWidget(searchButton);
-
-	mainLayout->addLayout(searchLayout);
-
-	//------------------------
-	// 按钮(添加书，删除书，修改书)
-	//------------------------
-
-	auto* buttonLayout2 = new QHBoxLayout();
-
-	addBookButton = new QPushButton("AddBook");
-
-	removeBookButton = new QPushButton("RemoveBook");
-
-	updateBookButton = new QPushButton("UpdateBook");
-
-	buttonLayout2->addWidget(addBookButton);
-	buttonLayout2->addWidget(removeBookButton);
-	buttonLayout2->addWidget(updateBookButton);
-
-	mainLayout->addLayout(buttonLayout2);
-
-	//------------------------
-	// 按钮(添加用户，删除用户，修改用户)
-	//------------------------
-
-	auto* buttonLayout3 = new QHBoxLayout();
-
-	addUserButton = new QPushButton("AddUser");
-
-	removeUserButton = new QPushButton("RemoveUser");
-
-	updateUserButton = new QPushButton("UpdateUser");
-
-	buttonLayout3->addWidget(addUserButton);
-	buttonLayout3->addWidget(removeUserButton);
-	buttonLayout3->addWidget(updateUserButton);
-
-	mainLayout->addLayout(buttonLayout3);
-
-	//------------------------
-	// 图书表格
-	//------------------------
-
-	bookTable = new QTableWidget();
-
-	mainLayout->addWidget(bookTable);
-
-	setWindowTitle("Library System");
-
-	resize(900, 600);
-
-	bookTable->setColumnCount(6);
-
-	bookTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 设置列宽自适应
-
-	bookTable->setHorizontalHeaderLabels({ "Book ID","Title","Author","Publisher","Price","Status" });
-
-	//------------------------
-	// 用户表格
-	//------------------------
-
-	userTable = new QTableWidget();
-
-	mainLayout->addWidget(userTable);
+	userTable = new QTableWidget(userPage);
+	userLayout->addWidget(userTable);
 
 	userTable->setColumnCount(8);
+	userTable->setHorizontalHeaderLabels({"User ID","name","gender","age","phone","username","role","borrowedCount"});
+	userTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-	userTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 设置列宽自适应
+	// =========================
+	// Borrow Page
+	// =========================
+	QWidget* borrowPage = new QWidget(stackedWidget);
+	auto* borrowLayout = new QVBoxLayout(borrowPage);
 
-	userTable->setHorizontalHeaderLabels({ "User ID","name","gender","age","phone","username","role","borrowedCount"});
-
-	//------------------------
-	// 借阅记录表格
-	//------------------------
-
-	borrowRecordTable = new QTableWidget();
-
-	mainLayout->addWidget(borrowRecordTable);
+	borrowRecordTable = new QTableWidget(borrowPage);
+	borrowLayout->addWidget(borrowRecordTable);
 
 	borrowRecordTable->setColumnCount(5);
+	borrowRecordTable->setHorizontalHeaderLabels({"BorrowRecord ID","user_id","book_id","borrow_time","return_time"});
+	borrowRecordTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-	borrowRecordTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // 设置列宽自适应
+	// =========================
+	// 加入 stackedWidget
+	// =========================
+	stackedWidget->addWidget(bookpage);
+	stackedWidget->addWidget(userPage);
+	stackedWidget->addWidget(borrowPage);
 
-	borrowRecordTable->setHorizontalHeaderLabels({ "BorrowRecord ID","user_id","book_id","borrow_time","return_time" });
+	rootLayout->addWidget(stackedWidget,4);
 
-	// 连接信号和槽
+	// =========================
+	// 默认页面
+	// =========================
+	stackedWidget->setCurrentIndex(0);
 
-	connect(borrowButton, &QPushButton::clicked, this, &MainWindow::onBorrowClicked);
+	// =========================
+	// 信号槽（导航切换）
+	// =========================
+	connect(bookBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(0);});
 
-	connect(returnButton, &QPushButton::clicked, this, &MainWindow::onReturnClicked);
+	connect(userBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(1);});
 
-	connect(refreshBookButton, &QPushButton::clicked, this, &MainWindow::refreshBooksTable);
+	connect(borrowBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(2);});
 
-	connect(refreshUserButton, &QPushButton::clicked, this, &MainWindow::refreshUsersTable);
+	connect(bookpage, &BookPage::refreshRequested, this, &MainWindow::refreshBooksTable);
 
-	connect(refreshBorrowRecordButton, &QPushButton::clicked, this, &MainWindow::refreshBorrowRecordTable);
-
-	connect(searchButton, &QPushButton::clicked, this, &MainWindow::onFindByTitleClicked);
-
-	connect(bookTable, &QTableWidget::cellClicked, this, &MainWindow::onTableCellClicked);
-
-	connect(sortPriceButton, &QPushButton::clicked, this, &MainWindow::onSortPriceClicked);
-
-	connect(sortTitleButton, &QPushButton::clicked, this, &MainWindow::onSortTitleClicked);
-
+	// =========================
+	// 窗口属性（最后统一设置）
+	// =========================
+	setWindowTitle("Library System");
+	resize(900, 600);
 }
 
-void MainWindow::setupPermissions() {
+void MainWindow::applyRolePermission() {
 	auto role = SessionManager::currentUser().role;
-	borrowButton->setVisible(true);
-	returnButton->setVisible(true);
-	refreshBookButton->setVisible(true);
-	searchButton->setVisible(true);
-	sortPriceButton->setVisible(true);
-	sortTitleButton->setVisible(true);
+	bool isAdmin = SessionManager::isAdmin();
+	//addBookButton->setVisible(isAdmin);
+	//removeBookButton->setVisible(isAdmin);
+	//updateBookButton->setVisible(isAdmin);
+	//addUserButton->setVisible(isAdmin);
+	//removeUserButton->setVisible(isAdmin);
+	//updateUserButton->setVisible(isAdmin);
 }
 
 void MainWindow::refreshBooksTable() {
-	showBooks(controller.getAllBooks());
+	bookpage->refreshBooks(controller.getAllBooks());
 }
 
 void MainWindow::refreshUsersTable() {
@@ -269,7 +220,7 @@ void MainWindow::onFindByTitleClicked() {
 	QString keyword = searchEdit->text();
 	searchEdit->clear();
 	auto books = controller.findBooksByTitle(keyword.toStdString());
-	showBooks(books);
+	//showBooks(books);
 }
 
 void MainWindow::onTableCellClicked(int row, int column) {
@@ -284,29 +235,29 @@ void MainWindow::onTableCellClicked(int row, int column) {
 	}
 }
 
-void MainWindow::showBooks(const std::vector<BookDTO>& books)
-{
-	bookTable->clearContents();
+//void MainWindow::showBooks(const std::vector<BookDTO>& books)
+//{
+	//bookTable->clearContents();
 
-	bookTable->setRowCount(static_cast<int>(books.size()));
+	//bookTable->setRowCount(static_cast<int>(books.size()));
 
-	for (int row = 0; row < books.size(); ++row)
-	{
-		const auto& book = books[row];
+	//for (int row = 0; row < books.size(); ++row)
+	//{
+	//	const auto& book = books[row];
 
-		bookTable->setItem(row, 0, new QTableWidgetItem(QString::number(book.id)));
+	//	bookTable->setItem(row, 0, new QTableWidgetItem(QString::number(book.id)));
 
-		bookTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(book.title)));
+	//	bookTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(book.title)));
 
-		bookTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(book.author)));
+	//	bookTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(book.author)));
 
-		bookTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(book.publisher)));
+	//	bookTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(book.publisher)));
 
-		bookTable->setItem(row, 4, new QTableWidgetItem(QString::number(book.price)));
+	//	bookTable->setItem(row, 4, new QTableWidgetItem(QString::number(book.price)));
 
-		bookTable->setItem(row, 5, new QTableWidgetItem(book.isBorrowed ? "已借出" : "可借阅"));
-	}
-}
+	//	bookTable->setItem(row, 5, new QTableWidgetItem(book.isBorrowed ? "已借出" : "可借阅"));
+	//}
+//}
 
 void MainWindow::showUsers(const std::vector<UserDTO>& users)
 {
@@ -362,7 +313,7 @@ void MainWindow::onSortPriceClicked() {
 	try
 	{
 		auto books = controller.getBooksSortedByPrice();
-		showBooks(books);
+		//showBooks(books);
 	}
 	catch (const std::exception& e)
 	{
@@ -372,5 +323,5 @@ void MainWindow::onSortPriceClicked() {
 
 void MainWindow::onSortTitleClicked() {
 	auto books = controller.getBooksSortedByTitle();
-	showBooks(books);
+	//showBooks(books);
 }

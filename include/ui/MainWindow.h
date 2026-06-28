@@ -1,14 +1,11 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QTableWidget>
 #include <qheaderview.h>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <qmessagebox.h>
+#include <QStackedWidget>
+
+#include "../../include/ui/pages/BookPage.h"
 
 #include "UIController.h"
 
@@ -18,6 +15,8 @@ class MainWindow : public QMainWindow
 
 private:
     UIController& controller;
+
+    BookPage* bookpage;
 
     QLineEdit* userIdEdit;
     QLineEdit* bookIdEdit;
@@ -38,13 +37,19 @@ private:
     QPushButton* removeUserButton;
     QPushButton* updateUserButton;
 
+    QPushButton* bookBtn;
+    QPushButton* userBtn;
+    QPushButton* borrowBtn;
+
     QTableWidget* bookTable;
     QTableWidget* userTable;
     QTableWidget* borrowRecordTable;
 
+    QStackedWidget* stackedWidget;
+
 private:
     void setupUI();
-    void setupPermissions();
+    void applyRolePermission();
     void refreshBooksTable();
     void refreshUsersTable();
     void refreshBorrowRecordTable();
@@ -59,7 +64,7 @@ private slots:
 
 public:
     explicit MainWindow(UIController& controller,QWidget* parent = nullptr);
-    void showBooks(const std::vector<BookDTO>&);
+    //void showBooks(const std::vector<BookDTO>&);
     void showUsers(const std::vector<UserDTO>&);
     void showBorrowRecords(const std::vector<BorrowRecordDTO>&);
 };
