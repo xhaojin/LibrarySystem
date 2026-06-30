@@ -4,29 +4,39 @@ project(LibrarySystem)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_AUTOMOC ON) # Enable automatic MOC for Qt
 
-include_directories(include)
+# Qt 自动处理
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-file(GLOB_RECURSE SOURCES
-    src/*.cpp
-)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 
-file(GLOB_RECURSE HEADERS
-    include/*.h
-)
+# ===== 子模块 =====
+add_subdirectory(app)
+add_subdirectory(ui)
+add_subdirectory(service)
+add_subdirectory(repository)
+add_subdirectory(database)
+add_subdirectory(model)
+add_subdirectory(mapper)
+add_subdirectory(dto)
+add_subdirectory(common)
 
-add_executable(
-    LibrarySystem
-    WIN32
-    ${SOURCES}
-    ${HEADERS}
-)
+# ===== main =====
+add_executable(LibrarySystem WIN32 main.cpp)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Sql) # Find the Qt6 Widgets module
-set_target_properties(LibrarySystem PROPERTIES WIN32_EXECUTABLE TRUE) # Set the executable property for Windows (optional, but can help with certain configurations)
-target_link_libraries(LibrarySystem 
-    Qt6::Widgets 
+# 链接所有模块
+target_link_libraries(LibrarySystem
+    app
+    ui
+    service
+    repository
+    database
+    model
+    mapper
+    dto
+    common
+    Qt6::Widgets
     Qt6::Sql
-    Qt6::Core
-) # Link the Qt6 Widgets library to your executable
+)
