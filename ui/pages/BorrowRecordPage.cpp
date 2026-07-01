@@ -1,6 +1,6 @@
 #include "BorrowRecordPage.h"
 
-BorrowRecordPage::BorrowRecordPage(QWidget* parent)
+BorrowRecordPage::BorrowRecordPage(QWidget* parent): QWidget(parent)
 {
 	setupUI();
 }

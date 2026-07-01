@@ -1,7 +1,7 @@
 #include "LoginWindow.h"
 
-LoginWindow::LoginWindow(UIController& controller, QWidget* parent)
-	: QWidget(parent), controller(controller)
+LoginWindow::LoginWindow(AuthController& authController, QWidget* parent)
+	: QWidget(parent), authController(authController)
 {
 	setWindowTitle("Library Login");
 	resize(300, 200);
@@ -31,7 +31,7 @@ void LoginWindow::onLoginClicked()
 {
 	try
 	{
-		auto user = controller.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
+		auto user = authController.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
 		SessionManager::login(user);
 		//QMessageBox::information(this, "Success", QString::fromStdString(user.name));
 		emit loginSuccess();

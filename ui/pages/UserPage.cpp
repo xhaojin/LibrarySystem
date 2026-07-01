@@ -1,6 +1,6 @@
 #include "UserPage.h"
 
-UserPage::UserPage(QWidget* parent)
+UserPage::UserPage(QWidget* parent): QWidget(parent)
 {
 	setupUI();
 }

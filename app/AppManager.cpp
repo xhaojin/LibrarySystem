@@ -21,19 +21,19 @@ int AppManager::run(int argc, char* argv[]) {
 	bookRepo = std::make_unique<SQLiteBookRepository>(*database);
 	userRepo = std::make_unique<SQLiteUserRepository>(*database);
 	borrowRepo = std::make_unique<SQLiteBorrowRecordRepository>(*database);
-	service = std::make_unique<LibraryService>(*bookRepo, *userRepo, *borrowRepo);
-	controller = std::make_unique<UIController>(*service);
-	loginWindow = std::make_unique<LoginWindow>(*controller);
 
-	loginWindow->show();
+	bookService = std::make_unique<BookService>(*bookRepo);
+	userService = std::make_unique<UserService>(*userRepo);
+	borrowService = std::make_unique<BorrowService>(*bookRepo, *userRepo, *borrowRepo);
+	controller = std::make_unique<UIController>(*bookService,*userService,*borrowService);
 
-	connect(loginWindow.get(), &LoginWindow::loginSuccess, this, &AppManager::onLoginSuccess);
+	mainWindow = std::make_unique<MainWindow>(*controller);
+
+	mainWindow->show();
 
 	return app.exec();
 }
 
 void AppManager::onLoginSuccess() {
-	loginWindow->hide();
-	mainWindow = std::make_unique<MainWindow>(*controller);
-	mainWindow->show();
+
 }

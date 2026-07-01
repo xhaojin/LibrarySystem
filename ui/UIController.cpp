@@ -2,8 +2,8 @@
 #include "common/utils/Logger.h"
 #include <stdexcept>
 
-UIController::UIController(LibraryService& s)
-	: service(s)
+UIController::UIController(BookService& bookService, UserService& userService, BorrowService& borrowService)
+	: bookService(bookService), userService(userService), borrowService(borrowService)
 {
 }
 
@@ -11,7 +11,7 @@ void UIController::borrowBook(int userId, int bookId)
 {
 	try
 	{
-		service.borrowBook(userId, bookId);
+		borrowService.borrowBook(userId, bookId);
 	}
 	catch (const std::exception& e)
 	{
@@ -24,7 +24,7 @@ void UIController::returnBook(int userId, int bookId)
 {
 	try
 	{
-		service.returnBook(userId, bookId);
+		borrowService.returnBook(userId, bookId);
 	}
 	catch (const std::exception& e)
 	{
@@ -35,23 +35,23 @@ void UIController::returnBook(int userId, int bookId)
 
 std::vector<BookDTO> UIController::getAllBooks() const
 {
-	return service.getAllBooksDTO();
+	return bookService.getAllBooksDTO();
 }
 
 std::vector<UserDTO> UIController::getAllUsers() const
 {
-	return service.getAllUsersDTO();
+	return userService.getAllUsersDTO();
 }
 
 std::vector<BorrowRecordDTO> UIController::getAllBorrowRecords() const {
-	return service.getAllBorrowRecords();
+	return borrowService.getAllBorrowRecords();
 }
 
 std::vector<BookDTO> UIController::findBooksByTitle(const std::string& keyword)
 {
 	try
 	{
-		return service.findBooksByTitle(keyword);
+		return bookService.findBooksByTitle(keyword);
 	}
 	catch (const std::exception& e)
 	{
@@ -63,7 +63,7 @@ std::vector<BookDTO> UIController::findBooksByTitle(const std::string& keyword)
 std::vector<BookDTO> UIController::getBooksSortedByPrice() const {
 	try
 	{
-		return service.getBooksSortedByPrice();
+		return bookService.getBooksSortedByPrice();
 	}
 	catch (const std::exception& e)
 	{
@@ -75,21 +75,7 @@ std::vector<BookDTO> UIController::getBooksSortedByPrice() const {
 std::vector<BookDTO> UIController::getBooksSortedByTitle() const {
 	try
 	{
-		return service.getBooksSortedByTitle();
-	}
-	catch (const std::exception& e)
-	{
-		Logger::log(std::string("[UI_ERROR] ") + e.what());
-		throw;
-	}
-}
-
-UserDTO UIController::login(const std::string& username, const std::string& password)
-{
-	try
-	{
-		auto user = service.login(username, password);
-		return user;
+		return bookService.getBooksSortedByTitle();
 	}
 	catch (const std::exception& e)
 	{

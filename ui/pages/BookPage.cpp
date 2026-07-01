@@ -1,6 +1,6 @@
 #include "BookPage.h"
 
-BookPage::BookPage(QWidget* parent)
+BookPage::BookPage(QWidget* parent): QWidget(parent)
 {
 	setupUI();
 }

@@ -5,7 +5,7 @@ target_sources(service PRIVATE
     book/BookService.cpp
     user/UserService.cpp
     borrowRecord/BorrowService.cpp
-    LibraryService.cpp
+ statistics/StatisticsService.cpp
 )
 
 target_include_directories(service PUBLIC

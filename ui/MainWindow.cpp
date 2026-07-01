@@ -4,7 +4,7 @@ MainWindow::MainWindow(UIController& controller, QWidget* parent) : QMainWindow(
 {
 	setupUI();
 
-	applyRolePermission();
+	//applyRolePermission();
 
 	refreshBooksTable();
 	refreshBorrowRecordTable();
@@ -42,17 +42,17 @@ void MainWindow::setupUI()
 	// =========================
 	// Book Page
 	// =========================
-	bookpage = new BookPage(stackedWidget);
+	bookpage = new BookPage();
 
 	// =========================
 	// User Page
 	// =========================
-	userpage = new UserPage(stackedWidget);
+	userpage = new UserPage();
 
 	// =========================
 	// Borrow Page
 	// =========================
-	borrowpage = new BorrowRecordPage(stackedWidget);
+	borrowpage = new BorrowRecordPage();
 
 	// =========================
 	// 加入 stackedWidget
@@ -177,80 +177,6 @@ void MainWindow::onTableCellClicked(int row, int column) {
 	//	}
 	//}
 }
-
-//void MainWindow::showBooks(const std::vector<BookDTO>& books)
-//{
-	//bookTable->clearContents();
-
-	//bookTable->setRowCount(static_cast<int>(books.size()));
-
-	//for (int row = 0; row < books.size(); ++row)
-	//{
-	//	const auto& book = books[row];
-
-	//	bookTable->setItem(row, 0, new QTableWidgetItem(QString::number(book.id)));
-
-	//	bookTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(book.title)));
-
-	//	bookTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(book.author)));
-
-	//	bookTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(book.publisher)));
-
-	//	bookTable->setItem(row, 4, new QTableWidgetItem(QString::number(book.price)));
-
-	//	bookTable->setItem(row, 5, new QTableWidgetItem(book.isBorrowed ? "已借出" : "可借阅"));
-	//}
-//}
-
-//void MainWindow::showUsers(const std::vector<UserDTO>& users)
-//{
-	//userTable->clearContents();
-
-	//userTable->setRowCount(static_cast<int>(users.size()));
-
-	//for (int row = 0; row < users.size(); ++row)
-	//{
-	//	const auto& user = users[row];
-
-	//	userTable->setItem(row, 0, new QTableWidgetItem(QString::number(user.id)));
-
-	//	userTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(user.name)));
-
-	//	userTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(user.gender)));
-
-	//	userTable->setItem(row, 3, new QTableWidgetItem(QString::number(user.age)));
-
-	//	userTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(user.phone)));
-
-	//	userTable->setItem(row, 5, new QTableWidgetItem(QString::fromStdString(user.username)));
-
-	//	userTable->setItem(row, 6, new QTableWidgetItem(QString::fromStdString(user.role == Role::Admin ? "Admin" : "User")));
-
-	//	userTable->setItem(row, 7, new QTableWidgetItem(QString::number(user.borrowedCount)));
-	//}
-//}
-
-//void MainWindow::showBorrowRecords(const std::vector<BorrowRecordDTO>& record)
-//{
-//	borrowRecordTable->clearContents();
-//
-//	borrowRecordTable->setRowCount(static_cast<int>(record.size()));
-//
-//	for (int row = 0; row < record.size(); ++row)
-//	{
-//		const auto& re = record[row];
-//
-//		borrowRecordTable->setItem(row, 0, new QTableWidgetItem(QString::number(re.id)));
-//
-//		borrowRecordTable->setItem(row, 1, new QTableWidgetItem(QString::number(re.userId)));
-//
-//		borrowRecordTable->setItem(row, 2, new QTableWidgetItem(QString::number(re.bookId)));
-//
-//		borrowRecordTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(re.borrowTime)));
-//
-//		borrowRecordTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(re.returnTime)));
-//	}
-//}
 
 void MainWindow::onSortPriceClicked() {
 	try

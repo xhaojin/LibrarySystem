@@ -17,3 +17,7 @@ out/
 
 # Temporary
 *.log
+
+#json
+CMakePresets.json
+CMakeUserPresets.json

@@ -1,29 +1,30 @@
 #pragma once
 
-#include "service/LibraryService.h"
+#include "service/book/BookService.h"
+#include "service/user/UserService.h"
+#include "service/borrowRecord/BorrowService.h"
 
 #include "app/SessionManager.h"
 
 class UIController
 {
 private:
-    LibraryService& service;
+	BookService& bookService;
+	UserService& userService;
+	BorrowService& borrowService;
 
 public:
-    UIController(LibraryService& s);
+	UIController(BookService& bookService, UserService& userService, BorrowService& borrowService);
 
-    // 操作类
-    void borrowBook(int userId, int bookId);
-    void returnBook(int userId, int bookId);
-    std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
-    std::vector<BookDTO> getBooksSortedByPrice() const;
-    std::vector<BookDTO> getBooksSortedByTitle() const;
+	// 操作类
+	void borrowBook(int userId, int bookId);
+	void returnBook(int userId, int bookId);
+	std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
+	std::vector<BookDTO> getBooksSortedByPrice() const;
+	std::vector<BookDTO> getBooksSortedByTitle() const;
 
-    //登录类
-    UserDTO login(const std::string& username,const std::string& password);
-
-    // UI数据类
-    std::vector<BookDTO> getAllBooks() const;
-    std::vector<UserDTO> getAllUsers() const;
-    std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
+	// UI数据类
+	std::vector<BookDTO> getAllBooks() const;
+	std::vector<UserDTO> getAllUsers() const;
+	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 };

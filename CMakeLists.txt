@@ -15,6 +15,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 # ===== 子模块 =====
 add_subdirectory(app)
 add_subdirectory(ui)
+add_subdirectory(controller)
 add_subdirectory(service)
 add_subdirectory(repository)
 add_subdirectory(database)
@@ -30,6 +31,7 @@ add_executable(LibrarySystem WIN32 main.cpp)
 target_link_libraries(LibrarySystem
     app
     ui
+    controller
     service
     repository
     database

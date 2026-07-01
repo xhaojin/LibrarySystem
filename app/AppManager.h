@@ -7,6 +7,8 @@
 #include "repository/SQLite/SQLiteBookRepository.h"
 #include "repository/SQLite/SQLiteBorrowRecordRepository.h"
 #include "repository/SQLite/SQLiteUserRepository.h"
+#include "service/auth/AuthService.h"
+#include "controller/auth/AuthController.h"
 
 class AppManager : public QObject
 {
@@ -22,18 +24,15 @@ private slots:
 
 private:
     std::unique_ptr<SQLiteDatabase> database;
-
     std::unique_ptr<IBookRepository> bookRepo;
-
     std::unique_ptr<IUserRepository> userRepo;
-
     std::unique_ptr<IBorrowRecordRepository> borrowRepo;
 
-    std::unique_ptr<LibraryService> service;
+    std::unique_ptr<BookService> bookService;
+    std::unique_ptr<UserService> userService;
+    std::unique_ptr<BorrowService> borrowService;
 
     std::unique_ptr<UIController> controller;
-
-    std::unique_ptr<LoginWindow> loginWindow;
 
     std::unique_ptr<MainWindow> mainWindow;
 };
