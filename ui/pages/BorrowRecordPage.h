@@ -10,34 +10,28 @@
 #include <QHeaderView>
 
 #include "dto/BorrowRecordDTO.h"
+#include "controller/borrow/BorrowController.h"
 
 class BorrowRecordPage : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    explicit BorrowRecordPage(QWidget* parent = nullptr);
-
-    void refreshBorrowRecords(const std::vector<BorrowRecordDTO>& books);
-
-signals:
-    void addBorrowRecordRequested();
-    void removeBorrowRecordRequested();
-    void updateBorrowRecordRequested();
-
-    void refreshRequested();
-
-    void searchRequested(const QString& keyword);
+	explicit BorrowRecordPage(BorrowController& borrowController, QWidget* parent = nullptr);
 
 private:
-    void setupUI();
+	void setupUI();
+	void setConnections();
+	void refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& books); //刷新借阅记录表格
 
 private:
-    QPushButton* refreshBorrowRecordButton; //刷新
+	BorrowController& borrowController; //借阅记录服务
 
-    QPushButton* searchButton; //搜索按钮
+	QPushButton* refreshBorrowRecordButton; //刷新
 
-    QLineEdit* searchEdit; //搜索框
+	QPushButton* searchButton; //搜索按钮
 
-    QTableWidget* borrowRecordTable; //借阅记录表格
+	QLineEdit* searchEdit; //搜索框
+
+	QTableWidget* borrowRecordTable; //借阅记录表格
 };

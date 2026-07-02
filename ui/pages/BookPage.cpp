@@ -1,8 +1,10 @@
 #include "BookPage.h"
 
-BookPage::BookPage(QWidget* parent): QWidget(parent)
+BookPage::BookPage(BookController& bookController, QWidget* parent) :bookController(bookController), QWidget(parent)
 {
 	setupUI();
+	setConnections();
+	refreshBooksTable(bookController.getAllBooks());
 }
 
 void BookPage::setupUI() {
@@ -14,6 +16,7 @@ void BookPage::setupUI() {
 	auto* toolbar = new QHBoxLayout();
 
 	addBookButton = new QPushButton("添加图书");
+	bookEditDialog = new BookEditDialog(this);
 	removeBookButton = new QPushButton("删除图书");
 	updateBookButton = new QPushButton("更新图书");
 	borrowButton = new QPushButton("借阅书籍");
@@ -54,7 +57,15 @@ void BookPage::setupUI() {
 	bookLayout->addWidget(bookTable);
 }
 
-void BookPage::refreshBooks(const std::vector<BookDTO>& books)
+void BookPage::setConnections() {
+	// 连接按钮点击事件到槽函数
+	connect(refreshBookButton, &QPushButton::clicked, this, [this]() {refreshBooksTable(bookController.getAllBooks());});
+	connect(sortPriceButton, &QPushButton::clicked, this, &BookPage::onSortPriceClicked);
+	connect(sortTitleButton, &QPushButton::clicked, this, &BookPage::onSortTitleClicked);
+	connect(searchButton, &QPushButton::clicked, this, &BookPage::onFindByTitleClicked);
+}
+
+void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
 {
 	bookTable->clearContents();
 
@@ -77,3 +88,73 @@ void BookPage::refreshBooks(const std::vector<BookDTO>& books)
 		bookTable->setItem(row, 5, new QTableWidgetItem(book.isBorrowed ? "已借出" : "可借阅"));
 	}
 }
+
+void BookPage::onSortPriceClicked() {
+	try
+	{
+		auto books = bookController.getBooksSortedByPrice();
+		refreshBooksTable(books);
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::warning(this, "", e.what());
+	}
+}
+
+void BookPage::onSortTitleClicked() {
+	auto books = bookController.getBooksSortedByTitle();
+	refreshBooksTable(books);
+}
+
+void BookPage::onFindByTitleClicked() {
+	QString keyword = searchEdit->text();
+	searchEdit->clear();
+	auto books = bookController.findBooksByTitle(keyword.toStdString());
+	refreshBooksTable(books);
+}
+
+//void BookPage::onBorrowClicked()
+//{
+//	int userId = userIdEdit->text().toInt();
+//
+//	int bookId = bookIdEdit->text().toInt();
+//
+//	try
+//	{
+//		controller.borrowBook(userId, bookId);
+//
+//		refreshBooksTable();
+//
+//		QMessageBox::information(this, "成功", "借书成功");
+//
+//		userIdEdit->clear();
+//		bookIdEdit->clear();
+//	}
+//	catch (const std::exception& e)
+//	{
+//		QMessageBox::warning(this, "借书失败", e.what());
+//	}
+//}
+//
+//void BookPage::onReturnClicked()
+//{
+//	int userId = userIdEdit->text().toInt();
+//
+//	int bookId = bookIdEdit->text().toInt();
+//
+//	try
+//	{
+//		controller.returnBook(userId, bookId);
+//
+//		refreshBooksTable();
+//
+//		QMessageBox::information(this, "成功", "还书成功");
+//
+//		userIdEdit->clear();
+//		bookIdEdit->clear();
+//	}
+//	catch (const std::exception& e)
+//	{
+//		QMessageBox::warning(this, "还书失败", e.what());
+//	}
+//}

@@ -1,8 +1,10 @@
 #include "UserPage.h"
 
-UserPage::UserPage(QWidget* parent): QWidget(parent)
+UserPage::UserPage(UserController& userController, QWidget* parent) : userController(userController), QWidget(parent)
 {
 	setupUI();
+	setConnections();
+	refreshUsersTable(userController.getAllUsers());
 }
 
 void UserPage::setupUI() {
@@ -42,7 +44,14 @@ void UserPage::setupUI() {
 	userLayout->addWidget(userTable);
 }
 
-void UserPage::refreshUsers(const std::vector<UserDTO>& users)
+void UserPage::setConnections() {
+	connect(refreshUserButton, &QPushButton::clicked, this, [this]() {
+		auto users = userController.getAllUsers();
+		refreshUsersTable(users);
+		});
+}
+
+void UserPage::refreshUsersTable(const std::vector<UserDTO>& users)
 {
 	userTable->clearContents();
 

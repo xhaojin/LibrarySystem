@@ -1,8 +1,10 @@
 #include "BorrowRecordPage.h"
 
-BorrowRecordPage::BorrowRecordPage(QWidget* parent): QWidget(parent)
+BorrowRecordPage::BorrowRecordPage(BorrowController& borrowController, QWidget* parent) :borrowController(borrowController), QWidget(parent)
 {
 	setupUI();
+	setConnections();
+	refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
 }
 
 void BorrowRecordPage::setupUI() {
@@ -32,7 +34,14 @@ void BorrowRecordPage::setupUI() {
 	borrowLayout->addWidget(borrowRecordTable);
 }
 
-void BorrowRecordPage::refreshBorrowRecords(const std::vector<BorrowRecordDTO>& records)
+void BorrowRecordPage::setConnections()
+{
+	connect(refreshBorrowRecordButton, &QPushButton::clicked, this, [this]() {
+		refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
+		});
+}
+
+void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& records)
 {
 	borrowRecordTable->clearContents();
 

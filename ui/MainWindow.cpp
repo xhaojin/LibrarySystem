@@ -1,14 +1,10 @@
 #include "ui/MainWindow.h"
 
-MainWindow::MainWindow(UIController& controller, QWidget* parent) : QMainWindow(parent), controller(controller)
+MainWindow::MainWindow(BookController& bookController, UserController& userController,
+	BorrowController& borrowController, QWidget* parent) : bookController(bookController),
+	userController(userController), borrowController(borrowController), QMainWindow(parent)
 {
 	setupUI();
-
-	//applyRolePermission();
-
-	refreshBooksTable();
-	refreshBorrowRecordTable();
-	refreshUsersTable();
 }
 
 void MainWindow::setupUI()
@@ -42,17 +38,17 @@ void MainWindow::setupUI()
 	// =========================
 	// Book Page
 	// =========================
-	bookpage = new BookPage();
+	bookpage = new BookPage(bookController);
 
 	// =========================
 	// User Page
 	// =========================
-	userpage = new UserPage();
+	userpage = new UserPage(userController);
 
 	// =========================
 	// Borrow Page
 	// =========================
-	borrowpage = new BorrowRecordPage();
+	borrowpage = new BorrowRecordPage(borrowController);
 
 	// =========================
 	// 加入 stackedWidget
@@ -77,120 +73,9 @@ void MainWindow::setupUI()
 
 	connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(2);});
 
-	connect(bookpage, &BookPage::refreshRequested, this, &MainWindow::refreshBooksTable);
-
-	connect(userpage, &UserPage::refreshRequested, this, &MainWindow::refreshUsersTable);
-
-	connect(borrowpage, &BorrowRecordPage::refreshRequested, this, &MainWindow::refreshBorrowRecordTable);
-
 	// =========================
 	// 窗口属性（最后统一设置）
 	// =========================
 	setWindowTitle("Library System");
 	resize(900, 600);
-}
-
-void MainWindow::applyRolePermission() {
-	auto role = SessionManager::currentUser().role;
-	bool isAdmin = SessionManager::isAdmin();
-	//addBookButton->setVisible(isAdmin);
-	//removeBookButton->setVisible(isAdmin);
-	//updateBookButton->setVisible(isAdmin);
-	//addUserButton->setVisible(isAdmin);
-	//removeUserButton->setVisible(isAdmin);
-	//updateUserButton->setVisible(isAdmin);
-}
-
-void MainWindow::refreshBooksTable() {
-	bookpage->refreshBooks(controller.getAllBooks());
-}
-
-void MainWindow::refreshUsersTable() {
-	userpage->refreshUsers(controller.getAllUsers());
-}
-void MainWindow::refreshBorrowRecordTable() {
-	borrowpage->refreshBorrowRecords(controller.getAllBorrowRecords());
-	//showBorrowRecords(controller.getAllBorrowRecords());
-}
-
-void MainWindow::onBorrowClicked()
-{
-	int userId = userIdEdit->text().toInt();
-
-	int bookId = bookIdEdit->text().toInt();
-
-	try
-	{
-		controller.borrowBook(userId, bookId);
-
-		refreshBooksTable();
-
-		QMessageBox::information(this, "成功", "借书成功");
-
-		userIdEdit->clear();
-		bookIdEdit->clear();
-	}
-	catch (const std::exception& e)
-	{
-		QMessageBox::warning(this, "借书失败", e.what());
-	}
-}
-
-void MainWindow::onReturnClicked()
-{
-	int userId = userIdEdit->text().toInt();
-
-	int bookId = bookIdEdit->text().toInt();
-
-	try
-	{
-		controller.returnBook(userId, bookId);
-
-		refreshBooksTable();
-
-		QMessageBox::information(this, "成功", "还书成功");
-
-		userIdEdit->clear();
-		bookIdEdit->clear();
-	}
-	catch (const std::exception& e)
-	{
-		QMessageBox::warning(this, "还书失败", e.what());
-	}
-}
-
-void MainWindow::onFindByTitleClicked() {
-	//QString keyword = searchEdit->text();
-	//searchEdit->clear();
-	//auto books = controller.findBooksByTitle(keyword.toStdString());
-	////showBooks(books);
-}
-
-void MainWindow::onTableCellClicked(int row, int column) {
-	//if (column == 0) // Book ID列
-	//{
-	//	auto* item = bookTable->item(row, 0);
-	//	if (item)
-	//	{
-	//		int bookId = item->text().toInt();
-	//		bookIdEdit->setText(QString::number(bookId));
-	//	}
-	//}
-}
-
-void MainWindow::onSortPriceClicked() {
-	try
-	{
-		auto books = controller.getBooksSortedByPrice();
-		//showBooks(books);
-	}
-	catch (const std::exception& e)
-	{
-		QMessageBox::warning(this, "", e.what());
-	}
-}
-
-void MainWindow::onSortTitleClicked() {
-	auto books = controller.getBooksSortedByTitle();
-	//showBooks(books);
 }

@@ -3,10 +3,10 @@ add_library(ui STATIC)
 target_sources(ui PRIVATE
     MainWindow.cpp
     LoginWindow.cpp
-    UIController.cpp
     pages/BookPage.cpp
     pages/UserPage.cpp
     pages/BorrowRecordPage.cpp
+    dialogs/BookEditDialog.cpp
 )
 
 target_include_directories(ui PUBLIC

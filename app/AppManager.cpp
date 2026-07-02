@@ -25,9 +25,12 @@ int AppManager::run(int argc, char* argv[]) {
 	bookService = std::make_unique<BookService>(*bookRepo);
 	userService = std::make_unique<UserService>(*userRepo);
 	borrowService = std::make_unique<BorrowService>(*bookRepo, *userRepo, *borrowRepo);
-	controller = std::make_unique<UIController>(*bookService,*userService,*borrowService);
+	
+	bookController = std::make_unique<BookController>(*bookService);
+	userController = std::make_unique<UserController>(*userService);
+	borrowController = std::make_unique<BorrowController>(*borrowService);
 
-	mainWindow = std::make_unique<MainWindow>(*controller);
+	mainWindow = std::make_unique<MainWindow>(*bookController, *userController, *borrowController);
 
 	mainWindow->show();
 

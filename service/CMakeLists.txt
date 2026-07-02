@@ -4,7 +4,7 @@ target_sources(service PRIVATE
     auth/AuthService.cpp
     book/BookService.cpp
     user/UserService.cpp
-    borrowRecord/BorrowService.cpp
+    borrow/BorrowService.cpp
  statistics/StatisticsService.cpp
 )
 

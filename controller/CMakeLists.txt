@@ -2,6 +2,12 @@ add_library(controller STATIC)
 
 target_sources(controller PRIVATE
     auth/AuthController.cpp
+    book/BookController.h 
+    book/BookController.cpp 
+    borrow/BorrowController.cpp 
+    borrow/BorrowController.h 
+    user/UserController.cpp 
+    user/UserController.h
 )
 
 target_include_directories(controller PUBLIC

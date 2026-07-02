@@ -10,29 +10,23 @@
 #include <QHeaderView>
 
 #include "dto/UserDTO.h"
+#include "controller/user/UserController.h"
 
 class UserPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit UserPage(QWidget* parent = nullptr);
-
-    void refreshUsers(const std::vector<UserDTO>& books);
-
-signals:
-    void addUserRequested();
-    void removeUserRequested();
-    void updateUserRequested();
-
-    void refreshRequested();
-
-    void searchRequested(const QString& keyword);
+    explicit UserPage(UserController& userController,QWidget* parent = nullptr);
 
 private:
     void setupUI();
+    void setConnections();
+    void refreshUsersTable(const std::vector<UserDTO>& books); //刷新用户表格
 
 private:
+    UserController& userController; //用户控制器
+
     QPushButton* refreshUserButton; //刷新
 
     QPushButton* searchButton; //搜索按钮

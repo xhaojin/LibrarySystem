@@ -1,14 +1,11 @@
 #pragma once
 #include <QApplication>
 #include "ui/MainWindow.h"
-#include "ui/LoginWindow.h"
 #include <QDebug>
 #include "database/SQLiteDatabase.h"
 #include "repository/SQLite/SQLiteBookRepository.h"
 #include "repository/SQLite/SQLiteBorrowRecordRepository.h"
 #include "repository/SQLite/SQLiteUserRepository.h"
-#include "service/auth/AuthService.h"
-#include "controller/auth/AuthController.h"
 
 class AppManager : public QObject
 {
@@ -32,7 +29,9 @@ private:
     std::unique_ptr<UserService> userService;
     std::unique_ptr<BorrowService> borrowService;
 
-    std::unique_ptr<UIController> controller;
+    std::unique_ptr<BookController> bookController;
+    std::unique_ptr<UserController> userController;
+    std::unique_ptr<BorrowController> borrowController;
 
     std::unique_ptr<MainWindow> mainWindow;
 };

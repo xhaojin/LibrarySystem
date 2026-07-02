@@ -8,44 +8,36 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QHeaderView>
+#include <QMessageBox>
 
 #include "dto/BookDTO.h"
+#include "ui/dialogs/BookEditDialog.h"
+#include "controller/book/BookController.h"
 
 class BookPage : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit BookPage(QWidget* parent = nullptr);
-
-    void refreshBooks(const std::vector<BookDTO>& books);
-
-signals:
-    void borrowBookRequested(int userId, int bookId);
-    void returnBookRequested(int userId, int bookId);
-
-    void addBookRequested();
-    void removeBookRequested();
-    void updateBookRequested();
-
-    void refreshRequested();
-
-    void searchRequested(const QString& keyword);
-
-    void sortByTitleRequested();
-    void sortByPriceRequested();
+    explicit BookPage(BookController& bookController,QWidget* parent = nullptr);
 
 private:
     void setupUI();
+    void setConnections();
+    void refreshBooksTable(const std::vector<BookDTO>& books); //刷新图书表格
+    void onFindByTitleClicked(); //按标题查找
+    void onSortPriceClicked(); //按价格排序
+    void onSortTitleClicked(); //按标题排序
 
 private:
+    BookController& bookController; //图书控制器
+
     QPushButton* borrowButton; //借阅书籍按钮
     QPushButton* returnButton; //归还书籍按钮
 
     QPushButton* refreshBookButton; //刷新
 
-    QPushButton* searchButton; //搜索按钮
-
+    QPushButton* searchButton; //按标题搜索按钮
     QLineEdit* searchEdit; //搜索框
 
     QPushButton* sortPriceButton; //按价格排序
@@ -56,4 +48,5 @@ private:
     QPushButton* updateBookButton; //更新书籍
 
     QTableWidget* bookTable; //图书表格
+    BookEditDialog* bookEditDialog; //图书编辑对话框
 };

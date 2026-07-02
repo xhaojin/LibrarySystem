@@ -9,47 +9,31 @@
 #include "pages/UserPage.h"
 #include "pages/BorrowRecordPage.h"
 
-#include "UIController.h"
-
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 private:
-    UIController& controller;
+	BookController& bookController; //图书控制器
+	UserController& userController; //用户控制器
+	BorrowController& borrowController; //借阅记录控制器
 
-    BookPage* bookpage;
-    UserPage* userpage;
-    BorrowRecordPage* borrowpage;
+	BookPage* bookpage; //图书管理页面
+	UserPage* userpage; //用户管理页面
+	BorrowRecordPage* borrowpage; //借阅记录页面
 
-    QLineEdit* userIdEdit;
-    QLineEdit* bookIdEdit;
-    QLineEdit* searchEdit;
+	QPushButton* bookMenuBtn; //图书管理按钮
+	QPushButton* userMenuBtn; //用户管理按钮
+	QPushButton* borrowMenuBtn; //借阅记录管理按钮
 
-    QPushButton* bookMenuBtn;
-    QPushButton* userMenuBtn;
-    QPushButton* borrowMenuBtn;
-
-    QStackedWidget* stackedWidget;
+	QStackedWidget* stackedWidget;  //堆叠窗口，用于切换不同的页面
 
 private:
-    void setupUI();
-    void applyRolePermission();
-    void refreshBooksTable();
-    void refreshUsersTable();
-    void refreshBorrowRecordTable();
-
-private slots:
-    void onBorrowClicked();
-    void onReturnClicked();
-    void onFindByTitleClicked();
-    void onTableCellClicked(int row, int column);
-    void onSortPriceClicked();
-    void onSortTitleClicked();
+	void setupUI();
 
 public:
-    explicit MainWindow(UIController& controller,QWidget* parent = nullptr);
-    //void showBooks(const std::vector<BookDTO>&);
-    void showUsers(const std::vector<UserDTO>&);
-    void showBorrowRecords(const std::vector<BorrowRecordDTO>&);
+	explicit MainWindow(BookController& bookController,
+		UserController& userController,
+		BorrowController& borrowController, QWidget* parent = nullptr);
+
 };
