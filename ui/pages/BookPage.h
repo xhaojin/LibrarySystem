@@ -25,6 +25,9 @@ private:
     void setupUI();
     void setConnections();
     void refreshBooksTable(const std::vector<BookDTO>& books); //刷新图书表格
+    void addBook(); //添加图书
+    void updateBook(); //更新图书
+    void removeBook(); //删除图书
     void onFindByTitleClicked(); //按标题查找
     void onSortPriceClicked(); //按价格排序
     void onSortTitleClicked(); //按标题排序
@@ -48,5 +51,4 @@ private:
     QPushButton* updateBookButton; //更新书籍
 
     QTableWidget* bookTable; //图书表格
-    BookEditDialog* bookEditDialog; //图书编辑对话框
 };

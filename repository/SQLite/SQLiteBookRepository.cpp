@@ -11,12 +11,12 @@ bool SQLiteBookRepository::add(std::shared_ptr<Book> book)
 
 	query.prepare(
 		"INSERT INTO books "
-		"(id,title,author,publisher,"
-		"price,borrowed)"
+		"(title,author,publisher,"
+		"price)"
 		"VALUES "
-		"(:id,:title,:author,"
-		":publisher,:price,"
-		":borrowed)");
+		"(:title,:author,"
+		":publisher,:price"
+		")");
 
 	BookMapper::bindToQuery(query, *book);
 
@@ -38,7 +38,7 @@ bool SQLiteBookRepository::update(const Book& book) {
 	QSqlQuery query(db.database());
 
 	query.prepare("UPDATE books SET title = :title, author = :author, "
-		"publisher = :publisher, price = :price, borrowed = :borrowed "
+		"publisher = :publisher, price = :price "
 		"WHERE id = :id");
 
 	BookMapper::bindToQuery(query, book);

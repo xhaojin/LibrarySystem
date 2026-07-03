@@ -11,12 +11,13 @@ public:
 	explicit BookService(IBookRepository& bookRepo);
 
 	// 图书管理
-	void addBook(const BookDTO& dto);
-	void removeBook(int bookId);
-	void updateBook(const BookDTO& dto);
+	bool addBook(const BookDTO& dto);
+	bool removeBook(int bookId);
+	bool updateBook(const BookDTO& dto);
 
 	// 查询
 	std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
+	BookDTO findBookById(int bookId) const;
 	std::vector<BookDTO> getAllBooksDTO() const;
 
 	// 排序

@@ -16,7 +16,6 @@ void BookPage::setupUI() {
 	auto* toolbar = new QHBoxLayout();
 
 	addBookButton = new QPushButton("添加图书");
-	bookEditDialog = new BookEditDialog(this);
 	removeBookButton = new QPushButton("删除图书");
 	updateBookButton = new QPushButton("更新图书");
 	borrowButton = new QPushButton("借阅书籍");
@@ -60,9 +59,109 @@ void BookPage::setupUI() {
 void BookPage::setConnections() {
 	// 连接按钮点击事件到槽函数
 	connect(refreshBookButton, &QPushButton::clicked, this, [this]() {refreshBooksTable(bookController.getAllBooks());});
+	connect(addBookButton, &QPushButton::clicked, this, &BookPage::addBook);
+	connect(updateBookButton, &QPushButton::clicked, this, &BookPage::updateBook);
+	connect(removeBookButton, &QPushButton::clicked, this, &BookPage::removeBook);
 	connect(sortPriceButton, &QPushButton::clicked, this, &BookPage::onSortPriceClicked);
 	connect(sortTitleButton, &QPushButton::clicked, this, &BookPage::onSortTitleClicked);
 	connect(searchButton, &QPushButton::clicked, this, &BookPage::onFindByTitleClicked);
+}
+
+void BookPage::addBook() {
+	BookEditDialog bookEditDialog(this); //图书编辑对话框
+	bookEditDialog.setWindowTitle("添加图书");
+	if (bookEditDialog.exec() != QDialog::Accepted)
+		return;
+	try
+	{
+		if (bookController.addBook(bookEditDialog.getBook()))
+		{
+			QMessageBox::information(this, "提示", "添加成功");
+			refreshBooksTable(bookController.getAllBooks());
+		}
+		else
+		{
+			QMessageBox::warning(this, "提示", "添加失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical(this, "错误", e.what());
+	}
+}
+
+void BookPage::updateBook() {
+	//从UI界面获取到当前点击选中的要修改的图书的ID，然后通过BookController获取到该图书的详细信息，最后将其传递给BookEditDialog进行修改。
+	auto items = bookTable->selectedItems();
+	if (items.isEmpty())
+	{
+		QMessageBox::warning(this, "提示", "请先选择一本图书");
+		return;
+	}
+	int row = bookTable->currentRow();
+	int bookId = bookTable->item(row, 0)->text().toInt();
+	auto book = bookController.findBookById(bookId);
+
+	BookEditDialog bookEditDialog(this);
+	bookEditDialog.setWindowTitle("修改图书");
+	bookEditDialog.setBook(book);
+
+	if (bookEditDialog.exec() != QDialog::Accepted)
+		return;
+
+	BookDTO dto = bookEditDialog.getBook();
+	dto.id = bookId;
+
+	try
+	{
+		if (bookController.updateBook(dto))
+		{
+			QMessageBox::information(this, "提示", "修改成功");
+			refreshBooksTable(bookController.getAllBooks());
+		}
+		else
+		{
+			QMessageBox::warning(this, "提示", "修改失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical(this, "错误", e.what());
+	}
+}
+
+void BookPage::removeBook() {
+	auto items = bookTable->selectedItems();
+	if (items.isEmpty())
+	{
+		QMessageBox::warning(this, "提示", "请先选择一本图书");
+		return;
+	}
+	int row = bookTable->currentRow();
+	int bookId = bookTable->item(row, 0)->text().toInt();
+	auto book = bookController.findBookById(bookId);
+	auto reply = QMessageBox::question(this, "删除图书", QString("确定删除《%1》吗？\n\n删除后不可恢复。").arg(book.title),
+		QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+	if (reply == QMessageBox::No) {
+		return;
+	}
+
+	try
+	{
+		if (bookController.removeBook(bookId))
+		{
+			QMessageBox::information(this, "提示", "删除成功");
+			refreshBooksTable(bookController.getAllBooks());
+		}
+		else
+		{
+			QMessageBox::warning(this, "提示", "删除失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		QMessageBox::critical(this, "错误", e.what());
+	}
 }
 
 void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
