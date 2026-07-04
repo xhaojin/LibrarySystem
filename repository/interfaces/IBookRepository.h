@@ -13,6 +13,8 @@ public:
 
 	virtual bool update(const Book& book) = 0;
 
+	virtual bool updateBookStatus(const Book& book) = 0;
+
 	virtual std::shared_ptr<Book> findById(int bookId) const = 0;
 
 	virtual std::vector<std::shared_ptr<Book>> findByTitle(const std::string& titleKeyWord) const = 0;

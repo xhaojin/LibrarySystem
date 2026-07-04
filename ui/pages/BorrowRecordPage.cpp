@@ -1,10 +1,10 @@
 #include "BorrowRecordPage.h"
 
-BorrowRecordPage::BorrowRecordPage(BorrowController& borrowController, QWidget* parent) :borrowController(borrowController), QWidget(parent)
+BorrowRecordPage::BorrowRecordPage(BorrowController& borrowController, QWidget* parent) :borrowController(borrowController), BasePage(parent)
 {
 	setupUI();
 	setConnections();
-	refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
+	refresh();
 }
 
 void BorrowRecordPage::setupUI() {
@@ -29,16 +29,19 @@ void BorrowRecordPage::setupUI() {
 
 	borrowRecordTable = new QTableWidget(this);
 	borrowRecordTable->setColumnCount(5);
-	borrowRecordTable->setHorizontalHeaderLabels({ "BorrowRecord ID","user_id","book_id","borrow_time","return_time" });
+	borrowRecordTable->setHorizontalHeaderLabels({ "BorrowRecord ID","name","bookTitle","borrow_time","return_time" });
 	borrowRecordTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	borrowLayout->addWidget(borrowRecordTable);
 }
 
 void BorrowRecordPage::setConnections()
 {
-	connect(refreshBorrowRecordButton, &QPushButton::clicked, this, [this]() {
-		refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
-		});
+	connect(refreshBorrowRecordButton, &QPushButton::clicked, this, [this]() {refresh();});
+}
+
+void BorrowRecordPage::refresh()
+{
+	refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
 }
 
 void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& records)
@@ -53,9 +56,9 @@ void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordD
 
 		borrowRecordTable->setItem(row, 0, new QTableWidgetItem(QString::number(re.id)));
 
-		borrowRecordTable->setItem(row, 1, new QTableWidgetItem(QString::number(re.userId)));
+		borrowRecordTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(re.username)));
 
-		borrowRecordTable->setItem(row, 2, new QTableWidgetItem(QString::number(re.bookId)));
+		borrowRecordTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(re.bookTitle)));
 
 		borrowRecordTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(re.borrowTime)));
 

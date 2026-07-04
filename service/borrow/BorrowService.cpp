@@ -26,7 +26,7 @@ void BorrowService::borrowBook(int userId, int bookId) {
 	// 修改图书状态
 	book->setBorrowedStatus(true);
 
-	if (!bookRepo.update(*book))
+	if (!bookRepo.updateBookStatus(*book))
 	{
 		throw std::runtime_error("Failed to update book status");
 	}
@@ -82,7 +82,7 @@ void BorrowService::returnBook(int userId, int bookId) {
 	// 更新图书状态
 	book->setBorrowedStatus(false);
 
-	if (!bookRepo.update(*book))
+	if (!bookRepo.updateBookStatus(*book))
 	{
 		throw std::runtime_error("Failed to update book status");
 	}
@@ -91,16 +91,5 @@ void BorrowService::returnBook(int userId, int bookId) {
 }
 
 std::vector<BorrowRecordDTO> BorrowService::getAllBorrowRecords() const {
-	std::vector<BorrowRecordDTO> recordDTOs;
-	for (const auto& record : borrowRepo.findAll()) {
-		recordDTOs.push_back(BorrowRecordDTO{
-			record->getId(),
-			record->getUserId(),
-			record->getBookId(),
-			record->getBorrowTime().toString().toStdString(),
-			record->getReturnTime().value().toString().toStdString(),
-			record->getReturnTime().has_value()
-			});
-	}
-	return recordDTOs;
+	return borrowRepo.findAllDTO();
 }

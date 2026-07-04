@@ -1,6 +1,7 @@
 #pragma once
 
 #include "model/BorrowRecord.h"
+#include "dto/BorrowRecordDTO.h"
 
 class IBorrowRecordRepository
 {
@@ -23,4 +24,7 @@ public:
     virtual std::shared_ptr<BorrowRecord> findActiveRecord(int userId,int bookId) const = 0;
 
     virtual std::vector<std::shared_ptr<BorrowRecord>> findActiveRecords() const = 0;
+
+    // 给UI使用
+    virtual std::vector<BorrowRecordDTO> findAllDTO() const = 0;
 };

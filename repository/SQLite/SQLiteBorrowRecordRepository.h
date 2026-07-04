@@ -25,6 +25,8 @@ public:
 
 	std::vector<std::shared_ptr<BorrowRecord>> findActiveRecords() const override;
 
+	std::vector<BorrowRecordDTO> findAllDTO() const override;
+
 private:
 
 	SQLiteDatabase& db;

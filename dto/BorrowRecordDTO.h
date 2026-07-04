@@ -10,6 +10,10 @@ struct BorrowRecordDTO
 
     int bookId;
 
+    std::string username;
+
+    std::string bookTitle;
+
     std::string borrowTime;
 
     std::string returnTime;

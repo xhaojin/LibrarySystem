@@ -19,4 +19,6 @@ protected:
     void showError(const QString& text);
 
     bool confirmDelete(const QString& objectName);
+
+    virtual void refresh() = 0; //刷新表格
 };

@@ -21,6 +21,7 @@ class UserPage : public BasePage
 
 public:
     explicit UserPage(UserController& userController,QWidget* parent = nullptr);
+    void refresh() override; //刷新表格
 
 private:
     void setupUI();

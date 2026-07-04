@@ -4,7 +4,7 @@ UserPage::UserPage(UserController& userController, QWidget* parent) : userContro
 {
 	setupUI();
 	setConnections();
-	refreshUsersTable(userController.getAllUsers());
+	refresh();
 }
 
 void UserPage::setupUI() {
@@ -45,7 +45,7 @@ void UserPage::setupUI() {
 }
 
 void UserPage::setConnections() {
-	connect(refreshUserButton, &QPushButton::clicked, this, [this]() {refreshUsersTable( userController.getAllUsers());});
+	connect(refreshUserButton, &QPushButton::clicked, this, [this]() {refresh();});
 	connect(addUserButton, &QPushButton::clicked, this, &UserPage::addUser);
 	connect(updateUserButton, &QPushButton::clicked, this, &UserPage::updateUser);
 	connect(removeUserButton, &QPushButton::clicked, this, &UserPage::removeUser);
@@ -62,7 +62,7 @@ void UserPage::addUser() {
 		if (userController.addUser(userEditDialog.getUser()))
 		{
 			showInfo("添加成功");
-			refreshUsersTable(userController.getAllUsers());
+			refresh();
 		}
 		else
 		{
@@ -100,7 +100,7 @@ void UserPage::updateUser() {
 		if (userController.updateUser(dto))
 		{
 			showInfo("修改成功");
-			refreshUsersTable(userController.getAllUsers());
+			refresh();
 		}
 		else
 		{
@@ -132,7 +132,7 @@ void UserPage::removeUser() {
 		if (userController.removeUser(userId))
 		{
 			showInfo("删除成功");
-			refreshUsersTable(userController.getAllUsers());
+			refresh();
 		}
 		else
 		{
@@ -149,6 +149,11 @@ void UserPage::onFindByNameClicked() {
 	searchEdit->clear();
 	auto users = userController.findUsersByName(keyword.toStdString());
 	refreshUsersTable(users);
+}
+
+void UserPage::refresh()
+{
+	refreshUsersTable(userController.getAllUsers());
 }
 
 void UserPage::refreshUsersTable(const std::vector<UserDTO>& users)

@@ -38,7 +38,7 @@ void MainWindow::setupUI()
 	// =========================
 	// Book Page
 	// =========================
-	bookpage = new BookPage(bookController);
+	bookpage = new BookPage(bookController,borrowController);
 
 	// =========================
 	// User Page
@@ -67,11 +67,11 @@ void MainWindow::setupUI()
 	// =========================
 	// 信号槽（导航切换）
 	// =========================
-	connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(0);});
+	connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(0); bookpage->refresh();});
 
-	connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(1);});
+	connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(1); userpage->refresh();});
 
-	connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(2);});
+	connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(2); borrowpage->refresh();});
 
 	// =========================
 	// 窗口属性（最后统一设置）

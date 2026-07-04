@@ -11,13 +11,15 @@
 
 #include "dto/BorrowRecordDTO.h"
 #include "controller/borrow/BorrowController.h"
+#include "ui/pages/base/BasePage.h"
 
-class BorrowRecordPage : public QWidget
+class BorrowRecordPage : public BasePage
 {
 	Q_OBJECT
 
 public:
 	explicit BorrowRecordPage(BorrowController& borrowController, QWidget* parent = nullptr);
+	void refresh() override; //刷新表格
 
 private:
 	void setupUI();

@@ -1,10 +1,11 @@
 #include "BookPage.h"
 
-BookPage::BookPage(BookController& bookController, QWidget* parent) :bookController(bookController), BasePage(parent)
+BookPage::BookPage(BookController& bookController, BorrowController& borrowController, QWidget* parent)
+	:bookController(bookController), borrowController(borrowController), BasePage(parent)
 {
 	setupUI();
 	setConnections();
-	refreshBooksTable(bookController.getAllBooks());
+	refresh();
 }
 
 void BookPage::setupUI() {
@@ -65,6 +66,8 @@ void BookPage::setConnections() {
 	connect(sortPriceButton, &QPushButton::clicked, this, &BookPage::onSortPriceClicked);
 	connect(sortTitleButton, &QPushButton::clicked, this, &BookPage::onSortTitleClicked);
 	connect(searchButton, &QPushButton::clicked, this, &BookPage::onFindByTitleClicked);
+	connect(borrowButton, &QPushButton::clicked, this, &BookPage::onBorrowBookClicked);
+	connect(returnButton, &QPushButton::clicked, this, &BookPage::onReturnBookClicked);
 }
 
 void BookPage::addBook() {
@@ -77,7 +80,7 @@ void BookPage::addBook() {
 		if (bookController.addBook(bookEditDialog.getBook()))
 		{
 			showInfo("添加成功");
-			refreshBooksTable(bookController.getAllBooks());
+			refresh();
 		}
 		else
 		{
@@ -117,7 +120,7 @@ void BookPage::updateBook() {
 		if (bookController.updateBook(dto))
 		{
 			showInfo("修改成功");
-			refreshBooksTable(bookController.getAllBooks());
+			refresh();
 		}
 		else
 		{
@@ -150,7 +153,7 @@ void BookPage::removeBook() {
 		if (bookController.removeBook(bookId))
 		{
 			showInfo("删除成功");
-			refreshBooksTable(bookController.getAllBooks());
+			refresh();
 		}
 		else
 		{
@@ -161,6 +164,10 @@ void BookPage::removeBook() {
 	{
 		showError(e.what());
 	}
+}
+
+void BookPage::refresh() {
+	refreshBooksTable(bookController.getAllBooks());
 }
 
 void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
@@ -211,48 +218,52 @@ void BookPage::onFindByTitleClicked() {
 	refreshBooksTable(books);
 }
 
-//void BookPage::onBorrowClicked()
-//{
-//	int userId = userIdEdit->text().toInt();
-//
-//	int bookId = bookIdEdit->text().toInt();
-//
-//	try
-//	{
-//		controller.borrowBook(userId, bookId);
-//
-//		refreshBooksTable();
-//
-//		QMessageBox::information(this, "成功", "借书成功");
-//
-//		userIdEdit->clear();
-//		bookIdEdit->clear();
-//	}
-//	catch (const std::exception& e)
-//	{
-//		QMessageBox::warning(this, "借书失败", e.what());
-//	}
-//}
-//
-//void BookPage::onReturnClicked()
-//{
-//	int userId = userIdEdit->text().toInt();
-//
-//	int bookId = bookIdEdit->text().toInt();
-//
-//	try
-//	{
-//		controller.returnBook(userId, bookId);
-//
-//		refreshBooksTable();
-//
-//		QMessageBox::information(this, "成功", "还书成功");
-//
-//		userIdEdit->clear();
-//		bookIdEdit->clear();
-//	}
-//	catch (const std::exception& e)
-//	{
-//		QMessageBox::warning(this, "还书失败", e.what());
-//	}
-//}
+void BookPage::onBorrowBookClicked()
+{
+	int userId = 1;
+	auto items = bookTable->selectedItems();
+	if (items.isEmpty()) {
+		showWarning("请先选择一本图书");
+		return;
+	}
+	auto row = bookTable->currentRow();
+	int bookId = bookTable->item(row, 0)->text().toInt();
+
+	try
+	{
+		borrowController.borrowBook(userId, bookId);
+
+		refreshBooksTable(bookController.getAllBooks());
+
+		showInfo("借书成功");
+	}
+	catch (const std::exception& e)
+	{
+		showError(e.what());
+	}
+}
+
+void BookPage::onReturnBookClicked()
+{
+	int userId = 1;
+	auto items = bookTable->selectedItems();
+	if (items.isEmpty()) {
+		showWarning("请先选择一本图书");
+		return;
+	}
+	auto row = bookTable->currentRow();
+	int bookId = bookTable->item(row, 0)->text().toInt();
+
+	try
+	{
+		borrowController.returnBook(userId, bookId);
+
+		refreshBooksTable(bookController.getAllBooks());
+
+		showInfo("还书成功");
+	}
+	catch (const std::exception& e)
+	{
+		showError(e.what());
+	}
+}

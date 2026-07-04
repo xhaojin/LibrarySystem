@@ -15,6 +15,8 @@ public:
 
     bool update(const Book& book) override;
 
+    bool updateBookStatus(const Book& book) override;
+
     std::shared_ptr<Book> findById(int bookId) const override;
 
     std::vector<std::shared_ptr<Book>> findByTitle(const std::string& titleKeyWord) const override;

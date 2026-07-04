@@ -46,6 +46,19 @@ bool SQLiteBookRepository::update(const Book& book) {
 	return query.exec();
 }
 
+bool SQLiteBookRepository::updateBookStatus(const Book& book) {
+
+	QSqlQuery query(db.database());
+
+	query.prepare("UPDATE books SET borrowed = :borrowed "
+		"WHERE id = :id");
+
+	query.bindValue(":borrowed", book.isBorrowed());
+	query.bindValue(":id", book.getId());
+
+	return query.exec();
+}
+
 std::shared_ptr<Book> SQLiteBookRepository::findById(int bookId) const
 {
 	QSqlQuery query(db.database());

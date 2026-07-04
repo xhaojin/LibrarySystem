@@ -152,3 +152,42 @@ std::vector<std::shared_ptr<BorrowRecord>> SQLiteBorrowRecordRepository::findAct
 
 	return records;
 }
+
+std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findAllDTO() const
+{
+	std::vector<BorrowRecordDTO> records;
+
+	QSqlQuery query(db.database());
+
+	query.prepare(R"(SELECT br.id,br.user_id,u.name,br.book_id,b.title,br.borrow_time,br.return_time FROM borrow_records br
+        INNER JOIN users u ON br.user_id = u.id
+        INNER JOIN books b ON br.book_id = b.id ORDER BY br.borrow_time DESC
+    )");
+
+	query.exec();
+
+	while (query.next())
+	{
+		BorrowRecordDTO dto;
+
+		dto.id = query.value(0).toInt();
+
+		dto.userId = query.value(1).toInt();
+
+		dto.username = query.value(2).toString().toStdString();
+
+		dto.bookId = query.value(3).toInt();
+
+		dto.bookTitle = query.value(4).toString().toStdString();
+
+		dto.borrowTime = query.value(5).toString().toStdString();
+
+		dto.returnTime = query.value(6).toString().toStdString();
+
+		dto.returned = !query.value(6).toString().isEmpty();
+
+		records.push_back(dto);
+	}
+
+	return records;
+}
