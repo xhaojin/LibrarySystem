@@ -9,11 +9,10 @@ private:
 public:
 	explicit UserService(IUserRepository& userRepo);
 
-	//TODO 用户管理
-	void addUser(const UserDTO& dto);
-	void removeUser(int userId);
-	void updateUser(const UserDTO& dto);
-
-	//查询
+	bool addUser(const UserDTO& dto);
+	bool removeUser(int userId);
+	bool updateUser(const UserDTO& dto);
+	UserDTO findUserById(int userId) const;
+	std::vector<UserDTO> findUsersByName(const std::string& username) const;
 	std::vector<UserDTO> getAllUsersDTO() const;
 };

@@ -8,9 +8,9 @@ bool SQLiteUserRepository::add(std::shared_ptr<User> user) {
 
 	query.prepare(
 		"INSERT INTO users "
-		"(id,name,gender,age,phone,username,password,role)"
+		"(name,gender,age,phone,username,role) "
 		"VALUES "
-		"(:id,:name,:gender,:age,:phone,:username,:password,:role)");
+		"(:name,:gender,:age,:phone,:username,:role)");
 
 	UserMapper::bindToQuery(query, *user);
 
@@ -32,7 +32,7 @@ bool SQLiteUserRepository::update(const User& user) {
 	QSqlQuery query(db.database());
 
 	query.prepare("UPDATE users SET name = :name, gender = :gender, "
-		"age = :age, phone = :phone, username = :username, password = :password, role = :role "
+		"age = :age, phone = :phone, username = :username, role = :role "
 		"WHERE id = :id");
 
 	UserMapper::bindToQuery(query, user);
@@ -60,25 +60,23 @@ std::shared_ptr<User> SQLiteUserRepository::findById(int userId) const {
 	return UserMapper::fromQuery(query);
 }
 
-std::shared_ptr<User> SQLiteUserRepository::findByUsername(const std::string& username) const {
-	std::shared_ptr<User> user;
+std::vector<std::shared_ptr<User>> SQLiteUserRepository::findByUsername(const std::string& username) const {
+	std::vector<std::shared_ptr<User>> users;
 
 	QSqlQuery query(db.database());
 
-	query.prepare("SELECT * FROM users WHERE username=:username");
+	query.prepare("SELECT * FROM users WHERE username LIKE :username");
 
-	query.bindValue(":username", QString::fromStdString(username));
+	query.bindValue(":username", "%" + QString::fromStdString(username) + "%");
 
-	if (!query.exec()) {
-		return nullptr;
-	}
+	query.exec();
 
 	while (query.next())
 	{
-		return UserMapper::fromQuery(query);
+		users.push_back(UserMapper::fromQuery(query));
 	}
 
-	return user;
+	return users;
 }
 
 std::vector<std::shared_ptr<User>> SQLiteUserRepository::findAll() const {

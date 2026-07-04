@@ -1,6 +1,6 @@
 #include "UserPage.h"
 
-UserPage::UserPage(UserController& userController, QWidget* parent) : userController(userController), QWidget(parent)
+UserPage::UserPage(UserController& userController, QWidget* parent) : userController(userController), BasePage(parent)
 {
 	setupUI();
 	setConnections();
@@ -38,17 +38,117 @@ void UserPage::setupUI() {
 	userLayout->addLayout(searchbar);
 
 	userTable = new QTableWidget(this);
+	TableUtil::init(userTable);
 	userTable->setColumnCount(8);
 	userTable->setHorizontalHeaderLabels({ "User ID","name","gender","age","phone","username","role","borrowedCount" });
-	userTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	userLayout->addWidget(userTable);
 }
 
 void UserPage::setConnections() {
-	connect(refreshUserButton, &QPushButton::clicked, this, [this]() {
-		auto users = userController.getAllUsers();
-		refreshUsersTable(users);
-		});
+	connect(refreshUserButton, &QPushButton::clicked, this, [this]() {refreshUsersTable( userController.getAllUsers());});
+	connect(addUserButton, &QPushButton::clicked, this, &UserPage::addUser);
+	connect(updateUserButton, &QPushButton::clicked, this, &UserPage::updateUser);
+	connect(removeUserButton, &QPushButton::clicked, this, &UserPage::removeUser);
+	connect(searchButton, &QPushButton::clicked, this, &UserPage::onFindByNameClicked);
+}
+
+void UserPage::addUser() {
+	UserEditDialog userEditDialog(this); //用户编辑对话框
+	userEditDialog.setWindowTitle("添加用户");
+	if (userEditDialog.exec() != QDialog::Accepted)
+		return;
+	try
+	{
+		if (userController.addUser(userEditDialog.getUser()))
+		{
+			showInfo("添加成功");
+			refreshUsersTable(userController.getAllUsers());
+		}
+		else
+		{
+			showWarning("添加失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError(e.what());
+	}
+}
+void UserPage::updateUser() {
+	auto items = userTable->selectedItems();
+	if (items.isEmpty())
+	{
+		showWarning("请先选择一名用户");
+		return;
+	}
+	int row = userTable->currentRow();
+	int userId = userTable->item(row, 0)->text().toInt();
+	auto user = userController.findUserById(userId);
+
+	UserEditDialog userEditDialog(this);
+	userEditDialog.setWindowTitle("修改用户");
+	userEditDialog.setUser(user);
+
+	if (userEditDialog.exec() != QDialog::Accepted)
+		return;
+
+	UserDTO dto = userEditDialog.getUser();
+	dto.id = userId;
+
+	try
+	{
+		if (userController.updateUser(dto))
+		{
+			showInfo("修改成功");
+			refreshUsersTable(userController.getAllUsers());
+		}
+		else
+		{
+			showWarning("修改失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError(e.what());
+	}
+}
+void UserPage::removeUser() {
+	auto items = userTable->selectedItems();
+	if (items.isEmpty())
+	{
+		showWarning("请先选择一名用户");
+		return;
+	}
+	int row = userTable->currentRow();
+	int userId = userTable->item(row, 0)->text().toInt();
+	auto user = userController.findUserById(userId);
+
+	if (!confirmDelete(user.name.c_str())) {
+		return;
+	}
+
+	try
+	{
+		if (userController.removeUser(userId))
+		{
+			showInfo("删除成功");
+			refreshUsersTable(userController.getAllUsers());
+		}
+		else
+		{
+			showWarning("删除失败");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError(e.what());
+	}
+}
+void UserPage::onFindByNameClicked() {
+	QString keyword = searchEdit->text();
+	searchEdit->clear();
+	auto users = userController.findUsersByName(keyword.toStdString());
+	refreshUsersTable(users);
 }
 
 void UserPage::refreshUsersTable(const std::vector<UserDTO>& users)

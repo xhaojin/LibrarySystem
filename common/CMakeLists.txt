@@ -3,6 +3,10 @@ add_library(common STATIC)
 target_sources(common PRIVATE
     utils/Logger.cpp
     utils/Time.cpp
+    utils/DialogUtil.h
+    utils/DialogUtil.cpp
+    utils/TableUtil.h
+    utils/TableUtil.cpp
 )
 
 target_include_directories(common PUBLIC

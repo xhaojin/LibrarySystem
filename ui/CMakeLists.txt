@@ -7,6 +7,10 @@ target_sources(ui PRIVATE
     pages/UserPage.cpp
     pages/BorrowRecordPage.cpp
     dialogs/BookEditDialog.cpp
+    pages/base/BasePage.cpp
+    pages/base/BasePage.h
+    dialogs/UserEditDialog.h
+    dialogs/UserEditDialog.cpp
 )
 
 target_include_directories(ui PUBLIC

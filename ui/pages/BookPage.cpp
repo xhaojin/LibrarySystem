@@ -1,6 +1,6 @@
 #include "BookPage.h"
 
-BookPage::BookPage(BookController& bookController, QWidget* parent) :bookController(bookController), QWidget(parent)
+BookPage::BookPage(BookController& bookController, QWidget* parent) :bookController(bookController), BasePage(parent)
 {
 	setupUI();
 	setConnections();
@@ -50,9 +50,9 @@ void BookPage::setupUI() {
 
 	//表格
 	bookTable = new QTableWidget(this);
+	TableUtil::init(bookTable);
 	bookTable->setColumnCount(6);
 	bookTable->setHorizontalHeaderLabels({ "Book ID","Title","Author","Publisher","Price","Status" });
-	bookTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	bookLayout->addWidget(bookTable);
 }
 
@@ -76,17 +76,17 @@ void BookPage::addBook() {
 	{
 		if (bookController.addBook(bookEditDialog.getBook()))
 		{
-			QMessageBox::information(this, "提示", "添加成功");
+			showInfo("添加成功");
 			refreshBooksTable(bookController.getAllBooks());
 		}
 		else
 		{
-			QMessageBox::warning(this, "提示", "添加失败");
+			showWarning("添加失败");
 		}
 	}
 	catch (const std::exception& e)
 	{
-		QMessageBox::critical(this, "错误", e.what());
+		showError(e.what());
 	}
 }
 
@@ -95,7 +95,7 @@ void BookPage::updateBook() {
 	auto items = bookTable->selectedItems();
 	if (items.isEmpty())
 	{
-		QMessageBox::warning(this, "提示", "请先选择一本图书");
+		showWarning("请先选择一本图书");
 		return;
 	}
 	int row = bookTable->currentRow();
@@ -116,17 +116,17 @@ void BookPage::updateBook() {
 	{
 		if (bookController.updateBook(dto))
 		{
-			QMessageBox::information(this, "提示", "修改成功");
+			showInfo("修改成功");
 			refreshBooksTable(bookController.getAllBooks());
 		}
 		else
 		{
-			QMessageBox::warning(this, "提示", "修改失败");
+			showWarning("修改失败");
 		}
 	}
 	catch (const std::exception& e)
 	{
-		QMessageBox::critical(this, "错误", e.what());
+		showError(e.what());
 	}
 }
 
@@ -134,15 +134,14 @@ void BookPage::removeBook() {
 	auto items = bookTable->selectedItems();
 	if (items.isEmpty())
 	{
-		QMessageBox::warning(this, "提示", "请先选择一本图书");
+		showWarning("请先选择一本图书");
 		return;
 	}
 	int row = bookTable->currentRow();
 	int bookId = bookTable->item(row, 0)->text().toInt();
 	auto book = bookController.findBookById(bookId);
-	auto reply = QMessageBox::question(this, "删除图书", QString("确定删除《%1》吗？\n\n删除后不可恢复。").arg(book.title),
-		QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
-	if (reply == QMessageBox::No) {
+
+	if (!confirmDelete(book.title.c_str())) {
 		return;
 	}
 
@@ -150,17 +149,17 @@ void BookPage::removeBook() {
 	{
 		if (bookController.removeBook(bookId))
 		{
-			QMessageBox::information(this, "提示", "删除成功");
+			showInfo("删除成功");
 			refreshBooksTable(bookController.getAllBooks());
 		}
 		else
 		{
-			QMessageBox::warning(this, "提示", "删除失败");
+			showWarning("删除失败");
 		}
 	}
 	catch (const std::exception& e)
 	{
-		QMessageBox::critical(this, "错误", e.what());
+		showError(e.what());
 	}
 }
 
@@ -196,7 +195,7 @@ void BookPage::onSortPriceClicked() {
 	}
 	catch (const std::exception& e)
 	{
-		QMessageBox::warning(this, "", e.what());
+		showWarning(e.what());
 	}
 }
 

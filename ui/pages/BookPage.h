@@ -8,13 +8,14 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QHeaderView>
-#include <QMessageBox>
 
 #include "dto/BookDTO.h"
 #include "ui/dialogs/BookEditDialog.h"
 #include "controller/book/BookController.h"
+#include "base//BasePage.h"
+#include "common/utils/TableUtil.h"
 
-class BookPage : public QWidget
+class BookPage : public BasePage
 {
     Q_OBJECT
 

@@ -11,8 +11,11 @@
 
 #include "dto/UserDTO.h"
 #include "controller/user/UserController.h"
+#include "ui/pages/base/BasePage.h"
+#include "common/utils/TableUtil.h"
+#include "ui/dialogs/UserEditDialog.h"
 
-class UserPage : public QWidget
+class UserPage : public BasePage
 {
     Q_OBJECT
 
@@ -23,6 +26,10 @@ private:
     void setupUI();
     void setConnections();
     void refreshUsersTable(const std::vector<UserDTO>& books); //刷新用户表格
+    void addUser(); //添加用户
+    void updateUser(); //更新用户
+    void removeUser(); //删除用户
+    void onFindByNameClicked(); //按姓名查找
 
 private:
     UserController& userController; //用户控制器
