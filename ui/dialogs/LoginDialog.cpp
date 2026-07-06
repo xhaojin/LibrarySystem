@@ -1,7 +1,7 @@
-#include "LoginWindow.h"
+#include "LoginDialog.h"
 
-LoginWindow::LoginWindow(AuthController& authController, QWidget* parent)
-	: QWidget(parent), authController(authController)
+LoginDialog::LoginDialog(AuthController& authController, QWidget* parent)
+	: QDialog(parent), authController(authController)
 {
 	setWindowTitle("Library Login");
 	resize(300, 200);
@@ -24,17 +24,16 @@ LoginWindow::LoginWindow(AuthController& authController, QWidget* parent)
 
 	layout->addWidget(loginButton);
 
-	connect(loginButton, &QPushButton::clicked, this, &LoginWindow::onLoginClicked);
+	connect(loginButton, &QPushButton::clicked, this, &LoginDialog::onLoginClicked);
 }
 
-void LoginWindow::onLoginClicked()
+void LoginDialog::onLoginClicked()
 {
 	try
 	{
 		auto user = authController.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
 		SessionManager::login(user);
-		//QMessageBox::information(this, "Success", QString::fromStdString(user.name));
-		emit loginSuccess();
+		accept(); // Close the dialog with Accepted status
 	}
 	catch (const std::exception& e)
 	{

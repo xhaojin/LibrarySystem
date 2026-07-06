@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QWidget>
+#include <QDialog>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -9,15 +9,12 @@
 #include <app/SessionManager.h>
 #include "controller/auth/AuthController.h"
 
-class LoginWindow : public QWidget
+class LoginDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit LoginWindow(AuthController& authController, QWidget* parent = nullptr);
-
-signals:
-	void loginSuccess();
+	explicit LoginDialog(AuthController& authController, QWidget* parent = nullptr);
 
 private slots:
 	void onLoginClicked();

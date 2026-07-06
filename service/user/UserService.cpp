@@ -29,9 +29,9 @@ UserDTO UserService::findUserById(int userId) const {
 	};
 }
 
-std::vector<UserDTO> UserService::findUsersByName(const std::string& username) const {
+std::vector<UserDTO> UserService::findUsersByName(const std::string& name) const {
 	std::vector<UserDTO> userDTOs;
-	for (const auto& user : userRepo.findByUsername(username)) {
+	for (const auto& user : userRepo.findByName(name)) {
 		userDTOs.push_back(UserDTO{
 			user->getId(),
 			user->getName(),

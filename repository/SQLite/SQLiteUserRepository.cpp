@@ -60,14 +60,14 @@ std::shared_ptr<User> SQLiteUserRepository::findById(int userId) const {
 	return UserMapper::fromQuery(query);
 }
 
-std::vector<std::shared_ptr<User>> SQLiteUserRepository::findByUsername(const std::string& username) const {
+std::vector<std::shared_ptr<User>> SQLiteUserRepository::findByName(const std::string& name) const {
 	std::vector<std::shared_ptr<User>> users;
 
 	QSqlQuery query(db.database());
 
-	query.prepare("SELECT * FROM users WHERE username LIKE :username");
+	query.prepare("SELECT * FROM users WHERE name LIKE :name");
 
-	query.bindValue(":username", "%" + QString::fromStdString(username) + "%");
+	query.bindValue(":name", "%" + QString::fromStdString(name) + "%");
 
 	query.exec();
 
@@ -77,6 +77,30 @@ std::vector<std::shared_ptr<User>> SQLiteUserRepository::findByUsername(const st
 	}
 
 	return users;
+}
+
+std::shared_ptr<User> SQLiteUserRepository::findByUserName(const std::string& username) const {
+	std::shared_ptr<User> user;
+
+	QSqlQuery query(db.database());
+
+	query.prepare("SELECT * FROM users WHERE username LIKE :username");
+
+	query.bindValue(":username", "%" + QString::fromStdString(username) + "%");
+
+	query.exec();
+
+	if (!query.exec())
+	{
+		return nullptr;
+	}
+
+	if (!query.next())
+	{
+		return nullptr;
+	}
+
+	return UserMapper::fromQuery(query);
 }
 
 std::vector<std::shared_ptr<User>> SQLiteUserRepository::findAll() const {

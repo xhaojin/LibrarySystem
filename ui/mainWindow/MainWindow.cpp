@@ -1,4 +1,4 @@
-#include "ui/MainWindow.h"
+#include "ui/mainWindow/MainWindow.h"
 
 MainWindow::MainWindow(BookController& bookController, UserController& userController,
 	BorrowController& borrowController, QWidget* parent) : bookController(bookController),

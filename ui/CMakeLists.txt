@@ -1,8 +1,8 @@
 add_library(ui STATIC)
 
 target_sources(ui PRIVATE
-    MainWindow.cpp
-    LoginWindow.cpp
+    MainWindow/MainWindow.cpp
+    dialogs/LoginDialog.cpp
     pages/BookPage.cpp
     pages/UserPage.cpp
     pages/BorrowRecordPage.cpp

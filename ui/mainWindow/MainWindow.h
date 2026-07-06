@@ -5,9 +5,9 @@
 #include <qmessagebox.h>
 #include <QStackedWidget>
 
-#include "pages/BookPage.h"
-#include "pages/UserPage.h"
-#include "pages/BorrowRecordPage.h"
+#include "ui/pages/BookPage.h"
+#include "ui/pages/UserPage.h"
+#include "ui/pages/BorrowRecordPage.h"
 
 class MainWindow : public QMainWindow
 {

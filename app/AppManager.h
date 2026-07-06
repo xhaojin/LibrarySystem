@@ -1,6 +1,6 @@
 #pragma once
 #include <QApplication>
-#include "ui/MainWindow.h"
+#include "ui/mainWindow/MainWindow.h"
 #include <QDebug>
 #include "database/SQLiteDatabase.h"
 #include "repository/SQLite/SQLiteBookRepository.h"
@@ -15,9 +15,6 @@ public:
     AppManager();
 
     int run(int argc, char* argv[]);
-
-private slots:
-    void onLoginSuccess();
 
 private:
     std::unique_ptr<SQLiteDatabase> database;
