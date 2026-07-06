@@ -25,6 +25,8 @@ public:
 
 	std::vector<std::shared_ptr<BorrowRecord>> findActiveRecords() const override;
 
+	std::vector<BorrowRecordDTO> findRecordsByCondition(const std::string& username, const std::string& bookTitle) const override;
+
 	std::vector<BorrowRecordDTO> findAllDTO() const override;
 
 private:

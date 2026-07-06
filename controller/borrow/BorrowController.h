@@ -12,5 +12,6 @@ public:
 
 	void borrowBook(int userId, int bookId);
 	void returnBook(int userId, int bookId);
+	std::vector<BorrowRecordDTO> findBorrowRecordByUsernameAndBookTitle(const std::string& username, const std::string& bookTitle) const;
 	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 };

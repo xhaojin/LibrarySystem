@@ -12,6 +12,7 @@
 #include "dto/BorrowRecordDTO.h"
 #include "controller/borrow/BorrowController.h"
 #include "ui/pages/base/BasePage.h"
+#include "common/utils/TableUtil.h"
 
 class BorrowRecordPage : public BasePage
 {
@@ -25,6 +26,7 @@ private:
 	void setupUI();
 	void setConnections();
 	void refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& books); //刷新借阅记录表格
+	void onSearchClicked(); //按用户名查找
 
 private:
 	BorrowController& borrowController; //借阅记录服务
@@ -33,7 +35,9 @@ private:
 
 	QPushButton* searchButton; //搜索按钮
 
-	QLineEdit* searchEdit; //搜索框
+	QLineEdit* searchByUsernameEdit; //搜索框1
+
+	QLineEdit* searchByBookTitleEdit; //搜索框2
 
 	QTableWidget* borrowRecordTable; //借阅记录表格
 };

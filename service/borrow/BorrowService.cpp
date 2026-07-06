@@ -90,6 +90,10 @@ void BorrowService::returnBook(int userId, int bookId) {
 	Logger::log("[RETURN_SUCCESS] User " + std::to_string(userId) + " returned book " + std::to_string(bookId));
 }
 
+std::vector<BorrowRecordDTO> BorrowService::findRecordsByUsernameAndBookTitle(const std::string& username, const std::string& bookTitle) const {
+	return borrowRepo.findRecordsByCondition(username, bookTitle);
+}
+
 std::vector<BorrowRecordDTO> BorrowService::getAllBorrowRecords() const {
 	return borrowRepo.findAllDTO();
 }

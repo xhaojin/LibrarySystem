@@ -16,6 +16,6 @@ public:
 	// 借阅业务
 	void borrowBook(int userId, int bookId);
 	void returnBook(int userId, int bookId);
-
+	std::vector<BorrowRecordDTO> findRecordsByUsernameAndBookTitle(const std::string& username, const std::string& bookTitle) const;
 	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 };

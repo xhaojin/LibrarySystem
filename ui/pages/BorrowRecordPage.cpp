@@ -16,27 +16,33 @@ void BorrowRecordPage::setupUI() {
 	auto* toolbar = new QHBoxLayout();
 
 	toolbar->addWidget(new QLabel("用户名："));
-	searchEdit = new QLineEdit();
-	searchEdit->setPlaceholderText("请输入用户名");
+	searchByUsernameEdit = new QLineEdit();
+	searchByUsernameEdit->setPlaceholderText("请输入用户名");
+	searchByBookTitleEdit = new QLineEdit();
+	searchByBookTitleEdit->setPlaceholderText("请输入图书名");
+
 	searchButton = new QPushButton("搜索");
 	refreshBorrowRecordButton = new QPushButton("刷新");
 
-	toolbar->addWidget(searchEdit);
+	toolbar->addWidget(searchByUsernameEdit);
+	toolbar->addWidget(new QLabel("图书名："));
+	toolbar->addWidget(searchByBookTitleEdit);
 	toolbar->addWidget(searchButton);
 	toolbar->addStretch();
 	toolbar->addWidget(refreshBorrowRecordButton);
 	borrowLayout->addLayout(toolbar);
 
 	borrowRecordTable = new QTableWidget(this);
+	TableUtil::init(borrowRecordTable);
 	borrowRecordTable->setColumnCount(5);
 	borrowRecordTable->setHorizontalHeaderLabels({ "BorrowRecord ID","name","bookTitle","borrow_time","return_time" });
-	borrowRecordTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	borrowLayout->addWidget(borrowRecordTable);
 }
 
 void BorrowRecordPage::setConnections()
 {
 	connect(refreshBorrowRecordButton, &QPushButton::clicked, this, [this]() {refresh();});
+	connect(searchButton, &QPushButton::clicked, this, [this]() {onSearchClicked();});
 }
 
 void BorrowRecordPage::refresh()
@@ -64,4 +70,13 @@ void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordD
 
 		borrowRecordTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(re.returnTime)));
 	}
+}
+
+void BorrowRecordPage::onSearchClicked() {
+	QString username = searchByUsernameEdit->text();
+	QString bookTitle = searchByBookTitleEdit->text();
+	searchByUsernameEdit->clear();
+	searchByBookTitleEdit->clear();
+	auto records = borrowController.findBorrowRecordByUsernameAndBookTitle(username.toStdString(),bookTitle.toStdString());
+	refreshBorrowRecordsTable(records);
 }

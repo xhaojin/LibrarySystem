@@ -25,6 +25,8 @@ public:
 
     virtual std::vector<std::shared_ptr<BorrowRecord>> findActiveRecords() const = 0;
 
+    virtual std::vector<BorrowRecordDTO> findRecordsByCondition(const std::string& username, const std::string& bookTitle) const = 0;
+
     // 给UI使用
     virtual std::vector<BorrowRecordDTO> findAllDTO() const = 0;
 };

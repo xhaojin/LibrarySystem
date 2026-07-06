@@ -29,6 +29,10 @@ void BorrowController::returnBook(int userId, int bookId)
 	}
 }
 
+std::vector<BorrowRecordDTO> BorrowController::findBorrowRecordByUsernameAndBookTitle(const std::string& username, const std::string& bookTitle) const {
+	return borrowService.findRecordsByUsernameAndBookTitle(username, bookTitle);
+}
+
 std::vector<BorrowRecordDTO> BorrowController::getAllBorrowRecords() const {
 	return borrowService.getAllBorrowRecords();
 }

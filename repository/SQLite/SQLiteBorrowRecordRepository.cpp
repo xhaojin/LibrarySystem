@@ -153,6 +153,53 @@ std::vector<std::shared_ptr<BorrowRecord>> SQLiteBorrowRecordRepository::findAct
 	return records;
 }
 
+std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findRecordsByCondition(const std::string& username, const std::string& bookTitle) const
+{
+	std::vector<BorrowRecordDTO> records;
+	QString sql = R"(SELECT br.id,u.name,b.title,br.borrow_time,br.return_time FROM borrow_records br 
+	JOIN users u ON br.user_id = u.id 
+	JOIN books b ON br.book_id = b.id 
+	WHERE 1=1
+	)";
+
+	if (!username.empty())
+	{
+		sql += " AND u.name LIKE :userName";
+	}
+
+	if (!bookTitle.empty())
+	{
+		sql += " AND b.title LIKE :bookTitle";
+	}
+
+	QSqlQuery query(db.database());
+	query.prepare(sql);
+
+	if (!username.empty())
+	{
+		query.bindValue(":userName","%" + QString::fromStdString(username) + "%");
+	}
+
+	if (!bookTitle.empty())
+	{
+		query.bindValue(":bookTitle","%" + QString::fromStdString(bookTitle) + "%");
+	}
+
+	query.exec();
+	while (query.next())
+	{
+		BorrowRecordDTO dto;
+		dto.id = query.value(0).toInt();
+		dto.username = query.value(1).toString().toStdString();
+		dto.bookTitle = query.value(2).toString().toStdString();
+		dto.borrowTime = query.value(3).toString().toStdString();
+		dto.returnTime = query.value(4).toString().toStdString();
+		dto.returned = !query.value(4).toString().isEmpty();
+		records.push_back(dto);
+	}
+	return records;
+}
+
 std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findAllDTO() const
 {
 	std::vector<BorrowRecordDTO> records;
