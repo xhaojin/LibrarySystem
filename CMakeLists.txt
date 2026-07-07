@@ -5,6 +5,11 @@ project(LibrarySystem)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 针对 MSVC 编译器启用 C++ 异常处理
+if(MSVC)
+    add_compile_options(/EHsc)
+endif()
+
 # Qt 自动处理
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -14,6 +19,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 
 # ===== 子模块 =====
 add_subdirectory(app)
+add_subdirectory(core)
 add_subdirectory(ui)
 add_subdirectory(controller)
 add_subdirectory(service)
@@ -25,11 +31,12 @@ add_subdirectory(dto)
 add_subdirectory(common)
 
 # ===== main =====
-add_executable(LibrarySystem WIN32 main.cpp)
+add_executable(LibrarySystem WIN32 main.cpp )
 
 # 链接所有模块
 target_link_libraries(LibrarySystem
     app
+    core
     ui
     controller
     service

@@ -8,15 +8,17 @@
 #include "ui/pages/BookPage.h"
 #include "ui/pages/UserPage.h"
 #include "ui/pages/BorrowRecordPage.h"
+#include "core/ApplicationContext.h"
 
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 private:
-	BookController& bookController; //图书控制器
-	UserController& userController; //用户控制器
-	BorrowController& borrowController; //借阅记录控制器
+	//BookController& bookController; //图书控制器
+	//UserController& userController; //用户控制器
+	//BorrowController& borrowController; //借阅记录控制器
+	ApplicationContext& m_context; //应用程序上下文
 
 	BookPage* bookpage; //图书管理页面
 	UserPage* userpage; //用户管理页面
@@ -32,8 +34,6 @@ private:
 	void setupUI();
 
 public:
-	explicit MainWindow(BookController& bookController,
-		UserController& userController,
-		BorrowController& borrowController, QWidget* parent = nullptr);
+	explicit MainWindow(ApplicationContext& context, QWidget* parent = nullptr);
 
 };

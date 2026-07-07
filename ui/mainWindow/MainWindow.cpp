@@ -1,8 +1,6 @@
 #include "ui/mainWindow/MainWindow.h"
 
-MainWindow::MainWindow(BookController& bookController, UserController& userController,
-	BorrowController& borrowController, QWidget* parent) : bookController(bookController),
-	userController(userController), borrowController(borrowController), QMainWindow(parent)
+MainWindow::MainWindow(ApplicationContext& context, QWidget* parent) : m_context(context), QMainWindow(parent)
 {
 	setupUI();
 }
@@ -38,17 +36,17 @@ void MainWindow::setupUI()
 	// =========================
 	// Book Page
 	// =========================
-	bookpage = new BookPage(bookController,borrowController);
+	bookpage = new BookPage(m_context.bookController(), m_context.borrowController());
 
 	// =========================
 	// User Page
 	// =========================
-	userpage = new UserPage(userController);
+	userpage = new UserPage(m_context.userController());
 
 	// =========================
 	// Borrow Page
 	// =========================
-	borrowpage = new BorrowRecordPage(borrowController);
+	borrowpage = new BorrowRecordPage(m_context.borrowController());
 
 	// =========================
 	// 加入 stackedWidget
