@@ -17,6 +17,14 @@ public:
     int run(int argc, char* argv[]);
 
 private:
+    bool initializeDatabase(); // 初始化数据库
+    void createRepositories(); // 创建仓库
+    void createServices(); // 创建服务
+    void createControllers(); // 创建控制器
+    void createMainWindow(); // 创建主窗口
+    bool showLoginDialog(); // 显示登录对话框
+
+private:
     std::unique_ptr<SQLiteDatabase> database;
     std::unique_ptr<IBookRepository> bookRepo;
     std::unique_ptr<IUserRepository> userRepo;

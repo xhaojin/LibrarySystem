@@ -86,7 +86,7 @@ std::shared_ptr<User> SQLiteUserRepository::findByUserName(const std::string& us
 
 	query.prepare("SELECT * FROM users WHERE username LIKE :username");
 
-	query.bindValue(":username", "%" + QString::fromStdString(username) + "%");
+	query.bindValue(":username", QString::fromStdString(username));
 
 	query.exec();
 
