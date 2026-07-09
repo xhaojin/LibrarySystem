@@ -11,17 +11,16 @@
 
 #include "dto/BookDTO.h"
 #include "ui/dialogs/BookEditDialog.h"
-#include "controller/book/BookController.h"
-#include "controller/borrow/BorrowController.h"
 #include "base//BasePage.h"
 #include "common/utils/TableUtil.h"
+#include "core/ApplicationContext.h"
 
 class BookPage : public BasePage
 {
 	Q_OBJECT
 
 public:
-	explicit BookPage(BookController& bookController, BorrowController& borrowController, QWidget* parent = nullptr);
+	explicit BookPage(ApplicationContext& context, QWidget* parent = nullptr);
 	void refresh() override; //刷新表格
 
 private:
@@ -38,8 +37,7 @@ private:
 	void onReturnBookClicked(); //归还图书
 
 private:
-	BookController& bookController; //图书控制器
-	BorrowController& borrowController; //借阅控制器
+	ApplicationContext& m_context;
 
 	QPushButton* borrowButton; //借阅书籍按钮
 	QPushButton* returnButton; //归还书籍按钮

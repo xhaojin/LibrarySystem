@@ -27,7 +27,16 @@ void AppManager::createMainWindow() {
 }
 bool AppManager::showLoginDialog() {
 	AuthService authService(context->userRepository());
+
 	AuthController authController(authService);
+
 	LoginDialog loginDialog(authController);
-	return loginDialog.exec();
+
+	if (loginDialog.exec() != QDialog::Accepted)
+	{
+		return false;
+	}
+
+	context->sessionManager().login(*loginDialog.authenticatedUser());
+	return true;
 }

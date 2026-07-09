@@ -15,14 +15,18 @@ class LoginDialog : public QDialog
 
 public:
 	explicit LoginDialog(AuthController& authController, QWidget* parent = nullptr);
+	const std::optional<UserDTO>& authenticatedUser() const;
 
 private slots:
 	void onLoginClicked();
 
 private:
 	AuthController& authController;
+
 	QLineEdit* usernameEdit;
 	QLineEdit* passwordEdit;
 
 	QPushButton* loginButton;
+
+	std::optional<UserDTO> m_authenticatedUser;
 };

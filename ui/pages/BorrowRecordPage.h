@@ -9,17 +9,16 @@
 #include <QLineEdit>
 #include <QHeaderView>
 
-#include "dto/BorrowRecordDTO.h"
-#include "controller/borrow/BorrowController.h"
 #include "ui/pages/base/BasePage.h"
 #include "common/utils/TableUtil.h"
+#include "core/ApplicationContext.h"
 
 class BorrowRecordPage : public BasePage
 {
 	Q_OBJECT
 
 public:
-	explicit BorrowRecordPage(BorrowController& borrowController, QWidget* parent = nullptr);
+	explicit BorrowRecordPage(ApplicationContext& context, QWidget* parent = nullptr);
 	void refresh() override; //刷新表格
 
 private:
@@ -29,7 +28,7 @@ private:
 	void onSearchClicked(); //按用户名查找
 
 private:
-	BorrowController& borrowController; //借阅记录服务
+	ApplicationContext& m_context;
 
 	QPushButton* refreshBorrowRecordButton; //刷新
 

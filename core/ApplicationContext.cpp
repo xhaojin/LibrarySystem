@@ -15,6 +15,8 @@ bool ApplicationContext::initialize()
 
 	createControllers();
 
+	createSession();
+
 	return true;
 }
 
@@ -54,6 +56,10 @@ void ApplicationContext::createControllers() {
 	borrowController_ = std::make_unique<BorrowController>(*borrowService_);
 }
 
+void ApplicationContext::createSession() {
+	sessionManager_ = std::make_unique<SessionManager>();
+}
+
 BookController& ApplicationContext::bookController()
 {
 	return *bookController_;
@@ -71,4 +77,8 @@ BorrowController& ApplicationContext::borrowController()
 
 SQLiteUserRepository& ApplicationContext::userRepository() {
 	return *userRepo_;
+}
+
+SessionManager& ApplicationContext::sessionManager() {
+	return *sessionManager_;
 }

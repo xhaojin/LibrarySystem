@@ -1,6 +1,7 @@
 #pragma once
 
 #include "service/borrow/BorrowService.h"
+#include "dto/UserDTO.h"
 
 class BorrowController
 {
@@ -12,6 +13,6 @@ public:
 
 	void borrowBook(int userId, int bookId);
 	void returnBook(int userId, int bookId);
-	std::vector<BorrowRecordDTO> findBorrowRecordByUsernameAndBookTitle(const std::string& username, const std::string& bookTitle) const;
+	std::vector<BorrowRecordDTO> findBorrowRecordByNameAndBookTitle(const std::string& name, const std::string& bookTitle) const;
 	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 };

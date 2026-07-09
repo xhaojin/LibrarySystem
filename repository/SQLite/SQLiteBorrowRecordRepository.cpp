@@ -153,7 +153,7 @@ std::vector<std::shared_ptr<BorrowRecord>> SQLiteBorrowRecordRepository::findAct
 	return records;
 }
 
-std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findRecordsByCondition(const std::string& username, const std::string& bookTitle) const
+std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findRecordsByCondition(const std::string& name, const std::string& bookTitle) const
 {
 	std::vector<BorrowRecordDTO> records;
 	QString sql = R"(SELECT br.id,u.name,b.title,br.borrow_time,br.return_time FROM borrow_records br 
@@ -162,9 +162,9 @@ std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findRecordsByConditio
 	WHERE 1=1
 	)";
 
-	if (!username.empty())
+	if (!name.empty())
 	{
-		sql += " AND u.name LIKE :userName";
+		sql += " AND u.name LIKE :name";
 	}
 
 	if (!bookTitle.empty())
@@ -175,9 +175,9 @@ std::vector<BorrowRecordDTO> SQLiteBorrowRecordRepository::findRecordsByConditio
 	QSqlQuery query(db.database());
 	query.prepare(sql);
 
-	if (!username.empty())
+	if (!name.empty())
 	{
-		query.bindValue(":userName","%" + QString::fromStdString(username) + "%");
+		query.bindValue(":name","%" + QString::fromStdString(name) + "%");
 	}
 
 	if (!bookTitle.empty())

@@ -1,7 +1,6 @@
 #include "BookPage.h"
 
-BookPage::BookPage(BookController& bookController, BorrowController& borrowController, QWidget* parent)
-	:bookController(bookController), borrowController(borrowController), BasePage(parent)
+BookPage::BookPage(ApplicationContext& context, QWidget* parent) :m_context(context), BasePage(parent)
 {
 	setupUI();
 	setConnections();
@@ -16,20 +15,25 @@ void BookPage::setupUI() {
 	// 工具栏
 	auto* toolbar = new QHBoxLayout();
 
-	addBookButton = new QPushButton("添加图书");
-	removeBookButton = new QPushButton("删除图书");
-	updateBookButton = new QPushButton("更新图书");
-	borrowButton = new QPushButton("借阅书籍");
-	returnButton = new QPushButton("归还书籍");
-	refreshBookButton = new QPushButton("刷新");
+	if (m_context.sessionManager().isAdmin()) {
+		addBookButton = new QPushButton("添加图书");
+		toolbar->addWidget(addBookButton);
+		removeBookButton = new QPushButton("删除图书");
+		toolbar->addWidget(removeBookButton);
+		updateBookButton = new QPushButton("更新图书");
+		toolbar->addWidget(updateBookButton);
+		toolbar->addSpacing(20);
+	}
 
-	toolbar->addWidget(addBookButton);
-	toolbar->addWidget(removeBookButton);
-	toolbar->addWidget(updateBookButton);
-	toolbar->addSpacing(20);
-	toolbar->addWidget(borrowButton);
-	toolbar->addWidget(returnButton);
+	if (m_context.sessionManager().isUser()) {
+		borrowButton = new QPushButton("借阅书籍");
+		returnButton = new QPushButton("归还书籍");
+		toolbar->addWidget(borrowButton);
+		toolbar->addWidget(returnButton);
+	}
+
 	toolbar->addStretch();
+	refreshBookButton = new QPushButton("刷新");
 	toolbar->addWidget(refreshBookButton);
 
 	bookLayout->addLayout(toolbar);
@@ -59,15 +63,19 @@ void BookPage::setupUI() {
 
 void BookPage::setConnections() {
 	// 连接按钮点击事件到槽函数
-	connect(refreshBookButton, &QPushButton::clicked, this, [this]() {refreshBooksTable(bookController.getAllBooks());});
-	connect(addBookButton, &QPushButton::clicked, this, &BookPage::addBook);
-	connect(updateBookButton, &QPushButton::clicked, this, &BookPage::updateBook);
-	connect(removeBookButton, &QPushButton::clicked, this, &BookPage::removeBook);
+	connect(refreshBookButton, &QPushButton::clicked, this, [this]() {refreshBooksTable(m_context.bookController().getAllBooks());});
+	if (m_context.sessionManager().isAdmin()) {
+		connect(addBookButton, &QPushButton::clicked, this, &BookPage::addBook);
+		connect(updateBookButton, &QPushButton::clicked, this, &BookPage::updateBook);
+		connect(removeBookButton, &QPushButton::clicked, this, &BookPage::removeBook);
+	}
 	connect(sortPriceButton, &QPushButton::clicked, this, &BookPage::onSortPriceClicked);
 	connect(sortTitleButton, &QPushButton::clicked, this, &BookPage::onSortTitleClicked);
 	connect(searchButton, &QPushButton::clicked, this, &BookPage::onFindByTitleClicked);
-	connect(borrowButton, &QPushButton::clicked, this, &BookPage::onBorrowBookClicked);
-	connect(returnButton, &QPushButton::clicked, this, &BookPage::onReturnBookClicked);
+	if (m_context.sessionManager().isUser()) {
+		connect(borrowButton, &QPushButton::clicked, this, &BookPage::onBorrowBookClicked);
+		connect(returnButton, &QPushButton::clicked, this, &BookPage::onReturnBookClicked);
+	}
 }
 
 void BookPage::addBook() {
@@ -77,7 +85,7 @@ void BookPage::addBook() {
 		return;
 	try
 	{
-		if (bookController.addBook(bookEditDialog.getBook()))
+		if (m_context.bookController().addBook(bookEditDialog.getBook()))
 		{
 			showInfo("添加成功");
 			refresh();
@@ -94,7 +102,6 @@ void BookPage::addBook() {
 }
 
 void BookPage::updateBook() {
-	//从UI界面获取到当前点击选中的要修改的图书的ID，然后通过BookController获取到该图书的详细信息，最后将其传递给BookEditDialog进行修改。
 	auto items = bookTable->selectedItems();
 	if (items.isEmpty())
 	{
@@ -103,7 +110,7 @@ void BookPage::updateBook() {
 	}
 	int row = bookTable->currentRow();
 	int bookId = bookTable->item(row, 0)->text().toInt();
-	auto book = bookController.findBookById(bookId);
+	auto book = m_context.bookController().findBookById(bookId);
 
 	BookEditDialog bookEditDialog(this);
 	bookEditDialog.setWindowTitle("修改图书");
@@ -117,7 +124,7 @@ void BookPage::updateBook() {
 
 	try
 	{
-		if (bookController.updateBook(dto))
+		if (m_context.bookController().updateBook(dto))
 		{
 			showInfo("修改成功");
 			refresh();
@@ -142,7 +149,7 @@ void BookPage::removeBook() {
 	}
 	int row = bookTable->currentRow();
 	int bookId = bookTable->item(row, 0)->text().toInt();
-	auto book = bookController.findBookById(bookId);
+	auto book = m_context.bookController().findBookById(bookId);
 
 	if (!confirmDelete(book.title.c_str())) {
 		return;
@@ -150,7 +157,7 @@ void BookPage::removeBook() {
 
 	try
 	{
-		if (bookController.removeBook(bookId))
+		if (m_context.bookController().removeBook(bookId))
 		{
 			showInfo("删除成功");
 			refresh();
@@ -167,7 +174,7 @@ void BookPage::removeBook() {
 }
 
 void BookPage::refresh() {
-	refreshBooksTable(bookController.getAllBooks());
+	refreshBooksTable(m_context.bookController().getAllBooks());
 }
 
 void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
@@ -197,7 +204,7 @@ void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
 void BookPage::onSortPriceClicked() {
 	try
 	{
-		auto books = bookController.getBooksSortedByPrice();
+		auto books = m_context.bookController().getBooksSortedByPrice();
 		refreshBooksTable(books);
 	}
 	catch (const std::exception& e)
@@ -207,20 +214,20 @@ void BookPage::onSortPriceClicked() {
 }
 
 void BookPage::onSortTitleClicked() {
-	auto books = bookController.getBooksSortedByTitle();
+	auto books = m_context.bookController().getBooksSortedByTitle();
 	refreshBooksTable(books);
 }
 
 void BookPage::onFindByTitleClicked() {
 	QString keyword = searchEdit->text();
 	searchEdit->clear();
-	auto books = bookController.findBooksByTitle(keyword.toStdString());
+	auto books = m_context.bookController().findBooksByTitle(keyword.toStdString());
 	refreshBooksTable(books);
 }
 
 void BookPage::onBorrowBookClicked()
 {
-	int userId = 1;
+	int userId = m_context.sessionManager().currentUser().id;
 	auto items = bookTable->selectedItems();
 	if (items.isEmpty()) {
 		showWarning("请先选择一本图书");
@@ -231,9 +238,9 @@ void BookPage::onBorrowBookClicked()
 
 	try
 	{
-		borrowController.borrowBook(userId, bookId);
+		m_context.borrowController().borrowBook(userId, bookId);
 
-		refreshBooksTable(bookController.getAllBooks());
+		refresh();
 
 		showInfo("借书成功");
 	}
@@ -245,7 +252,7 @@ void BookPage::onBorrowBookClicked()
 
 void BookPage::onReturnBookClicked()
 {
-	int userId = 1;
+	int userId = m_context.sessionManager().currentUser().id;
 	auto items = bookTable->selectedItems();
 	if (items.isEmpty()) {
 		showWarning("请先选择一本图书");
@@ -256,9 +263,9 @@ void BookPage::onReturnBookClicked()
 
 	try
 	{
-		borrowController.returnBook(userId, bookId);
+		m_context.borrowController().returnBook(userId, bookId);
 
-		refreshBooksTable(bookController.getAllBooks());
+		refresh();
 
 		showInfo("还书成功");
 	}

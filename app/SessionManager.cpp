@@ -1,33 +1,38 @@
-#include "app/SessionManager.h"
-#include <iostream>
+#include "SessionManager.h"
 
-std::optional<UserDTO> SessionManager::currentUserInfo;
+#include <stdexcept>
 
 void SessionManager::login(const UserDTO& user)
 {
-    currentUserInfo = user;
+	m_currentUser = user;
 }
 
 void SessionManager::logout()
 {
-    currentUserInfo.reset();
+	m_currentUser.reset();
 }
 
-bool SessionManager::isLoggedIn()
+bool SessionManager::isLoggedIn() const
 {
-    return currentUserInfo.has_value();
+	return m_currentUser.has_value();
 }
 
-const UserDTO& SessionManager::currentUser()
+const UserDTO& SessionManager::currentUser() const
 {
-    if (!currentUserInfo)
-    {
-        throw std::runtime_error("No user logged in");
-    }
+	if (!m_currentUser.has_value())
+	{
+		throw std::logic_error("No active session.");
+	}
 
-    return *currentUserInfo;
+	return *m_currentUser;
 }
 
-bool SessionManager::isAdmin() {
-    return currentUserInfo.has_value() && currentUserInfo->role == Role::Admin;
+bool SessionManager::isAdmin() const
+{
+	return isLoggedIn() && m_currentUser.value().role == Role::Admin;
+}
+
+bool SessionManager::isUser() const
+{
+	return isLoggedIn() && m_currentUser.value().role == Role::User;
 }

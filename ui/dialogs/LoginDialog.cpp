@@ -32,11 +32,19 @@ void LoginDialog::onLoginClicked()
 	try
 	{
 		auto user = authController.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
-		SessionManager::login(user);
-		accept(); // Close the dialog with Accepted status
+		if (user.has_value())
+		{
+			m_authenticatedUser = *user;
+
+			accept();
+		}
 	}
 	catch (const std::exception& e)
 	{
 		QMessageBox::warning(this, "Error", e.what());
 	}
+}
+
+const std::optional<UserDTO>& LoginDialog::authenticatedUser() const {
+	return m_authenticatedUser;
 }

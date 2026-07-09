@@ -4,7 +4,7 @@ AuthService::AuthService(IUserRepository& userRepo):userRepo(userRepo) {
 
 }
 
-UserDTO AuthService::login(const std::string& username, const std::string& password) {
+std::optional<UserDTO> AuthService::login(const std::string& username, const std::string& password) {
 	auto user = userRepo.findByUserName(username);
 	if (!user) {
 		std::string msg = "[LOGIN_ERROR] User not found: " + username;

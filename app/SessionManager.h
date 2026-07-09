@@ -4,21 +4,27 @@
 
 #include "dto/UserDTO.h"
 
+/*
+* 会话管理
+*/
+
 class SessionManager
 {
 public:
 
-	static void login(const UserDTO& user);
+	void login(const UserDTO& user); //登录
 
-	static void logout();
+	void logout(); //退出登录
 
-	static bool isLoggedIn();
+	bool isLoggedIn() const; //是否已登录
 
-	static const UserDTO& currentUser();
+	const UserDTO& currentUser() const; //当前登录用户
 
-	static bool isAdmin();
+	bool isAdmin() const; //权限判断
+
+	bool isUser() const; //权限判断
 
 private:
 
-	static std::optional<UserDTO> currentUserInfo;
+	std::optional<UserDTO> m_currentUser;
 };

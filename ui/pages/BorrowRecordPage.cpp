@@ -1,6 +1,6 @@
 #include "BorrowRecordPage.h"
 
-BorrowRecordPage::BorrowRecordPage(BorrowController& borrowController, QWidget* parent) :borrowController(borrowController), BasePage(parent)
+BorrowRecordPage::BorrowRecordPage(ApplicationContext& context, QWidget* parent) :m_context(context), BasePage(parent)
 {
 	setupUI();
 	setConnections();
@@ -15,17 +15,20 @@ void BorrowRecordPage::setupUI() {
 	// 工具栏
 	auto* toolbar = new QHBoxLayout();
 
-	toolbar->addWidget(new QLabel("用户名："));
-	searchByUsernameEdit = new QLineEdit();
-	searchByUsernameEdit->setPlaceholderText("请输入用户名");
+	if (m_context.sessionManager().isAdmin()) {
+		toolbar->addWidget(new QLabel("用户名："));
+		searchByUsernameEdit = new QLineEdit();
+		searchByUsernameEdit->setPlaceholderText("请输入用户名");
+		toolbar->addWidget(searchByUsernameEdit);
+	}
+
+	toolbar->addWidget(new QLabel("图书名："));
 	searchByBookTitleEdit = new QLineEdit();
 	searchByBookTitleEdit->setPlaceholderText("请输入图书名");
 
 	searchButton = new QPushButton("搜索");
 	refreshBorrowRecordButton = new QPushButton("刷新");
 
-	toolbar->addWidget(searchByUsernameEdit);
-	toolbar->addWidget(new QLabel("图书名："));
 	toolbar->addWidget(searchByBookTitleEdit);
 	toolbar->addWidget(searchButton);
 	toolbar->addStretch();
@@ -47,7 +50,12 @@ void BorrowRecordPage::setConnections()
 
 void BorrowRecordPage::refresh()
 {
-	refreshBorrowRecordsTable(borrowController.getAllBorrowRecords());
+	if (m_context.sessionManager().isAdmin()) {
+		refreshBorrowRecordsTable(m_context.borrowController().getAllBorrowRecords());
+	}
+	else {
+		refreshBorrowRecordsTable(m_context.borrowController().findBorrowRecordByNameAndBookTitle(m_context.sessionManager().currentUser().name,""));
+	}
 }
 
 void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& records)
@@ -73,10 +81,16 @@ void BorrowRecordPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordD
 }
 
 void BorrowRecordPage::onSearchClicked() {
-	QString username = searchByUsernameEdit->text();
+	std::string name;
+	if (m_context.sessionManager().isAdmin()) {
+		name = searchByUsernameEdit->text().toStdString();
+		searchByUsernameEdit->clear();
+	}
+	else {
+		name = m_context.sessionManager().currentUser().name;
+	}
 	QString bookTitle = searchByBookTitleEdit->text();
-	searchByUsernameEdit->clear();
 	searchByBookTitleEdit->clear();
-	auto records = borrowController.findBorrowRecordByUsernameAndBookTitle(username.toStdString(),bookTitle.toStdString());
+	auto records = m_context.borrowController().findBorrowRecordByNameAndBookTitle(name, bookTitle.toStdString());
 	refreshBorrowRecordsTable(records);
 }

@@ -4,7 +4,7 @@ AuthController::AuthController(AuthService& authService):authService(authService
 
 }
 
-UserDTO AuthController::login(const std::string& username, const std::string& password)
+std::optional<UserDTO> AuthController::login(const std::string& username, const std::string& password)
 {
 	try
 	{

@@ -8,7 +8,7 @@
 #include "controller/book/BookController.h"
 #include "controller/user/UserController.h"
 #include "controller/borrow/BorrowController.h"
-#include "controller/auth/AuthController.h"
+#include "app/SessionManager.h"
 
 class ApplicationContext
 {
@@ -20,11 +20,13 @@ public:
     void createRepositories();
     void createServices();
     void createControllers();
+    void createSession();
 
     BookController& bookController();
     UserController& userController();
     BorrowController& borrowController();
     SQLiteUserRepository& userRepository();
+    SessionManager& sessionManager();
 
 private:
 
@@ -41,4 +43,6 @@ private:
     std::unique_ptr<BookController> bookController_;
     std::unique_ptr<UserController> userController_;
     std::unique_ptr<BorrowController> borrowController_;
+
+    std::unique_ptr<SessionManager> sessionManager_;
 };
