@@ -9,11 +9,11 @@
 - 登录界面
 - ![Login](docs/login.png)
 - 图书管理
-- ![Book](docs/login.png)
+- ![Book](docs/book.png)
 - 用户管理
-- ![User](docs/login.png)
+- ![User](docs/user.png)
 - 借阅管理
-- ![Borrow](docs/login.png)
+- ![Borrow](docs/borrow.png)
 
 ---
 
@@ -122,18 +122,20 @@
 ```
 LibrarySystem
 │
-├── include/              头文件
-├── src/                  源代码
+├── app/                  管理整个程序的入口
+├── common/               可复用的工具库
 │
 ├── controller/           控制层
-├── service/              业务层
-├── repository/           数据访问层
-├── dto/                  数据传输对象
-├── model/                实体对象
+├── core/                 管理整个程序对象的生命周期
 ├── database/             SQLite 数据库
+├── dto/                  数据传输对象
+├── mapper/               SQL语句与对象的映射
+├── model/                实体对象
+├── repository/           数据访问层
+├── resources/            资源文件
+├── service/              业务层
 │
 ├── ui/                   Qt 页面
-├── resources/            资源文件
 │
 ├── CMakeLists.txt
 └── README.md
@@ -152,13 +154,6 @@ books
 
 borrow_records
 
-roles
-
-permissions
-
-user_roles
-
-role_permissions
 ```
 
 采用 SQLite 存储。
