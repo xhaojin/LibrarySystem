@@ -15,9 +15,6 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 private:
-	//BookController& bookController; //图书控制器
-	//UserController& userController; //用户控制器
-	//BorrowController& borrowController; //借阅记录控制器
 	ApplicationContext& m_context; //应用程序上下文
 
 	BookPage* bookpage; //图书管理页面
