@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../interfaces/IBookRepository.h"
-#include "database/SQLiteDatabase.h"
+#include "database/sqlite/SQLiteDatabase.h"
 
 class SQLiteBookRepository: public IBookRepository
 {

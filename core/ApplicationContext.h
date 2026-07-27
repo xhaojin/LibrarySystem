@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "database/SQLiteDatabase.h"
+#include "database/sqlite/SQLiteDatabase.h"
 #include "repository/SQLite/SQLiteBookRepository.h"
 #include "repository/SQLite/SQLiteBorrowRecordRepository.h"
 #include "repository/SQLite/SQLiteUserRepository.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../interfaces/IUserRepository.h"
-#include "database/SQLiteDatabase.h"
+#include "database/sqlite/SQLiteDatabase.h"
 
 class SQLiteUserRepository :public IUserRepository {
 public:
