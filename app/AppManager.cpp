@@ -1,11 +1,14 @@
 #include "app/AppManager.h"
 #include "ui/dialogs/LoginDialog.h"
+#include "database/test/DatabaseTest.h"
 
 AppManager::AppManager() {
 }
 
 int AppManager::run(int argc, char* argv[]) {
 	QApplication app(argc, argv);
+
+	DatabaseTest::testMySQLConnection();
 
 	context = std::make_unique<ApplicationContext>();
 

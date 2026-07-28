@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QSqlDatabase>
+
 class IDatabase
 {
 public:
@@ -10,4 +12,6 @@ public:
     virtual void disconnect() = 0;
 
     virtual bool isConnected() const = 0;
+
+    virtual QSqlDatabase database() const = 0;
 };

@@ -10,6 +10,9 @@ target_sources(database PRIVATE
     "mysql/MySQLDatabase.cpp"
     "mysql/MySQLDatabase.h"
 
+    "test/DatabaseTest.cpp"
+    "test/DatabaseTest.h"
+
     DBConfig.h
     IDatabase.h
 )
@@ -34,13 +37,4 @@ PRIVATE
     Qt6::Widgets
     Qt6::Sql
     "${MYSQL_CONNECTOR_ROOT}/lib64/vs14/mysqlcppconn.lib"
-)
-
-# ==============================
-# Copy MySQL DLL After Build
-# ==============================
-add_custom_command(TARGET database POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${MYSQL_CONNECTOR_ROOT}/lib64/mysqlcppconn-9-vs14.dll"
-    $<TARGET_FILE_DIR:LibrarySystem>
 )
