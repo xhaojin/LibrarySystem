@@ -1,6 +1,6 @@
 #include "app/AppManager.h"
 #include "ui/dialogs/LoginDialog.h"
-#include "database/test/DatabaseTest.h"
+#include "database/mysql/MySQLDatabase.h"
 
 AppManager::AppManager() {
 }
@@ -8,7 +8,24 @@ AppManager::AppManager() {
 int AppManager::run(int argc, char* argv[]) {
 	QApplication app(argc, argv);
 
-	DatabaseTest::testMySQLConnection();
+	DBConfig config;
+
+	config.host = "127.0.0.1";
+	config.port = 3306;
+	config.database = "library";
+	config.username = "root";
+	config.password = "1234";
+
+	MySQLDatabase db(config);
+
+	if (db.connect())
+	{
+		std::cout << "连接成功！" << std::endl;
+	}
+	else
+	{
+		std::cout << "连接失败！" << std::endl;
+	}
 
 	context = std::make_unique<ApplicationContext>();
 

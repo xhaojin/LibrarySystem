@@ -6,11 +6,16 @@ struct DBConfig
 {
     std::string host = "127.0.0.1";
 
-    uint16_t port = 3306;
+    int port = 3306;
 
     std::string database = "library";
-    
+
     std::string username = "root";
 
     std::string password = "1234";
+
+    std::string getUrl() const
+    {
+        return "tcp://" + host + ":" + std::to_string(port);
+    }
 };

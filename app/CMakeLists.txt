@@ -9,4 +9,11 @@ target_include_directories(app PUBLIC
     ${CMAKE_SOURCE_DIR}
 )
 
-target_link_libraries(app PUBLIC Qt6::Widgets Qt6::Core Qt6::Sql)
+target_link_libraries(app
+    PUBLIC 
+        Qt6::Widgets 
+        Qt6::Core 
+        Qt6::Sql
+    PRIVATE 
+        database
+)

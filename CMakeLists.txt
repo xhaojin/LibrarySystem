@@ -35,7 +35,7 @@ add_subdirectory(dto)
 add_subdirectory(common)
 
 # ===== main =====
-add_executable(LibrarySystem main.cpp)
+add_executable(LibrarySystem WIN32 main.cpp)
 
 # 链接所有模块
 target_link_libraries(LibrarySystem

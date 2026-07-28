@@ -1,6 +1,11 @@
 #pragma once
 
-#include <QSqlDatabase>
+#include <memory>
+
+namespace sql
+{
+    class Connection;
+}
 
 class IDatabase
 {
@@ -13,5 +18,11 @@ public:
 
     virtual bool isConnected() const = 0;
 
-    virtual QSqlDatabase database() const = 0;
+    virtual sql::Connection* getConnection() = 0;
+
+    virtual void beginTransaction() = 0;
+
+    virtual void commit() = 0;
+
+    virtual void rollback() = 0;
 };

@@ -24,8 +24,6 @@ target_include_directories(database
 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}
-
-PRIVATE
     ${MYSQL_CONNECTOR_ROOT}/include
 )
 
