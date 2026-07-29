@@ -21,39 +21,39 @@ bool ApplicationContext::initialize()
 }
 
 bool ApplicationContext::initializeDatabase() {
-	database_ = std::make_unique<SQLiteDatabase>();
+	//database_ = std::make_unique<SQLiteDatabase>();
 
-	if (!database_->open("library.db"))
-		return false;
+	//if (!database_->open("library.db"))
+	//	return false;
 
-	if (!database_->initialize())
-		return false;
+	//if (!database_->initialize())
+	//	return false;
 
 	return true;
 }
 
 void ApplicationContext::createRepositories() {
-	bookRepo_ = std::make_unique<SQLiteBookRepository>(*database_);
+	//bookRepo_ = std::make_unique<SQLiteBookRepository>(*database_);
 
-	userRepo_ = std::make_unique<SQLiteUserRepository>(*database_);
+	//userRepo_ = std::make_unique<SQLiteUserRepository>(*database_);
 
-	borrowRepo_ = std::make_unique<SQLiteBorrowRecordRepository>(*database_);
+	//borrowRepo_ = std::make_unique<SQLiteBorrowRecordRepository>(*database_);
 }
 
 void ApplicationContext::createServices() {
-	userService_ = std::make_unique<UserService>(*userRepo_);
+	//userService_ = std::make_unique<UserService>(*userRepo_);
 
-	bookService_ = std::make_unique<BookService>(*bookRepo_);
+	//bookService_ = std::make_unique<BookService>(*bookRepo_);
 
-	borrowService_ = std::make_unique<BorrowService>(*bookRepo_, *userRepo_, *borrowRepo_);
+	//borrowService_ = std::make_unique<BorrowService>(*bookRepo_, *userRepo_, *borrowRepo_);
 }
 
 void ApplicationContext::createControllers() {
-	userController_ = std::make_unique<UserController>(*userService_);
+	//userController_ = std::make_unique<UserController>(*userService_);
 
-	bookController_ = std::make_unique<BookController>(*bookService_);
+	//bookController_ = std::make_unique<BookController>(*bookService_);
 
-	borrowController_ = std::make_unique<BorrowController>(*borrowService_);
+	//borrowController_ = std::make_unique<BorrowController>(*borrowService_);
 }
 
 void ApplicationContext::createSession() {
@@ -75,9 +75,9 @@ BorrowController& ApplicationContext::borrowController()
 	return *borrowController_;
 }
 
-SQLiteUserRepository& ApplicationContext::userRepository() {
-	return *userRepo_;
-}
+//SQLiteUserRepository& ApplicationContext::userRepository() {
+//	return *userRepo_;
+//}
 
 SessionManager& ApplicationContext::sessionManager() {
 	return *sessionManager_;

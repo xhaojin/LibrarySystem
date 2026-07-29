@@ -7,7 +7,7 @@ class SQLiteUserRepository :public IUserRepository {
 public:
     explicit SQLiteUserRepository(SQLiteDatabase& database);
 
-    bool add(std::shared_ptr<User> user) override;
+    bool add(const User& user) override;
 
     bool remove(int bookId) override;
 

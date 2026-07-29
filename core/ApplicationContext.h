@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "database/sqlite/SQLiteDatabase.h"
-#include "repository/SQLite/SQLiteBookRepository.h"
-#include "repository/SQLite/SQLiteBorrowRecordRepository.h"
-#include "repository/SQLite/SQLiteUserRepository.h"
+//#include "database/sqlite/SQLiteDatabase.h"
+//#include "repository/SQLite/SQLiteBookRepository.h"
+//#include "repository/SQLite/SQLiteBorrowRecordRepository.h"
+//#include "repository/SQLite/SQLiteUserRepository.h"
 #include "controller/book/BookController.h"
 #include "controller/user/UserController.h"
 #include "controller/borrow/BorrowController.h"
@@ -25,16 +25,16 @@ public:
     BookController& bookController();
     UserController& userController();
     BorrowController& borrowController();
-    SQLiteUserRepository& userRepository();
+    //SQLiteUserRepository& userRepository();
     SessionManager& sessionManager();
 
 private:
 
-    std::unique_ptr<SQLiteDatabase> database_;
+    //std::unique_ptr<SQLiteDatabase> database_;
 
-    std::unique_ptr<SQLiteBookRepository> bookRepo_;
-    std::unique_ptr<SQLiteUserRepository> userRepo_;
-    std::unique_ptr<SQLiteBorrowRecordRepository> borrowRepo_;
+    //std::unique_ptr<SQLiteBookRepository> bookRepo_;
+    //std::unique_ptr<SQLiteUserRepository> userRepo_;
+    //std::unique_ptr<SQLiteBorrowRecordRepository> borrowRepo_;
 
     std::unique_ptr<BookService> bookService_;
     std::unique_ptr<UserService> userService_;

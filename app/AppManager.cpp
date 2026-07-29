@@ -27,17 +27,17 @@ int AppManager::run(int argc, char* argv[]) {
 		std::cout << "连接失败！" << std::endl;
 	}
 
-	context = std::make_unique<ApplicationContext>();
+	//context = std::make_unique<ApplicationContext>();
 
-	if (!context->initialize())
-		return -1;
+	//if (!context->initialize())
+	//	return -1;
 
-	if (!showLoginDialog())
-		return 0;
+	//if (!showLoginDialog())
+	//	return 0;
 
-	createMainWindow();
+	//createMainWindow();
 
-	mainWindow->show();
+	//mainWindow->show();
 
 	return app.exec();
 }
@@ -46,17 +46,17 @@ void AppManager::createMainWindow() {
 	mainWindow = std::make_unique<MainWindow>(*context);
 }
 bool AppManager::showLoginDialog() {
-	AuthService authService(context->userRepository());
+	//AuthService authService(context->userRepository());
 
-	AuthController authController(authService);
+	//AuthController authController(authService);
 
-	LoginDialog loginDialog(authController);
+	//LoginDialog loginDialog(authController);
 
-	if (loginDialog.exec() != QDialog::Accepted)
-	{
-		return false;
-	}
+	//if (loginDialog.exec() != QDialog::Accepted)
+	//{
+	//	return false;
+	//}
 
-	context->sessionManager().login(*loginDialog.authenticatedUser());
+	//context->sessionManager().login(*loginDialog.authenticatedUser());
 	return true;
 }

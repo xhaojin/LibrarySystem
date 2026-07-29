@@ -1,4 +1,5 @@
 #include "AuthService.h"
+#include <stdexcept>
 
 AuthService::AuthService(IUserRepository& userRepo):userRepo(userRepo) {
 
@@ -21,7 +22,7 @@ std::optional<UserDTO> AuthService::login(const std::string& username, const std
 	userDTO.id = user->getId();
 	userDTO.name = user->getName();
 	userDTO.username = user->getUsername();
-	userDTO.role = user->getRole();
+	//userDTO.role = user->getRole();
 	userDTO.gender = (user->getGender() == Gender::Male ? "男" : "女");
 	userDTO.age = user->getAge();
 	userDTO.phone = user->getPhone();

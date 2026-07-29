@@ -4,13 +4,25 @@
 
 #include "model/User.h"
 
-#include <QSqlQuery>
+#include <mysql/jdbc.h>
+
+// SQLite版本（已弃用）
+// #include <QSqlQuery>
 
 class UserMapper
 {
 public:
+    //==========================
+    // MySQL
+    //==========================
 
-    static std::shared_ptr<User> fromQuery(const QSqlQuery& query);
+    static std::shared_ptr<User> fromResultSet(sql::ResultSet& rs);
 
-    static void bindToQuery(QSqlQuery& query, const User& user);
+    //==========================
+    // SQLite（保留接口，已弃用）
+    //==========================
+
+    //static std::shared_ptr<User> fromQuery(const QSqlQuery& query);
+
+    //static void bindToQuery(QSqlQuery& query, const User& user);
 };

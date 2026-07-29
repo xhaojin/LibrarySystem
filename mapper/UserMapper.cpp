@@ -1,40 +1,77 @@
 #include "UserMapper.h"
 
-std::shared_ptr<User> UserMapper::fromQuery(const QSqlQuery& query)
+std::shared_ptr<User> UserMapper::fromResultSet(sql::ResultSet& rs)
 {
-	return std::make_shared<User>(query.value("id").toInt(),
+    auto user = std::make_shared<User>();
 
-		query.value("name").toString().toStdString(),
+    user->setId(rs.getInt("id"));
 
-		query.value("gender").toString().toStdString() == "Male" ? Gender::Male : Gender::Female,
+    user->setUsername(rs.getString("username"));
 
-		query.value("age").toInt(),
+    user->setPassword(rs.getString("password"));
 
-		query.value("phone").toString().toStdString(),
+    user->setName(rs.getString("name"));
 
-		query.value("username").toString().toStdString(),
+    user->setGender(static_cast<Gender>(rs.getInt("gender")));
 
-		query.value("password").toString().toStdString(),
+    user->setAge(rs.getInt("age"));
 
-		query.value("role").toString().toStdString() == "User" ? Role::User : Role::Admin
-	);
+    user->setPhone(rs.getString("phone"));
+
+    user->setEnabled(rs.getBoolean("enabled"));
+
+    user->setDeleted(rs.getBoolean("deleted"));
+
+    // last_login_time 允许为空
+    if (!rs.isNull("last_login_time"))
+    {
+        user->setLastLoginTime(rs.getString("last_login_time"));
+    }
+
+    // last_login_ip 允许为空
+    if (!rs.isNull("last_login_ip"))
+    {
+        user->setLastLoginIp(rs.getString("last_login_ip"));
+    }
+
+    return user;
 }
 
-void UserMapper::bindToQuery(QSqlQuery& query, const User& user)
-{
-	query.bindValue(":id", user.getId());
+//std::shared_ptr<User> UserMapper::fromQuery(const QSqlQuery& query)
+//{
+//	return std::make_shared<User>(query.value("id").toInt(),
+//
+//		query.value("name").toString().toStdString(),
+//
+//		query.value("gender").toString().toStdString() == "Male" ? Gender::Male : Gender::Female,
+//
+//		query.value("age").toInt(),
+//
+//		query.value("phone").toString().toStdString(),
+//
+//		query.value("username").toString().toStdString(),
+//
+//		query.value("password").toString().toStdString(),
+//
+//		query.value("role").toString().toStdString() == "User" ? Role::User : Role::Admin
+//	);
+//}
 
-	query.bindValue(":name", QString::fromStdString(user.getName()));
-
-	query.bindValue(":gender", user.getGender() == Gender::Male ? "Male" : "Female");
-
-	query.bindValue(":age", user.getAge());
-
-	query.bindValue(":phone", QString::fromStdString(user.getPhone()));
-
-	query.bindValue(":username", QString::fromStdString(user.getUsername()));
-
-	query.bindValue(":password", QString::fromStdString(user.getPassword()));
-
-	query.bindValue(":role", user.getRole() == Role::Admin ? "Admin" : "User");
-}
+//void UserMapper::bindToQuery(QSqlQuery& query, const User& user)
+//{
+//	query.bindValue(":id", user.getId());
+//
+//	query.bindValue(":name", QString::fromStdString(user.getName()));
+//
+//	query.bindValue(":gender", user.getGender() == Gender::Male ? "Male" : "Female");
+//
+//	query.bindValue(":age", user.getAge());
+//
+//	query.bindValue(":phone", QString::fromStdString(user.getPhone()));
+//
+//	query.bindValue(":username", QString::fromStdString(user.getUsername()));
+//
+//	query.bindValue(":password", QString::fromStdString(user.getPassword()));
+//
+//	query.bindValue(":role", user.getRole() == Role::Admin ? "Admin" : "User");
+//}

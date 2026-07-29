@@ -1,7 +1,7 @@
 -- ===========================================
 -- Library Management System Database
 -- Version: 1.0
--- MySQL 8.4+
+-- MySQL 8.0+
 -- ===========================================
 
 DROP DATABASE IF EXISTS library;

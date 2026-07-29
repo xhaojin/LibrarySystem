@@ -2,12 +2,15 @@
 
 #include "model/User.h"
 
+#include <vector>
+#include <memory>
+
 class IUserRepository
 {
 public:
     virtual ~IUserRepository() = default;
 
-    virtual bool add(std::shared_ptr<User> user) = 0;
+    virtual bool add(const User& user) = 0;
 
     virtual bool remove(int userId) = 0;
 
