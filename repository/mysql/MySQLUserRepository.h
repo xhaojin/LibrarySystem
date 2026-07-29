@@ -18,7 +18,7 @@ public:
 
     std::vector<std::shared_ptr<User>> findByName(const std::string& name) const override;
 
-    std::shared_ptr<User> findByUserName(const std::string& username) const override;
+    std::shared_ptr<User> findByUsername(const std::string& username) const override;
 
     std::vector<std::shared_ptr<User>> findAll() const override;
 

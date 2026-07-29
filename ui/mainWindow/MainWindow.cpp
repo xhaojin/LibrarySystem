@@ -32,34 +32,34 @@ void MainWindow::setupUI()
 	// =========================
 	// Book Page
 	// =========================
-	bookMenuBtn = new QPushButton("图书管理");
-	navLeftLayout->addWidget(bookMenuBtn);
-	bookpage = new BookPage(m_context);
-	stackedWidget->addWidget(bookpage);
-	connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); bookpage->refresh();});
-	pageId++;
+	//bookMenuBtn = new QPushButton("图书管理");
+	//navLeftLayout->addWidget(bookMenuBtn);
+	//bookpage = new BookPage(m_context);
+	//stackedWidget->addWidget(bookpage);
+	//connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); bookpage->refresh();});
+	//pageId++;
 
 	// =========================
 	// User Page
 	// =========================
-	if (m_context.sessionManager().isAdmin()) {
-		userMenuBtn = new QPushButton("用户管理");
-		navLeftLayout->addWidget(userMenuBtn);
-		userpage = new UserPage(m_context.userController());
-		stackedWidget->addWidget(userpage);
-		connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); userpage->refresh();});
-		pageId++;
-	}
+	//if (m_context.sessionManager().isAdmin()) {
+	//	userMenuBtn = new QPushButton("用户管理");
+	//	navLeftLayout->addWidget(userMenuBtn);
+	//	userpage = new UserPage(m_context.userController());
+	//	stackedWidget->addWidget(userpage);
+	//	connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); userpage->refresh();});
+	//	pageId++;
+	//}
 
 	// =========================
 	// Borrow Page
 	// =========================
-	borrowMenuBtn = new QPushButton("借阅记录管理");
-	navLeftLayout->addWidget(borrowMenuBtn);
-	borrowpage = new BorrowRecordPage(m_context);
-	stackedWidget->addWidget(borrowpage);
-	connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
-	pageId++;
+	//borrowMenuBtn = new QPushButton("借阅记录管理");
+	//navLeftLayout->addWidget(borrowMenuBtn);
+	//borrowpage = new BorrowRecordPage(m_context);
+	//stackedWidget->addWidget(borrowpage);
+	//connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
+	//pageId++;
 
 	// =========================
 	// 默认页面

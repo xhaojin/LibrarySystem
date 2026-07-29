@@ -23,8 +23,6 @@ target_sources(database PRIVATE
 target_include_directories(database
 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}
-    ${MYSQL_CONNECTOR_ROOT}/include
 )
 
 # ==============================
@@ -34,5 +32,5 @@ target_link_libraries(database
 PRIVATE
     Qt6::Widgets
     Qt6::Sql
-    "${MYSQL_CONNECTOR_ROOT}/lib64/vs14/mysqlcppconn.lib"
+    MySQLConnector
 )

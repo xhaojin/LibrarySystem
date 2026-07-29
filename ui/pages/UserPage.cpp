@@ -178,8 +178,8 @@ void UserPage::refreshUsersTable(const std::vector<UserDTO>& users)
 
 		userTable->setItem(row, 5, new QTableWidgetItem(QString::fromStdString(user.username)));
 
-		userTable->setItem(row, 6, new QTableWidgetItem(QString::fromStdString(user.role == Role::Admin ? "Admin" : "User")));
+		//userTable->setItem(row, 6, new QTableWidgetItem(QString::fromStdString(user.role == Role::Admin ? "Admin" : "User")));
 
-		userTable->setItem(row, 7, new QTableWidgetItem(QString::number(user.borrowedCount)));
+		//userTable->setItem(row, 7, new QTableWidgetItem(QString::number(user.borrowedCount)));
 	}
 }

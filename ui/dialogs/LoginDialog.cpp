@@ -31,12 +31,30 @@ void LoginDialog::onLoginClicked()
 {
 	try
 	{
-		auto user = authController.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
-		if (user.has_value())
-		{
-			m_authenticatedUser = *user;
+		auto result = authController.login(usernameEdit->text().toStdString(), passwordEdit->text().toStdString());
 
+		switch (result.status)
+		{
+		case LoginStatus::Success:
+			if (result.user.has_value()) m_authenticatedUser = *result.user;
 			accept();
+			break;
+
+		case LoginStatus::UserNotFound:
+			QMessageBox::warning(this, "登录失败", "用户名不存在");
+			break;
+
+		case LoginStatus::WrongPassword:
+			QMessageBox::warning(this, "登录失败", "密码错误");
+			break;
+
+		case LoginStatus::Disabled:
+			QMessageBox::warning(this, "登录失败", "账号已被禁用");
+			break;
+
+		case LoginStatus::DatabaseError:
+			QMessageBox::critical(this, "登录失败", "数据库连接异常");
+			break;
 		}
 	}
 	catch (const std::exception& e)

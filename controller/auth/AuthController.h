@@ -6,7 +6,7 @@ class AuthController {
 public:
 	explicit AuthController(AuthService& authService);
 
-	std::optional<UserDTO> login(const std::string& username, const std::string& password);
+	LoginResult login(const std::string& username, const std::string& password);
 
 private:
 	AuthService& authService;

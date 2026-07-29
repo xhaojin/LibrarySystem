@@ -15,9 +15,11 @@ target_sources(ui PRIVATE
 
 target_include_directories(ui PUBLIC
     ${CMAKE_SOURCE_DIR}
+    ${MYSQL_CONNECTOR_ROOT}/include
 )
 
 target_link_libraries(ui PRIVATE
     Qt6::Widgets
     Qt6::Sql
+    MySQLConnector
 )

@@ -81,6 +81,11 @@ const std::optional<std::string>& User::getLastLoginTime() const
 
 //================ Setter =================
 
+void User::setId(int id) 
+{
+    m_id = id;
+}
+
 void User::setUsername(const std::string& username)
 {
     m_username = username;

@@ -20,7 +20,7 @@ public:
 
     virtual std::vector<std::shared_ptr<User>> findByName(const std::string& name) const = 0;
 
-    virtual std::shared_ptr<User> findByUserName(const std::string& username) const = 0;
+    virtual std::shared_ptr<User> findByUsername(const std::string& username) const = 0;
 
     virtual std::vector<std::shared_ptr<User>> findAll() const = 0;
 };

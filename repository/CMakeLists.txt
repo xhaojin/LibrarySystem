@@ -15,4 +15,4 @@ target_link_libraries(repository PRIVATE
     model
 )
 
-target_link_libraries(repository PRIVATE Qt6::Widgets Qt6::Sql)
+target_link_libraries(repository PRIVATE Qt6::Widgets Qt6::Sql MySQLConnector)

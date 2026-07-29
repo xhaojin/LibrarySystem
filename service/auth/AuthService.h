@@ -2,8 +2,9 @@
 
 #include "dto/UserDTO.h"
 #include "common/utils/logger.h"
-#include <optional>
+#include "LoginResult.h"
 #include "repository/interfaces/IUserRepository.h"
+
 
 class AuthService {
 private:
@@ -11,5 +12,5 @@ private:
 
 public:
 	explicit AuthService(IUserRepository& userRepo);
-	std::optional<UserDTO> login(const std::string& username, const std::string& password); //登录方法
+    LoginResult login(const std::string& username, const std::string& password); //登录方法
 };

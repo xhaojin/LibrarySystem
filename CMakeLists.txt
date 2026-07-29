@@ -19,6 +19,19 @@ set(MYSQL_CONNECTOR_ROOT
     ${CMAKE_SOURCE_DIR}/thirdparty/mysql-connector-c++-8.0.33-winx64
 )
 
+add_library(MySQLConnector SHARED IMPORTED)
+
+set_target_properties(MySQLConnector PROPERTIES
+    IMPORTED_IMPLIB
+        "${MYSQL_CONNECTOR_ROOT}/lib64/vs14/mysqlcppconn.lib"
+
+    IMPORTED_LOCATION
+        "${MYSQL_CONNECTOR_ROOT}/lib64/mysqlcppconn-9-vs14.dll"
+
+    INTERFACE_INCLUDE_DIRECTORIES
+        "${MYSQL_CONNECTOR_ROOT}/include"
+)
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets Sql)
 
 # ===== 子模块 =====
@@ -37,6 +50,12 @@ add_subdirectory(common)
 # ===== main =====
 add_executable(LibrarySystem WIN32 main.cpp)
 
+target_include_directories(LibrarySystem
+PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
+)
+
 # 链接所有模块
 target_link_libraries(LibrarySystem
     app
@@ -52,18 +71,4 @@ target_link_libraries(LibrarySystem
     common
     Qt6::Widgets
     Qt6::Sql
-)
-
-add_custom_command(TARGET LibrarySystem POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${MYSQL_CONNECTOR_ROOT}/lib64/mysqlcppconn-9-vs14.dll"
-        $<TARGET_FILE_DIR:LibrarySystem>
-
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${MYSQL_CONNECTOR_ROOT}/lib64/libssl-1_1-x64.dll"
-        $<TARGET_FILE_DIR:LibrarySystem>
-
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${MYSQL_CONNECTOR_ROOT}/lib64/libcrypto-1_1-x64.dll"
-        $<TARGET_FILE_DIR:LibrarySystem>
 )

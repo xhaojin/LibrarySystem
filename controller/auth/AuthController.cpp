@@ -4,12 +4,12 @@ AuthController::AuthController(AuthService& authService):authService(authService
 
 }
 
-std::optional<UserDTO> AuthController::login(const std::string& username, const std::string& password)
+LoginResult AuthController::login(const std::string& username, const std::string& password)
 {
 	try
 	{
-		auto user = authService.login(username, password);
-		return user;
+		auto result = authService.login(username, password);
+		return result;
 	}
 	catch (const std::exception& e)
 	{

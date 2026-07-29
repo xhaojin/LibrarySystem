@@ -10,10 +10,9 @@ target_include_directories(app PUBLIC
 )
 
 target_link_libraries(app
-    PUBLIC 
-        Qt6::Widgets 
-        Qt6::Core 
-        Qt6::Sql
-    PRIVATE 
-        database
+PUBLIC 
+    Qt6::Widgets 
+    Qt6::Core 
+    Qt6::Sql
+    MySQLConnector
 )

@@ -97,13 +97,12 @@ std::shared_ptr<User> MySQLUserRepository::findById(int userId) const
     return UserMapper::fromResultSet(*rs);
 }
 
-std::shared_ptr<User> MySQLUserRepository::findByUserName(const std::string& username) const
+std::shared_ptr<User> MySQLUserRepository::findByUsername(const std::string& username) const
 {
     auto* conn = m_database.getConnection();
 
     std::unique_ptr<sql::PreparedStatement> stmt(
-        conn->prepareStatement(
-            "SELECT * FROM users WHERE username = ? AND deleted = FALSE"));
+        conn->prepareStatement("SELECT * FROM users WHERE username = ? AND deleted = FALSE"));
 
     stmt->setString(1, username);
 

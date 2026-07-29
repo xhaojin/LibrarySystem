@@ -71,7 +71,7 @@ void UserEditDialog::setUser(const UserDTO& user)
 	ageBox->setValue(user.age);
 	phoneEdit->setText(QString::fromStdString(user.phone));
 	usernameEdit->setText(QString::fromStdString(user.username));
-	roleBox->setCurrentText(QString::fromStdString(user.role == Role::Admin ? "Admin" : "User"));
+	//roleBox->setCurrentText(QString::fromStdString(user.role == Role::Admin ? "Admin" : "User"));
 }
 
 UserDTO UserEditDialog::getUser() const
@@ -82,7 +82,7 @@ UserDTO UserEditDialog::getUser() const
 	user.age = ageBox->value();
 	user.phone = phoneEdit->text().trimmed().toStdString();
 	user.username = usernameEdit->text().trimmed().toStdString();
-	user.role = roleBox->currentText() == "Admin" ? Role::Admin : Role::User;
+	//user.role = roleBox->currentText() == "Admin" ? Role::Admin : Role::User;
 	return user;
 }
 

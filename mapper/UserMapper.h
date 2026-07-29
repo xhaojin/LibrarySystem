@@ -9,6 +9,8 @@
 // SQLite版本（已弃用）
 // #include <QSqlQuery>
 
+//数据库(ResultSet) ↔ Model(User)
+
 class UserMapper
 {
 public:
