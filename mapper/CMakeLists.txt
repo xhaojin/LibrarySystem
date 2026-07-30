@@ -8,8 +8,6 @@ target_sources(mapper PRIVATE
 
 target_include_directories(mapper PUBLIC
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}
-    ${MYSQL_CONNECTOR_ROOT}/include
 )
 
-target_link_libraries(mapper PRIVATE Qt6::Sql)
+target_link_libraries(mapper PRIVATE Qt6::Sql MySQLConnector)

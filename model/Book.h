@@ -1,36 +1,80 @@
 #pragma once
 
 #include <string>
-#include <iostream>
 
-class Book {
+enum class BookStatus
+{
+    Normal = 0, //正常
+    OffShelf = 1, //下架
+    Disabled = 2 //禁用
+};
+
+class Book
+{
 private:
-	int id; //图书的编号
-	std::string title; //图书的标题
-	std::string author; //图书的作者
-	std::string publisher; //图书的出版社
-	double price; //图书的价格
-	bool BorrowedStatus; //图书的借阅状态
+    long long id;
+
+    std::string isbn;
+    std::string title;
+    std::string author;
+
+    long long publisherId;
+    long long categoryId;
+
+    int publishYear;
+
+    double price;
+
+    std::string coverUrl;
+
+    std::string description;
+
+    BookStatus status;
+
+    bool deleted;
+
 public:
-	//构造函数
-	Book(int id, const std::string& title, const std::string& author, const std::string& publisher, double price);
 
-	Book(int id, const std::string& title, const std::string& author, const std::string& publisher, double price, bool borrowedStatus);
+    Book(
+        long long id,
+        const std::string& isbn,
+        const std::string& title,
+        const std::string& author,
+        long long publisherId,
+        long long categoryId,
+        int publishYear,
+        double price,
+        const std::string& coverUrl,
+        const std::string& description,
+        BookStatus status,
+        bool deleted
+    );
 
-	int getId() const; //查询图书的编号
+    long long getId() const;
 
-	const std::string& getTitle() const; //查询图书的标题
+    const std::string& getISBN() const;
 
-	const std::string& getAuthor() const; //查询图书的作者
+    const std::string& getTitle() const;
 
-	const std::string& getPublisher() const; //查询图书的出版社
+    const std::string& getAuthor() const;
 
-	double getPrice() const; //查询图书的价格
+    long long getPublisherId() const;
 
-	void setPrice(double price); //设置图书价格
+    long long getCategoryId() const;
 
-	bool isBorrowed() const; //查询图书的借阅状态
+    int getPublishYear() const;
 
-	void setBorrowedStatus(bool status); //设置图书的借阅状态
+    double getPrice() const;
 
+    const std::string& getCoverUrl() const;
+
+    const std::string& getDescription() const;
+
+    BookStatus getStatus() const;
+
+    bool isDeleted() const;
+
+    bool isAvailable() const;
+
+    bool isOffShelf() const;
 };
