@@ -8,5 +8,5 @@
 class BookDTOMapper
 {
 public:
-    static BookDTO toDTO(const Book& book);
+    static BookDTO toDTO(const Book& book,std::string publisher,std::string category);
 };

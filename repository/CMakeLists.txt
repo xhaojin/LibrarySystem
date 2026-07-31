@@ -4,7 +4,7 @@ target_sources(repository PRIVATE
     SQLite/SQLiteBookRepository.cpp
     SQLite/SQLiteUserRepository.cpp
     SQLite/SQLiteBorrowRecordRepository.cpp
- "mysql/MySQLUserRepository.h" "mysql/MySQLUserRepository.cpp")
+ "mysql/MySQLUserRepository.h" "mysql/MySQLUserRepository.cpp" "mysql/MySQLBookRepository.h" "mysql/MySQLBookRepository.cpp")
 
 target_include_directories(repository PUBLIC
     ${CMAKE_SOURCE_DIR}

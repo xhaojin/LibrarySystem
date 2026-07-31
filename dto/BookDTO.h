@@ -12,8 +12,10 @@ struct BookDTO
 
     std::string author;
 
+    long long publisherId;
     std::string publisher;
 
+    long long categoryId;
     std::string category;
 
     int publishYear;

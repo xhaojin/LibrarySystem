@@ -1,6 +1,6 @@
 #include "BookDTOMapper.h"
 
-BookDTO BookDTOMapper::toDTO(const Book& book)
+BookDTO BookDTOMapper::toDTO(const Book& book, std::string publisher, std::string category)
 {
     BookDTO dto;
 
@@ -12,11 +12,13 @@ BookDTO BookDTOMapper::toDTO(const Book& book)
 
     dto.author = book.getAuthor();
 
-    // 后续由 PublisherService 查询名称
-    dto.publisher = "";
+    dto.publisherId = book.getPublisherId();
 
-    // 后续由 CategoryService 查询名称
-    dto.category = "";
+    dto.categoryId = book.getCategoryId();
+
+    dto.publisher = publisher;
+
+    dto.category = category;
 
     dto.publishYear = book.getPublishYear();
 
