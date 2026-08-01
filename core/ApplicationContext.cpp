@@ -21,12 +21,6 @@ bool ApplicationContext::initialize()
 }
 
 bool ApplicationContext::initializeDatabase() {
-	//database_ = std::make_unique<SQLiteDatabase>();
-	//if (!database_->open("library.db"))
-	//	return false;
-	//if (!database_->initialize())
-	//	return false;
-
 	DBConfig config;
 
 	config.host = "127.0.0.1";
@@ -41,7 +35,7 @@ bool ApplicationContext::initializeDatabase() {
 }
 
 void ApplicationContext::createRepositories() {
-	//bookRepo_ = std::make_unique<SQLiteBookRepository>(*database_);
+	bookRepo_ = std::make_unique<MySQLBookRepository>(*database_);
 
 	userRepo_ = std::make_unique<MySQLUserRepository>(*database_);
 
@@ -51,7 +45,7 @@ void ApplicationContext::createRepositories() {
 void ApplicationContext::createServices() {
 	userService_ = std::make_unique<UserService>(*userRepo_);
 
-	//bookService_ = std::make_unique<BookService>(*bookRepo_);
+	bookService_ = std::make_unique<BookService>(*bookRepo_);
 
 	//borrowService_ = std::make_unique<BorrowService>(*bookRepo_, *userRepo_, *borrowRepo_);
 }
@@ -59,7 +53,7 @@ void ApplicationContext::createServices() {
 void ApplicationContext::createControllers() {
 	userController_ = std::make_unique<UserController>(*userService_);
 
-	//bookController_ = std::make_unique<BookController>(*bookService_);
+	bookController_ = std::make_unique<BookController>(*bookService_);
 
 	//borrowController_ = std::make_unique<BorrowController>(*borrowService_);
 }

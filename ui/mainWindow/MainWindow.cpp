@@ -34,10 +34,10 @@ void MainWindow::setupUI()
 	// =========================
 	bookMenuBtn = new QPushButton("图书管理");
 	navLeftLayout->addWidget(bookMenuBtn);
-	//bookpage = new BookPage(m_context);
-	//stackedWidget->addWidget(bookpage);
-	//connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); bookpage->refresh();});
-	//pageId++;
+	bookpage = new BookPage(m_context);
+	stackedWidget->addWidget(bookpage);
+	connect(bookMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); bookpage->refresh();});
+	pageId++;
 
 	// =========================
 	// User Page

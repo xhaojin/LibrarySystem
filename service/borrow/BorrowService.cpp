@@ -18,18 +18,18 @@ void BorrowService::borrowBook(int userId, int bookId) {
 		Logger::log(msg);
 		throw std::runtime_error(msg);
 	}
-	if (book->isBorrowed()) {
-		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	// 修改图书状态
-	book->setBorrowedStatus(true);
+	//if (book->isBorrowed()) {
+	//	std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
+	//	Logger::log(msg);
+	//	throw std::runtime_error(msg);
+	//}
+	//// 修改图书状态
+	//book->setBorrowedStatus(true);
 
-	if (!bookRepo.updateBookStatus(*book))
-	{
-		throw std::runtime_error("Failed to update book status");
-	}
+	//if (!bookRepo.updateBookStatus(*book))
+	//{
+	//	throw std::runtime_error("Failed to update book status");
+	//}
 
 	// 创建借阅记录
 	auto record = std::make_shared<BorrowRecord>(0, userId, bookId, QDateTime::currentDateTime(), std::nullopt);
@@ -55,11 +55,11 @@ void BorrowService::returnBook(int userId, int bookId) {
 		Logger::log(msg);
 		throw std::runtime_error(msg);
 	}
-	if (!book->isBorrowed()) {
-		std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
+	//if (!book->isBorrowed()) {
+	//	std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
+	//	Logger::log(msg);
+	//	throw std::runtime_error(msg);
+	//}
 	auto record = borrowRepo.findActiveRecord(userId, bookId);
 
 	if (!record)
@@ -80,12 +80,12 @@ void BorrowService::returnBook(int userId, int bookId) {
 	}
 
 	// 更新图书状态
-	book->setBorrowedStatus(false);
+	//book->setBorrowedStatus(false);
 
-	if (!bookRepo.updateBookStatus(*book))
-	{
-		throw std::runtime_error("Failed to update book status");
-	}
+	//if (!bookRepo.updateBookStatus(*book))
+	//{
+	//	throw std::runtime_error("Failed to update book status");
+	//}
 
 	Logger::log("[RETURN_SUCCESS] User " + std::to_string(userId) + " returned book " + std::to_string(bookId));
 }

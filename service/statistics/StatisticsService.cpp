@@ -8,10 +8,12 @@ int StatisticsService::getTotalBooks() const {
 	return bookRepo.getTotalBooks();
 }
 int StatisticsService::getBorrowedBooksCount() const {
-	return bookRepo.getBorrowedBooksCount();
+	//return bookRepo.getBorrowedBooksCount();
+	return 0;
 }
 int StatisticsService::getAvailableBooksCount() const {
-	return bookRepo.getAvailableBooksCount();
+	//return bookRepo.getAvailableBooksCount();
+	return 0;
 }
 int StatisticsService::getUserCount() const {
 	return userRepo.findAll().size();

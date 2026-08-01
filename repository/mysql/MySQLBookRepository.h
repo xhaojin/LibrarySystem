@@ -6,8 +6,6 @@
 
 #include <memory>
 
-class MySQLDatabase;
-
 class MySQLBookRepository : public IBookRepository
 {
 public:

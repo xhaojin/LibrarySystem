@@ -6,9 +6,8 @@
 //#include "repository/SQLite/SQLiteUserRepository.h"
 #include <memory>
 #include "database/mysql/MySQLDatabase.h"
-//#include "repository/SQLite/SQLiteBookRepository.h"
-//#include "repository/SQLite/SQLiteBorrowRecordRepository.h"
 #include "repository/mysql/MySQLUserRepository.h"
+#include "repository/mysql/MySQLBookRepository.h"
 #include "controller/book/BookController.h"
 #include "controller/user/UserController.h"
 #include "controller/borrow/BorrowController.h"
@@ -35,13 +34,8 @@ public:
 
 private:
 
-    //std::unique_ptr<SQLiteDatabase> database_;
-    //std::unique_ptr<SQLiteBookRepository> bookRepo_;
-    //std::unique_ptr<SQLiteUserRepository> userRepo_;
-    //std::unique_ptr<SQLiteBorrowRecordRepository> borrowRepo_;
-
     std::unique_ptr<MySQLDatabase> database_;
-    //std::unique_ptr<SQLiteBookRepository> bookRepo_;
+    std::unique_ptr<MySQLBookRepository> bookRepo_;
     std::unique_ptr<MySQLUserRepository> userRepo_;
     //std::unique_ptr<SQLiteBorrowRecordRepository> borrowRepo_;
 

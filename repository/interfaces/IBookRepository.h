@@ -45,10 +45,10 @@ public:
     virtual int getTotalBooks() const = 0;
     
     //新增或修改图书时，需要检查 ISBN 是否已存在，避免违反数据库唯一约束，并能给出更友好的提示。
-    virtual bool existsISBN(const std::string& isbn) const = 0;
+    //virtual bool existsISBN(const std::string& isbn) const = 0;
 
     //以后如果实现分类管理，在删除分类前，需要判断该分类下是否还有图书。
-    virtual int countByCategory(long long categoryId) const = 0;
+    //virtual int countByCategory(long long categoryId) const = 0;
 
     //用于列表展示
     virtual std::vector<BookDTO> findAllWithDetail() const = 0;

@@ -48,7 +48,7 @@ add_subdirectory(dto)
 add_subdirectory(common)
 
 # ===== main =====
-add_executable(LibrarySystem WIN32 main.cpp)
+add_executable(LibrarySystem main.cpp)
 
 target_include_directories(LibrarySystem
 PUBLIC

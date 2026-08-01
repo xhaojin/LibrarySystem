@@ -56,8 +56,8 @@ void BookPage::setupUI() {
 	//表格
 	bookTable = new QTableWidget(this);
 	TableUtil::init(bookTable);
-	bookTable->setColumnCount(6);
-	bookTable->setHorizontalHeaderLabels({ "Book ID","Title","Author","Publisher","Price","Status" });
+	bookTable->setColumnCount(9);
+	bookTable->setHorizontalHeaderLabels({ "Book ID","Isbn","Title","Author","Publisher","Category","PublishYear","Price","Status" });
 	bookLayout->addWidget(bookTable);
 }
 
@@ -189,15 +189,21 @@ void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
 
 		bookTable->setItem(row, 0, new QTableWidgetItem(QString::number(book.id)));
 
-		bookTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(book.title)));
+		bookTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(book.isbn)));
 
-		bookTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(book.author)));
+		bookTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(book.title)));
 
-		bookTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(book.publisher)));
+		bookTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(book.author)));
 
-		bookTable->setItem(row, 4, new QTableWidgetItem(QString::number(book.price)));
+		bookTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(book.publisher)));
 
-		bookTable->setItem(row, 5, new QTableWidgetItem(book.isBorrowed ? "已借出" : "可借阅"));
+		bookTable->setItem(row, 5, new QTableWidgetItem(QString::fromStdString(book.category)));
+
+		bookTable->setItem(row, 6, new QTableWidgetItem(QString::number(book.publishYear)));
+
+		bookTable->setItem(row, 7, new QTableWidgetItem(QString::number(book.price)));
+
+		bookTable->setItem(row, 8, new QTableWidgetItem(QString::fromStdString(book.status)));
 	}
 }
 
