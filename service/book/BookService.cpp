@@ -6,10 +6,42 @@ BookService::BookService(IBookRepository& bookRepo) :bookRepo(bookRepo) {
 
 }
 
-bool BookService::addBook(const BookDTO& dto) {
-	std::shared_ptr<Book> book;
-	//book = std::make_shared<Book>(dto.id, dto.title, dto.author, dto.publisher, dto.price, dto.isBorrowed);
-	return bookRepo.add(book);
+bool BookService::addBook(const Book& book) {
+    // =========================
+    // 1. 基础参数校验
+    // =========================
+
+    if (book.getISBN().empty())
+    {
+        return false;
+    }
+
+    if (book.getTitle().empty())
+    {
+        return false;
+    }
+
+    if (book.getAuthor().empty())
+    {
+        return false;
+    }
+
+    // =========================
+    // 2. ISBN 唯一性检查
+    // =========================
+
+    if (bookRepo.findByISBN(book.getISBN()) != nullptr)
+    {
+        return false;
+    }
+
+    // =========================
+    // 3. 新增
+    // =========================
+
+    auto bookPtr = std::make_shared<Book>(book);
+
+    return bookRepo.add(bookPtr);
 }
 bool BookService::removeBook(int bookId) {
 	return bookRepo.remove(bookId);

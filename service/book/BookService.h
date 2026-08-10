@@ -11,7 +11,7 @@ public:
 	explicit BookService(IBookRepository& bookRepo);
 
 	// 图书管理
-	bool addBook(const BookDTO& dto);
+	bool addBook(const Book& book);
 	bool removeBook(int bookId);
 	bool updateBook(const BookDTO& dto);
 

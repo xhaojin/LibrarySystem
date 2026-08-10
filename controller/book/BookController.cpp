@@ -1,13 +1,19 @@
 #include "BookController.h"
 
-BookController::BookController(BookService& bookService):bookService(bookService) {
+BookController::BookController(BookService& bookService) :bookService(bookService) {
 
 }
 
 bool BookController::addBook(const BookDTO& dto) {
 	try
 	{
-		return bookService.addBook(dto);
+		Book book(
+			0, dto.isbn, dto.title, dto.author, dto.publisherId,
+			dto.categoryId, dto.publishYear,dto.price, "", "",
+			BookStatus::Normal, false
+		);
+
+		return bookService.addBook(book);
 	}
 	catch (const std::exception& e)
 	{
