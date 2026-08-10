@@ -7,10 +7,10 @@ BookController::BookController(BookService& bookService) :bookService(bookServic
 bool BookController::addBook(const BookDTO& dto) {
 	try
 	{
-		Book book(
+		Book book
+		(
 			0, dto.isbn, dto.title, dto.author, dto.publisherId,
-			dto.categoryId, dto.publishYear,dto.price, "", "",
-			BookStatus::Normal, false
+			dto.categoryId, dto.publishYear,dto.price, "", "",BookStatus::Normal, false
 		);
 
 		return bookService.addBook(book);
@@ -24,7 +24,23 @@ bool BookController::addBook(const BookDTO& dto) {
 bool BookController::updateBook(const BookDTO& dto) {
 	try
 	{
-		return bookService.updateBook(dto);
+		BookStatus s = BookStatus::Normal;
+		if (dto.status == "正常")
+		{
+			s = BookStatus::Normal;
+		}
+		else if (dto.status == "下架")
+		{
+			s = BookStatus::OffShelf;
+		}
+		else if (dto.status == "禁用")
+		{
+			s = BookStatus::Disabled;
+		}
+		Book book(
+			dto.id, dto.isbn, dto.title, dto.author, dto.publisherId,dto.categoryId, dto.publishYear, dto.price, "", "",s, false
+		);
+		return bookService.updateBook(book);
 	}
 	catch (const std::exception& e)
 	{

@@ -126,7 +126,7 @@ void BookEditDialog::setupUI() {
 
 	statusComboBox->addItem("正常", 0);
 	statusComboBox->addItem("下架", 1);
-	statusComboBox->addItem("停用", 2);
+	statusComboBox->addItem("禁用", 2);
 
 	formLayout->addRow("状态：", statusComboBox);
 

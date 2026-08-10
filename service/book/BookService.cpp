@@ -7,48 +7,81 @@ BookService::BookService(IBookRepository& bookRepo) :bookRepo(bookRepo) {
 }
 
 bool BookService::addBook(const Book& book) {
-    // =========================
-    // 1. 基础参数校验
-    // =========================
+	// =========================
+	// 1. 基础参数校验
+	// =========================
 
-    if (book.getISBN().empty())
-    {
-        return false;
-    }
+	if (book.getISBN().empty())
+	{
+		return false;
+	}
 
-    if (book.getTitle().empty())
-    {
-        return false;
-    }
+	if (book.getTitle().empty())
+	{
+		return false;
+	}
 
-    if (book.getAuthor().empty())
-    {
-        return false;
-    }
+	if (book.getAuthor().empty())
+	{
+		return false;
+	}
 
-    // =========================
-    // 2. ISBN 唯一性检查
-    // =========================
+	// =========================
+	// 2. ISBN 唯一性检查
+	// =========================
 
-    if (bookRepo.findByISBN(book.getISBN()) != nullptr)
-    {
-        return false;
-    }
+	if (bookRepo.findByISBN(book.getISBN()) != nullptr)
+	{
+		return false;
+	}
 
-    // =========================
-    // 3. 新增
-    // =========================
+	// =========================
+	// 3. 新增
+	// =========================
 
-    auto bookPtr = std::make_shared<Book>(book);
+	auto bookPtr = std::make_shared<Book>(book);
 
-    return bookRepo.add(bookPtr);
+	return bookRepo.add(bookPtr);
 }
 bool BookService::removeBook(int bookId) {
 	return bookRepo.remove(bookId);
 }
-bool BookService::updateBook(const BookDTO& dto) {
-	//return bookRepo.update(Book(dto.id, dto.title, dto.author, dto.publisher, dto.price, dto.isBorrowed));
-	return true;
+bool BookService::updateBook(const Book& book) {
+	// =========================
+	// 1. 基础校验
+	// =========================
+
+	if (book.getISBN().empty())
+	{
+		return false;
+	}
+
+	if (book.getTitle().empty())
+	{
+		return false;
+	}
+
+	if (book.getAuthor().empty())
+	{
+		return false;
+	}
+
+	// =========================
+	// 2. 检查 ISBN 是否被其他图书使用
+	// =========================
+
+	auto existingBook = bookRepo.findByISBN(book.getISBN());
+
+	if (existingBook != nullptr && existingBook->getId() != book.getId())
+	{
+		return false;
+	}
+
+	// =========================
+	// 3. 更新
+	// =========================
+
+	return bookRepo.update(book);
 }
 
 std::vector<BookDTO> BookService::findBooksByTitle(const std::string& keyword) {
@@ -62,7 +95,7 @@ std::vector<BookDTO> BookService::findBooksByTitle(const std::string& keyword) {
 
 BookDTO BookService::findBookById(int bookId) const {
 	auto book = bookRepo.findById(bookId);
-	return BookDTO{};
+	return BookDTOMapper::toDTO(*book, "", "");
 }
 
 std::vector<BookDTO> BookService::getBooksSortedByPrice() const {

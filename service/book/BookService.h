@@ -13,7 +13,7 @@ public:
 	// 图书管理
 	bool addBook(const Book& book);
 	bool removeBook(int bookId);
-	bool updateBook(const BookDTO& dto);
+	bool updateBook(const Book& book);
 
 	// 查询
 	std::vector<BookDTO> findBooksByTitle(const std::string& keyword);
