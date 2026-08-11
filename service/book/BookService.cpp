@@ -43,9 +43,11 @@ bool BookService::addBook(const Book& book) {
 
 	return bookRepo.add(bookPtr);
 }
+
 bool BookService::removeBook(int bookId) {
 	return bookRepo.remove(bookId);
 }
+
 bool BookService::updateBook(const Book& book) {
 	// =========================
 	// 1. 基础校验
