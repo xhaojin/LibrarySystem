@@ -29,6 +29,8 @@ public:
 
     std::vector<BookDTO> findAllWithDetail() const override;
 
+    std::vector<BookDTO> findByTitleWithDetail(const std::string& keyword) const override;
+
     std::vector<BookDTO> sortByTitleWithDetail() const override;
 
     std::vector<BookDTO> sortByPriceWithDetail() const override;

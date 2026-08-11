@@ -54,7 +54,7 @@ public:
     //用于列表展示
     virtual std::vector<BookDTO> findAllWithDetail() const = 0;
 
-    //virtual std::vector<BookDTO> findByTitleWithDetail(const std::string& keyword) const = 0;
+    virtual std::vector<BookDTO> findByTitleWithDetail(const std::string& keyword) const = 0;
 
     virtual std::vector<BookDTO> sortByTitleWithDetail() const = 0;
 

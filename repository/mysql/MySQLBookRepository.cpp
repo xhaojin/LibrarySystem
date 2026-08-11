@@ -259,14 +259,25 @@ std::vector<BookDTO> MySQLBookRepository::findAllWithDetail() const
 
 		std::unique_ptr<sql::ResultSet> rs(
 			stmt->executeQuery(
-				R"(SELECT b.id,b.isbn,b.title,b.author,p.id AS publisher_id,p.name AS publisher_name,c.id AS category_id,
-            c.name AS category_name,
-            b.publish_year,b.price,b.cover_url, b.description,b.deleted,
-            b.status FROM books b
-			LEFT JOIN publishers p ON b.publisher_id=p.id
-			LEFT JOIN categories c ON b.category_id=c.id
-			WHERE b.deleted=FALSE
-			ORDER BY b.id)"));
+				R"(SELECT 
+					b.id,
+					b.isbn,
+					b.title,
+					b.author,
+					p.id AS publisher_id,
+					p.name AS publisher_name,
+					c.id AS category_id,
+					c.name AS category_name,
+					b.publish_year,
+					b.price,
+					b.cover_url,
+					b.description,
+                    b.deleted,
+					b.status FROM books b
+					LEFT JOIN publishers p ON b.publisher_id=p.id
+					LEFT JOIN categories c ON b.category_id=c.id
+					WHERE b.deleted=FALSE
+					ORDER BY b.id)"));
 
 		while (rs->next())
 		{
@@ -281,6 +292,46 @@ std::vector<BookDTO> MySQLBookRepository::findAllWithDetail() const
 		std::cerr << "SQL error: " << e.what() << std::endl;
 	}
 
+	return books;
+}
+
+std::vector<BookDTO> MySQLBookRepository::findByTitleWithDetail(const std::string& keyword) const
+{
+	std::vector<BookDTO> books;
+	auto* conn = m_database.getConnection();
+	std::unique_ptr<sql::PreparedStatement> stmt(
+		conn->prepareStatement(R"(
+			SELECT
+				b.id,
+				b.isbn,
+				b.title,
+				b.author,
+				p.id AS publisher_id,
+				p.name AS publisher_name,
+				c.id AS category_id,
+				c.name AS category_name,
+				b.publish_year,
+				b.price,
+				b.cover_url,
+				b.deleted,
+				b.description,
+				b.status
+			FROM books b
+			LEFT JOIN publishers p ON b.publisher_id = p.id
+			LEFT JOIN categories c ON b.category_id = c.id
+			WHERE b.title LIKE ? AND b.deleted = FALSE
+			ORDER BY b.title ASC
+		)")
+	);
+	stmt->setString(1, "%" + keyword + "%");
+	std::unique_ptr<sql::ResultSet> rs(stmt->executeQuery());
+	while (rs->next())
+	{
+		auto book = BookMapper::fromResultSet(*rs);
+		std::string publisher = rs->isNull("publisher_name") ? "" : rs->getString("publisher_name");
+		std::string category = rs->isNull("category_name") ? "" : rs->getString("category_name");
+		books.emplace_back(BookDTOMapper::toDTO(*book, publisher, category));
+	}
 	return books;
 }
 

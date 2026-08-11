@@ -87,12 +87,7 @@ bool BookService::updateBook(const Book& book) {
 }
 
 std::vector<BookDTO> BookService::findBooksByTitle(const std::string& keyword) {
-	std::vector<BookDTO> bookDTOs;
-	auto books = bookRepo.findByTitle(keyword);
-	for (const auto& book : books) {
-		//bookDTOs.push_back();
-	}
-	return bookDTOs;
+	return bookRepo.findByTitleWithDetail(keyword);
 }
 
 BookDTO BookService::findBookById(int bookId) const {
