@@ -12,6 +12,10 @@ class IBookRepository
 public:
     virtual ~IBookRepository() = default;
 
+    // =========================
+    // Book 实体操作
+    // =========================
+
     // 新增图书信息
     virtual bool add(std::shared_ptr<Book> book) = 0;
 
@@ -33,14 +37,6 @@ public:
     // 按标题模糊查询
     virtual std::vector<std::shared_ptr<Book>> findByTitle(const std::string& keyword) const = 0;
 
-    // 查询全部
-    virtual std::vector<std::shared_ptr<Book>> findAll() const = 0;
-
-    // 排序
-    virtual std::vector<std::shared_ptr<Book>> sortByTitle() const = 0;
-
-    virtual std::vector<std::shared_ptr<Book>> sortByPrice() const = 0;
-
     // 图书信息数量
     virtual int getTotalBooks() const = 0;
     
@@ -50,6 +46,17 @@ public:
     //以后如果实现分类管理，在删除分类前，需要判断该分类下是否还有图书。
     //virtual int countByCategory(long long categoryId) const = 0;
 
+    // =========================
+    // Book 页面查询
+    // =========================
+
+
     //用于列表展示
     virtual std::vector<BookDTO> findAllWithDetail() const = 0;
+
+    //virtual std::vector<BookDTO> findByTitleWithDetail(const std::string& keyword) const = 0;
+
+    virtual std::vector<BookDTO> sortByTitleWithDetail() const = 0;
+
+    virtual std::vector<BookDTO> sortByPriceWithDetail() const = 0;
 };

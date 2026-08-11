@@ -227,72 +227,6 @@ std::vector<std::shared_ptr<Book>> MySQLBookRepository::findByTitle(const std::s
 	return books;
 }
 
-std::vector<std::shared_ptr<Book>> MySQLBookRepository::findAll() const
-{
-	std::vector<std::shared_ptr<Book>> books;
-
-	auto* conn = m_database.getConnection();
-
-	std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-
-	std::unique_ptr<sql::ResultSet> rs(
-		stmt->executeQuery(
-			"SELECT * FROM books "
-			"WHERE deleted = FALSE "
-			"ORDER BY id"));
-
-	while (rs->next())
-	{
-		books.push_back(BookMapper::fromResultSet(*rs));
-	}
-
-	return books;
-}
-
-std::vector<std::shared_ptr<Book>> MySQLBookRepository::sortByTitle() const
-{
-	std::vector<std::shared_ptr<Book>> books;
-
-	auto* conn = m_database.getConnection();
-
-	std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-
-	std::unique_ptr<sql::ResultSet> rs(
-		stmt->executeQuery(
-			"SELECT * FROM books "
-			"WHERE deleted = FALSE "
-			"ORDER BY title ASC"));
-
-	while (rs->next())
-	{
-		books.push_back(BookMapper::fromResultSet(*rs));
-	}
-
-	return books;
-}
-
-std::vector<std::shared_ptr<Book>> MySQLBookRepository::sortByPrice() const
-{
-	std::vector<std::shared_ptr<Book>> books;
-
-	auto* conn = m_database.getConnection();
-
-	std::unique_ptr<sql::Statement> stmt(conn->createStatement());
-
-	std::unique_ptr<sql::ResultSet> rs(
-		stmt->executeQuery(
-			"SELECT * FROM books "
-			"WHERE deleted = FALSE "
-			"ORDER BY price ASC"));
-
-	while (rs->next())
-	{
-		books.push_back(BookMapper::fromResultSet(*rs));
-	}
-
-	return books;
-}
-
 int MySQLBookRepository::getTotalBooks() const
 {
 	auto* conn = m_database.getConnection();
@@ -345,6 +279,108 @@ std::vector<BookDTO> MySQLBookRepository::findAllWithDetail() const
 	catch (const sql::SQLException& e)
 	{
 		std::cerr << "SQL error: " << e.what() << std::endl;
+	}
+
+	return books;
+}
+
+std::vector<BookDTO> MySQLBookRepository::sortByTitleWithDetail() const
+{
+	std::vector<BookDTO> books;
+
+	auto* conn = m_database.getConnection();
+
+	std::unique_ptr<sql::Statement> stmt(
+		conn->createStatement()
+	);
+
+	std::unique_ptr<sql::ResultSet> rs(
+		stmt->executeQuery(R"(
+            SELECT
+                b.id,
+                b.isbn,
+                b.title,
+                b.author,
+                p.id AS publisher_id,
+                p.name AS publisher_name,
+                c.id AS category_id,
+                c.name AS category_name,
+                b.publish_year,
+                b.price,
+                b.cover_url,
+                b.deleted,
+                b.description,
+                b.status
+
+            FROM books b
+
+            LEFT JOIN publishers p ON b.publisher_id = p.id
+
+            LEFT JOIN categories c ON b.category_id = c.id
+
+            WHERE b.deleted = FALSE
+
+            ORDER BY b.title ASC
+        )")
+	);
+
+	while (rs->next())
+	{
+		auto book = BookMapper::fromResultSet(*rs);
+		std::string publisher = rs->isNull("publisher_name") ? "" : rs->getString("publisher_name");
+		std::string category = rs->isNull("category_name") ? "" : rs->getString("category_name");
+		books.emplace_back(BookDTOMapper::toDTO(*book, publisher, category));
+	}
+
+	return books;
+}
+
+std::vector<BookDTO> MySQLBookRepository::sortByPriceWithDetail() const
+{
+	std::vector<BookDTO> books;
+
+	auto* conn = m_database.getConnection();
+
+	std::unique_ptr<sql::Statement> stmt(
+		conn->createStatement()
+	);
+
+	std::unique_ptr<sql::ResultSet> rs(
+		stmt->executeQuery(R"(
+            SELECT
+                b.id,
+                b.isbn,
+                b.title,
+                b.author,
+                p.id AS publisher_id,
+                p.name AS publisher_name,
+                c.id AS category_id,
+                c.name AS category_name,
+                b.publish_year,
+                b.price,
+                b.cover_url,
+                b.deleted,
+                b.description,
+                b.status
+
+            FROM books b
+
+            LEFT JOIN publishers p ON b.publisher_id = p.id
+
+            LEFT JOIN categories c ON b.category_id = c.id
+
+            WHERE b.deleted = FALSE
+
+            ORDER BY b.price ASC
+        )")
+	);
+
+	while (rs->next())
+	{
+		auto book = BookMapper::fromResultSet(*rs);
+		std::string publisher = rs->isNull("publisher_name") ? "" : rs->getString("publisher_name");
+		std::string category = rs->isNull("category_name") ? "" : rs->getString("category_name");
+		books.emplace_back(BookDTOMapper::toDTO(*book, publisher, category));
 	}
 
 	return books;

@@ -101,19 +101,11 @@ BookDTO BookService::findBookById(int bookId) const {
 }
 
 std::vector<BookDTO> BookService::getBooksSortedByPrice() const {
-	std::vector<BookDTO> sortedBooks;
-	for (const auto& book : bookRepo.sortByPrice()) {
-		//sortedBooks.push_back();
-	}
-	return sortedBooks;
+	return bookRepo.sortByPriceWithDetail();
 }
 
 std::vector<BookDTO> BookService::getBooksSortedByTitle() const {
-	std::vector<BookDTO> sortedBooks;
-	for (const auto& book : bookRepo.sortByTitle()) {
-		//sortedBooks.push_back();
-	}
-	return sortedBooks;
+	return bookRepo.sortByTitleWithDetail();
 }
 
 std::vector<BookDTO> BookService::getAllBooksDTO() const {

@@ -25,15 +25,13 @@ public:
 
     std::vector<std::shared_ptr<Book>> findByTitle(const std::string& keyword) const override;
 
-    std::vector<std::shared_ptr<Book>> findAll() const override;
-
-    std::vector<std::shared_ptr<Book>> sortByTitle() const override;
-
-    std::vector<std::shared_ptr<Book>> sortByPrice() const override;
-
     int getTotalBooks() const override;
 
     std::vector<BookDTO> findAllWithDetail() const override;
+
+    std::vector<BookDTO> sortByTitleWithDetail() const override;
+
+    std::vector<BookDTO> sortByPriceWithDetail() const override;
 
 private:
     MySQLDatabase& m_database;
