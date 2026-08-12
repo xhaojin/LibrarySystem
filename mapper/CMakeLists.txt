@@ -4,7 +4,13 @@ target_sources(mapper PRIVATE
     BookMapper.cpp
     UserMapper.cpp
     BorrowRecordMapper.cpp
- "UserDTOMapper.h" "UserDTOMapper.cpp" "BookDTOMapper.h" "BookDTOMapper.cpp")
+    "UserDTOMapper.h"
+    "UserDTOMapper.cpp"
+    "BookDTOMapper.h"
+    "BookDTOMapper.cpp"
+    "PublisherMapper.h"
+    "PublisherMapper.cpp"
+)
 
 target_include_directories(mapper PUBLIC
     ${CMAKE_SOURCE_DIR}
