@@ -4,6 +4,8 @@ target_sources(model PRIVATE
     Book.cpp
     User.cpp
     BorrowRecord.cpp
+    "Publisher.h"
+    "Publisher.cpp"
 )
 
 target_include_directories(model PUBLIC
