@@ -5,8 +5,12 @@ target_sources(service PRIVATE
     book/BookService.cpp
     user/UserService.cpp
     borrow/BorrowService.cpp
- statistics/StatisticsService.cpp
- "auth/LoginStatus.h" "auth/LoginResult.h")
+    statistics/StatisticsService.cpp
+    "auth/LoginStatus.h"
+    "auth/LoginResult.h"
+    "publisher/PublisherService.h"
+    "publisher/PublisherService.cpp"
+)
 
 target_include_directories(service PUBLIC
     ${CMAKE_SOURCE_DIR}
