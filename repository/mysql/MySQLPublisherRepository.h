@@ -36,4 +36,6 @@ public:
     std::vector<std::shared_ptr<Publisher>> findByNameLike(const std::string& keyword) const override;
 
     std::vector<std::shared_ptr<Publisher>> findAll() const override;
+
+    bool isReferencedByBooks(long long publisherId) const override;
 };

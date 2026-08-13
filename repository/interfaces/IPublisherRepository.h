@@ -31,4 +31,7 @@ public:
 
     // 查询全部
     virtual std::vector<std::shared_ptr<Publisher>> findAll() const = 0;
+
+    // 是否已经被图书引用
+    virtual bool isReferencedByBooks(long long publisherId) const = 0;
 };

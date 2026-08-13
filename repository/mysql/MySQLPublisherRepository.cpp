@@ -238,3 +238,36 @@ std::vector<std::shared_ptr<Publisher>> MySQLPublisherRepository::findAll() cons
 
     return publishers;
 }
+
+bool MySQLPublisherRepository::isReferencedByBooks(long long publisherId) const
+{
+    try
+    {
+        auto* conn = m_database.getConnection();
+
+        std::unique_ptr<sql::PreparedStatement> stmt(
+            conn->prepareStatement(R"(
+                SELECT COUNT(*)
+                FROM books
+                WHERE publisher_id = ?
+            )")
+        );
+
+        stmt->setInt64(1, publisherId);
+
+        std::unique_ptr<sql::ResultSet> rs(
+            stmt->executeQuery()
+        );
+
+        if (!rs->next())
+        {
+            return false;
+        }
+
+        return rs->getInt64(1) > 0;
+    }
+    catch (const sql::SQLException&)
+    {
+        return false;
+    }
+}
