@@ -2,8 +2,7 @@
 
 #include <mysql/jdbc.h>
 
-std::shared_ptr<Publisher>
-PublisherMapper::fromResultSet(sql::ResultSet& rs)
+std::shared_ptr<Publisher> PublisherMapper::fromResultSet(sql::ResultSet& rs)
 {
     const long long id = rs.getInt64("id");
 

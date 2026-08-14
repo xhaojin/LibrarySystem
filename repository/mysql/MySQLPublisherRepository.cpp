@@ -255,9 +255,7 @@ bool MySQLPublisherRepository::isReferencedByBooks(long long publisherId) const
 
         stmt->setInt64(1, publisherId);
 
-        std::unique_ptr<sql::ResultSet> rs(
-            stmt->executeQuery()
-        );
+        std::unique_ptr<sql::ResultSet> rs(stmt->executeQuery());
 
         if (!rs->next())
         {
