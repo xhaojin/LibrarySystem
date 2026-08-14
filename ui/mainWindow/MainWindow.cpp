@@ -62,6 +62,19 @@ void MainWindow::setupUI()
 	//pageId++;
 
 	// =========================
+	// Publisher Page
+	// =========================
+	publisherMenuBtn = new QPushButton("出版社管理");
+	navLeftLayout->addWidget(publisherMenuBtn);
+	publisherpage = new PublisherPage(m_context);
+	stackedWidget->addWidget(publisherpage);
+	connect(publisherMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); publisherpage->refresh();});
+	pageId++;
+
+	//connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
+	//pageId++;
+
+	// =========================
 	// 默认页面
 	// =========================
 	stackedWidget->setCurrentIndex(0);

@@ -11,7 +11,7 @@ target_sources(ui PRIVATE
     pages/base/BasePage.h
     dialogs/UserEditDialog.h
     dialogs/UserEditDialog.cpp
-)
+ "pages/PublisherPage.h" "pages/PublisherPage.cpp")
 
 target_include_directories(ui PUBLIC
     ${CMAKE_SOURCE_DIR}

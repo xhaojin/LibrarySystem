@@ -8,6 +8,8 @@ target_sources(controller PRIVATE
     borrow/BorrowController.h 
     user/UserController.cpp 
     user/UserController.h
+    "publisher/PublisherController.h"
+    "publisher/PublisherController.cpp"
 )
 
 target_include_directories(controller PUBLIC

@@ -11,7 +11,7 @@
 
 #include "dto/BookDTO.h"
 #include "ui/dialogs/BookEditDialog.h"
-#include "base//BasePage.h"
+#include "base/BasePage.h"
 #include "common/utils/TableUtil.h"
 #include "core/ApplicationContext.h"
 

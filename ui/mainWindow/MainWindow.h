@@ -8,6 +8,8 @@
 #include "ui/pages/BookPage.h"
 #include "ui/pages/UserPage.h"
 #include "ui/pages/BorrowRecordPage.h"
+#include "ui/pages/PublisherPage.h"
+
 #include "core/ApplicationContext.h"
 
 class MainWindow : public QMainWindow
@@ -20,10 +22,12 @@ private:
 	BookPage* bookpage; //图书管理页面
 	UserPage* userpage; //用户管理页面
 	BorrowRecordPage* borrowpage; //借阅记录页面
+	PublisherPage* publisherpage; //出版社管理页面
 
 	QPushButton* bookMenuBtn; //图书管理按钮
 	QPushButton* userMenuBtn; //用户管理按钮
 	QPushButton* borrowMenuBtn; //借阅记录管理按钮
+	QPushButton* publisherMenuBtn; //出版社管理按钮
 
 	QStackedWidget* stackedWidget;  //堆叠窗口，用于切换不同的页面
 
