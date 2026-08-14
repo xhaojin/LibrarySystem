@@ -69,9 +69,9 @@ void PublisherPage::setConnections()
 {
     connect(refreshPublisherButton,&QPushButton::clicked,this,&PublisherPage::refresh);
 
-    //connect(searchButton,&QPushButton::clicked,this,&PublisherPage::onFindByNameClicked);
+    connect(searchButton,&QPushButton::clicked,this,&PublisherPage::onFindByNameClicked);
 
-    //connect(searchEdit,&QLineEdit::returnPressed,this,&PublisherPage::onFindByNameClicked);
+    connect(searchEdit,&QLineEdit::returnPressed,this,&PublisherPage::onFindByNameClicked);
 
     //connect(addPublisherButton,&QPushButton::clicked,this,&PublisherPage::addPublisher);
 
@@ -107,22 +107,25 @@ void PublisherPage::refreshPublishersTable(const std::vector<PublisherDTO>& publ
     }
 }
 
-void addPublisher()
+void PublisherPage::addPublisher()
 {
 
 }
 
-void updatePublisher()
+void PublisherPage::updatePublisher()
 {
 
 }
 
-void removePublisher()
+void PublisherPage::removePublisher()
 {
 
 }
 
-void onFindByNameClicked()
+void PublisherPage::onFindByNameClicked()
 {
-
+    QString keyword = searchEdit->text();
+    searchEdit->clear();
+    auto publishers = m_context.pulisherController().findPublishers(keyword.toStdString());
+    refreshPublishersTable(publishers);
 }
