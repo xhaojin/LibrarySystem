@@ -8,7 +8,7 @@ bool PublisherController::addPublisher(const PublisherDTO& dto) {
 	return publisherService.add(PublisherDTOMapper::toModel(dto));
 }
 bool PublisherController::removePublisher(int publisherId) {
-	return true;
+	return publisherService.remove(publisherId);
 }
 bool PublisherController::updatePublisher(const PublisherDTO& dto) {
 	return publisherService.update(PublisherDTOMapper::toModel(dto));

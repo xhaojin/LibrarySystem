@@ -173,7 +173,36 @@ void PublisherPage::updatePublisher()
 
 void PublisherPage::removePublisher()
 {
+    auto items = publisherTable->selectedItems();
+    if (items.isEmpty())
+    {
+        showWarning("请先选择一个出版社");
+        return;
+    }
+    int row = publisherTable->currentRow();
+    int publisherId = publisherTable->item(row, 0)->text().toInt();
+    auto publisher = m_context.publisherController().findPublisherById(publisherId);
 
+    if (!confirmDelete(publisher.name.c_str())) {
+        return;
+    }
+
+    try
+    {
+        if (m_context.publisherController().removePublisher(publisherId))
+        {
+            showInfo("删除成功");
+            refresh();
+        }
+        else
+        {
+            showWarning("删除失败");
+        }
+    }
+    catch (const std::exception& e)
+    {
+        showError(e.what());
+    }
 }
 
 void PublisherPage::onFindByNameClicked()
