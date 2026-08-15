@@ -29,7 +29,7 @@ public:
     BookController& bookController();
     UserController& userController();
     BorrowController& borrowController();
-	PublisherController& pulisherController();
+	PublisherController& publisherController();
     //SQLiteUserRepository& userRepository();
     MySQLUserRepository& userRepository();
     SessionManager& sessionManager();

@@ -83,7 +83,7 @@ BorrowController& ApplicationContext::borrowController()
 	return *borrowController_;
 }
 
-PublisherController& ApplicationContext::pulisherController()
+PublisherController& ApplicationContext::publisherController()
 {
 	return *publisherController_;
 }

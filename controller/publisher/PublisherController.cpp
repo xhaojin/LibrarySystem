@@ -5,7 +5,7 @@ PublisherController::PublisherController(PublisherService& publisherService) :pu
 }
 
 bool PublisherController::addPublisher(const PublisherDTO& dto) {
-	return true;
+	return publisherService.add(PublisherDTOMapper::toModel(dto));
 }
 bool PublisherController::removePublisher(int publisherId) {
 	return true;

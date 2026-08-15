@@ -71,9 +71,6 @@ void MainWindow::setupUI()
 	connect(publisherMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); publisherpage->refresh();});
 	pageId++;
 
-	//connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
-	//pageId++;
-
 	// =========================
 	// 默认页面
 	// =========================

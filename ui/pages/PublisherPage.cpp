@@ -73,16 +73,16 @@ void PublisherPage::setConnections()
 
     connect(searchEdit,&QLineEdit::returnPressed,this,&PublisherPage::onFindByNameClicked);
 
-    //connect(addPublisherButton,&QPushButton::clicked,this,&PublisherPage::addPublisher);
+    connect(addPublisherButton,&QPushButton::clicked,this,&PublisherPage::addPublisher);
 
-    //connect(updatePublisherButton,&QPushButton::clicked,this,&PublisherPage::updatePublisher);
+    connect(updatePublisherButton,&QPushButton::clicked,this,&PublisherPage::updatePublisher);
 
-    //connect(removePublisherButton,&QPushButton::clicked,this,&PublisherPage::removePublisher);
+    connect(removePublisherButton,&QPushButton::clicked,this,&PublisherPage::removePublisher);
 }
 
 void PublisherPage::refresh()
 {
-    auto publishers = m_context.pulisherController().getAllPublishers();
+    auto publishers = m_context.publisherController().getAllPublishers();
 
     refreshPublishersTable(publishers);
 }
@@ -109,7 +109,26 @@ void PublisherPage::refreshPublishersTable(const std::vector<PublisherDTO>& publ
 
 void PublisherPage::addPublisher()
 {
-
+    PublisherEditDialog publisherEditDialog(this); //出版社编辑对话框
+    publisherEditDialog.setWindowTitle("添加出版社");
+    if (publisherEditDialog.exec() != QDialog::Accepted)
+        return;
+    try
+    {
+        if (m_context.publisherController().addPublisher(publisherEditDialog.getPublisher()))
+        {
+            showInfo("添加成功");
+            refresh();
+        }
+        else
+        {
+            showWarning("添加失败");
+        }
+    }
+    catch (const std::exception& e)
+    {
+        showError(e.what());
+    }
 }
 
 void PublisherPage::updatePublisher()
@@ -126,6 +145,6 @@ void PublisherPage::onFindByNameClicked()
 {
     QString keyword = searchEdit->text();
     searchEdit->clear();
-    auto publishers = m_context.pulisherController().findPublishers(keyword.toStdString());
+    auto publishers = m_context.publisherController().findPublishers(keyword.toStdString());
     refreshPublishersTable(publishers);
 }

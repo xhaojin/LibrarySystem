@@ -10,7 +10,7 @@
 #include <QHeaderView>
 
 #include "dto/PublisherDTO.h"
-//#include "ui/dialogs/PublisherEditDialog.h"
+#include "ui/dialogs/PublisherEditDialog.h"
 #include "base/BasePage.h"
 #include "common/utils/TableUtil.h"
 #include "core/ApplicationContext.h"
