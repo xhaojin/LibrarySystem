@@ -133,7 +133,42 @@ void PublisherPage::addPublisher()
 
 void PublisherPage::updatePublisher()
 {
+    auto items = publisherTable->selectedItems();
+    if (items.isEmpty())
+    {
+        showWarning("请先选择一个出版社");
+        return;
+    }
+    int row = publisherTable->currentRow();
+    int publisherId = publisherTable->item(row, 0)->text().toInt();
+    auto publisher = m_context.publisherController().findPublisherById(publisherId);
 
+    PublisherEditDialog publisherEditDialog(this);
+    publisherEditDialog.setWindowTitle("修改出版社");
+    publisherEditDialog.setPublisher(publisher);
+
+    if (publisherEditDialog.exec() != QDialog::Accepted)
+        return;
+
+    PublisherDTO dto = publisherEditDialog.getPublisher();
+    dto.id = publisherId;
+
+    try
+    {
+        if (m_context.publisherController().updatePublisher(dto))
+        {
+            showInfo("修改成功");
+            refresh();
+        }
+        else
+        {
+            showWarning("修改失败");
+        }
+    }
+    catch (const std::exception& e)
+    {
+        showError(e.what());
+    }
 }
 
 void PublisherPage::removePublisher()

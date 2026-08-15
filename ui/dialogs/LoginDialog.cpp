@@ -25,6 +25,10 @@ LoginDialog::LoginDialog(AuthController& authController, QWidget* parent)
 	layout->addWidget(loginButton);
 
 	connect(loginButton, &QPushButton::clicked, this, &LoginDialog::onLoginClicked);
+
+	//测试阶段打开
+	usernameEdit->setText("admin");
+	passwordEdit->setText("admin123");
 }
 
 void LoginDialog::onLoginClicked()

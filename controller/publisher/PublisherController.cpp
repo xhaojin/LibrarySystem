@@ -11,7 +11,7 @@ bool PublisherController::removePublisher(int publisherId) {
 	return true;
 }
 bool PublisherController::updatePublisher(const PublisherDTO& dto) {
-	return true;
+	return publisherService.update(PublisherDTOMapper::toModel(dto));
 }
 
 PublisherDTO PublisherController::findPublisherById(int publisherId) const {
