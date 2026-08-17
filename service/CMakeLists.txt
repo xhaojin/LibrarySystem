@@ -10,6 +10,8 @@ target_sources(service PRIVATE
     "auth/LoginResult.h"
     "publisher/PublisherService.h"
     "publisher/PublisherService.cpp"
+    "category/CategoryService.h"
+    "category/CategoryService.cpp"
 )
 
 target_include_directories(service PUBLIC

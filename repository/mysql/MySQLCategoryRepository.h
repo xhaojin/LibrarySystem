@@ -20,6 +20,8 @@ public:
 
     std::vector<std::shared_ptr<Category>> findAll() const override;
 
+    bool isReferencedByBooks(long long publisherId) const override;
+
 private:
     MySQLDatabase& m_database;
 };

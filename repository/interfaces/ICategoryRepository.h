@@ -22,4 +22,6 @@ public:
     virtual std::vector<std::shared_ptr<Category>> findByName(const std::string& keyword) const = 0;
 
     virtual std::vector<std::shared_ptr<Category>> findAll() const = 0;
+
+    virtual bool isReferencedByBooks(long long publisherId) const = 0;
 };
