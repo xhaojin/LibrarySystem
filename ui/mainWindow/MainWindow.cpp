@@ -72,6 +72,16 @@ void MainWindow::setupUI()
 	pageId++;
 
 	// =========================
+	// Category Page
+	// =========================
+	categoryMenuBtn = new QPushButton("分类管理");
+	navLeftLayout->addWidget(categoryMenuBtn);
+	categorypage = new CategoryPage(m_context);
+	stackedWidget->addWidget(categorypage);
+	connect(categoryMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); categorypage->refresh();});
+	pageId++;
+
+	// =========================
 	// 默认页面
 	// =========================
 	stackedWidget->setCurrentIndex(0);

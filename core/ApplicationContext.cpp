@@ -42,6 +42,8 @@ void ApplicationContext::createRepositories() {
 	//borrowRepo_ = std::make_unique<SQLiteBorrowRecordRepository>(*database_);
 
 	publisherRepo_ = std::make_unique<MySQLPublisherRepository>(*database_);
+
+	categoryRepo_ = std::make_unique<MySQLCategoryRepository>(*database_);
 }
 
 void ApplicationContext::createServices() {
@@ -52,6 +54,8 @@ void ApplicationContext::createServices() {
 	//borrowService_ = std::make_unique<BorrowService>(*bookRepo_, *userRepo_, *borrowRepo_);
 
 	publisherService_ = std::make_unique<PublisherService>(*publisherRepo_);
+
+	categoryService_ = std::make_unique<CategoryService>(*categoryRepo_);
 }
 
 void ApplicationContext::createControllers() {
@@ -62,6 +66,8 @@ void ApplicationContext::createControllers() {
 	//borrowController_ = std::make_unique<BorrowController>(*borrowService_);
 
 	publisherController_ = std::make_unique<PublisherController>(*publisherService_);
+
+	categoryController_ = std::make_unique<CategoryController>(*categoryService_);
 }
 
 void ApplicationContext::createSession() {
@@ -86,6 +92,11 @@ BorrowController& ApplicationContext::borrowController()
 PublisherController& ApplicationContext::publisherController()
 {
 	return *publisherController_;
+}
+
+CategoryController& ApplicationContext::categoryController()
+{
+	return *categoryController_;
 }
 
 //SQLiteUserRepository& ApplicationContext::userRepository() {

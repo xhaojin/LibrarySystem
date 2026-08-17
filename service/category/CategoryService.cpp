@@ -77,7 +77,7 @@ std::vector<std::shared_ptr<Category>> CategoryService::findByName(const std::st
 {
     if (keyword.empty())
     {
-        return {};
+        return m_categoryRepository.findAll();
     }
 
     return m_categoryRepository.findByName(keyword);
