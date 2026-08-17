@@ -6,6 +6,8 @@ target_sources(model PRIVATE
     BorrowRecord.cpp
     "Publisher.h"
     "Publisher.cpp"
+    "Category.h"
+    "Category.cpp"
 )
 
 target_include_directories(model PUBLIC
