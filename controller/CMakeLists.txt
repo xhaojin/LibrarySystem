@@ -10,6 +10,8 @@ target_sources(controller PRIVATE
     user/UserController.h
     "publisher/PublisherController.h"
     "publisher/PublisherController.cpp"
+    "category/CategoryController.h"
+    "category/CategoryController.cpp"
 )
 
 target_include_directories(controller PUBLIC
