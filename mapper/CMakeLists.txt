@@ -10,7 +10,11 @@ target_sources(mapper PRIVATE
     "BookDTOMapper.cpp"
     "PublisherMapper.h"
     "PublisherMapper.cpp"
- "PublisherDTOMapper.h" "PublisherDTOMapper.cpp")
+    "PublisherDTOMapper.h"
+    "PublisherDTOMapper.cpp"
+    "CategoryMapper.h"
+    "CategoryMapper.cpp"
+)
 
 target_include_directories(mapper PUBLIC
     ${CMAKE_SOURCE_DIR}
