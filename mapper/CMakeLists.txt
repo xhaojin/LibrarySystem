@@ -14,6 +14,8 @@ target_sources(mapper PRIVATE
     "PublisherDTOMapper.cpp"
     "CategoryMapper.h"
     "CategoryMapper.cpp"
+    "CategoryDTOMapper.h"
+    "CategoryDTOMapper.cpp"
 )
 
 target_include_directories(mapper PUBLIC
