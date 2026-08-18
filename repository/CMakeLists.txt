@@ -13,6 +13,8 @@ target_sources(repository PRIVATE
     "mysql/MySQLPublisherRepository.cpp"
     "mysql/MySQLCategoryRepository.h"
     "mysql/MySQLCategoryRepository.cpp"
+    "mysql/MySQLBorrowRecordRepository.h"
+    "mysql/MySQLBorrowRecordRepository.cpp"
 )
 
 target_include_directories(repository PUBLIC

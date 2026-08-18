@@ -61,7 +61,7 @@ bool MySQLDatabase::isConnected() const
 		!m_connection->isClosed();
 }
 
-sql::Connection* MySQLDatabase::getConnection()
+sql::Connection* MySQLDatabase::getConnection() const
 {
 	return m_connection.get();
 }

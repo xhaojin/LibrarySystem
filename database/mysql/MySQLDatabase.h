@@ -21,7 +21,7 @@ public:
 
     bool isConnected() const override;
 
-    sql::Connection* getConnection() override;
+    sql::Connection* getConnection() const override;
 
     void beginTransaction();
 

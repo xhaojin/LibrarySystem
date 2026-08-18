@@ -18,7 +18,7 @@ public:
 
     virtual bool isConnected() const = 0;
 
-    virtual sql::Connection* getConnection() = 0;
+    virtual sql::Connection* getConnection() const = 0;
 
     virtual void beginTransaction() = 0;
 

@@ -1,22 +1,25 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 struct BorrowRecordDTO
 {
-    int id;
+    std::int64_t id;
 
-    int userId;
+    std::int64_t userId;
 
-    int bookId;
+    std::int64_t copyId;
 
-    std::string username;
-
-    std::string bookTitle;
+    std::int64_t operatorId;
 
     std::string borrowTime;
 
+    std::string dueTime;
+
     std::string returnTime;
 
-    bool returned;
+    int status;
+
+    std::string remark;
 };

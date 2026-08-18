@@ -1,7 +1,9 @@
 #pragma once
 
-#include "model/BorrowRecord.h"
 #include "dto/BorrowRecordDTO.h"
+
+#include <optional>
+#include <vector>
 
 class IBorrowRecordRepository
 {
@@ -9,24 +11,17 @@ public:
 
     virtual ~IBorrowRecordRepository() = default;
 
-    virtual bool add(std::shared_ptr<BorrowRecord> record) = 0;
+    virtual std::optional<BorrowRecordDTO> findById(std::int64_t id) const = 0;
 
-    virtual bool update(const BorrowRecord& record) = 0;
+    virtual std::vector<BorrowRecordDTO> findAll() const = 0;
 
-    virtual std::shared_ptr<BorrowRecord> findById(int recordId) const = 0;
+    virtual std::vector<BorrowRecordDTO> findByUserId(std::int64_t userId) const = 0;
 
-    virtual std::vector<std::shared_ptr<BorrowRecord>> findAll() const = 0;
+    virtual std::vector<BorrowRecordDTO> findByCopyId(std::int64_t copyId) const = 0;
 
-    virtual std::vector<std::shared_ptr<BorrowRecord>> findByUserId(int userId) const = 0;
+    virtual std::int64_t insert(const BorrowRecordDTO& record) = 0;
 
-    virtual std::vector<std::shared_ptr<BorrowRecord>> findByBookId(int bookId) const = 0;
+    virtual bool update(const BorrowRecordDTO& record) = 0;
 
-    virtual std::shared_ptr<BorrowRecord> findActiveRecord(int userId,int bookId) const = 0;
-
-    virtual std::vector<std::shared_ptr<BorrowRecord>> findActiveRecords() const = 0;
-
-    virtual std::vector<BorrowRecordDTO> findRecordsByCondition(const std::string& username, const std::string& bookTitle) const = 0;
-
-    // 给UI使用
-    virtual std::vector<BorrowRecordDTO> findAllDTO() const = 0;
+    virtual bool remove(std::int64_t id) = 0;
 };

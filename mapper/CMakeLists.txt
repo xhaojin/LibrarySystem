@@ -3,7 +3,8 @@ add_library(mapper STATIC)
 target_sources(mapper PRIVATE
     BookMapper.cpp
     UserMapper.cpp
-    BorrowRecordMapper.cpp
+    "BorrowRecordDTOMapper.h"
+    "BorrowRecordDTOMapper.cpp"
     "UserDTOMapper.h"
     "UserDTOMapper.cpp"
     "BookDTOMapper.h"
