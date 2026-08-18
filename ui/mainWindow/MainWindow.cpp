@@ -92,5 +92,5 @@ void MainWindow::setupUI()
 	// 窗口属性（最后统一设置）
 	// =========================
 	setWindowTitle(QString("欢迎您：%1！").arg(QString::fromStdString(m_context.sessionManager().currentUser().username)));
-	resize(900, 600);
+	resize(1200, 700);
 }

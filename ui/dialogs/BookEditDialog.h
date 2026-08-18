@@ -2,7 +2,6 @@
 
 #include <QDialog>
 #include <QLineEdit>
-#include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QTextEdit>
 #include <QComboBox>
@@ -13,12 +12,14 @@
 
 #include "dto/BookDTO.h"
 
+#include "core/ApplicationContext.h"
+
 class BookEditDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit BookEditDialog(QWidget* parent = nullptr);
+    explicit BookEditDialog(ApplicationContext& context, QWidget* parent = nullptr);
 
     // 编辑模式
     void setBook(const BookDTO& book);
@@ -31,6 +32,8 @@ private slots:
 
 private:
     void setupUI();
+    void loadPublishers();
+    void loadCategories();
 
 private:
     // =========================
@@ -45,8 +48,8 @@ private:
     // 关联信息
     // =========================
 
-    QSpinBox* publisherIdSpinBox;
-    QSpinBox* categoryIdSpinBox;
+    QComboBox* publisherComboBox;
+    QComboBox* categoryComboBox;
 
     // =========================
     // 图书信息
@@ -70,4 +73,6 @@ private:
 
     QPushButton* okButton;
     QPushButton* cancelButton;
+
+	ApplicationContext& m_context;
 };

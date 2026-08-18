@@ -22,5 +22,9 @@ struct BookDTO
 
     double price;
 
+    std::string coverUrl;
+
+    std::string description;
+
     std::string status;
 };

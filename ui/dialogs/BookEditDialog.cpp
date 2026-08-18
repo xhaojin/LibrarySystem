@@ -1,7 +1,10 @@
 #include "BookEditDialog.h"
 
-BookEditDialog::BookEditDialog(QWidget* parent) {
+BookEditDialog::BookEditDialog(ApplicationContext& context, QWidget* parent) : m_context(context) {
 	setupUI();
+
+	loadPublishers();
+	loadCategories();
 
 	// =========================
 	// 信号槽
@@ -54,26 +57,24 @@ void BookEditDialog::setupUI() {
 	formLayout->addRow("作者：", authorEdit);
 
 	// =========================
-	// 出版社 ID
+	// 出版社
 	// =========================
 
-	publisherIdSpinBox = new QSpinBox(this);
+	publisherComboBox = new QComboBox(this);
 
-	publisherIdSpinBox->setRange(0, 999999999);
-	publisherIdSpinBox->setSpecialValueText("未选择");
+	publisherComboBox->addItem("未选择",QVariant::fromValue<qlonglong>(0));
 
-	formLayout->addRow("出版社 ID：", publisherIdSpinBox);
+	formLayout->addRow("出版社：",publisherComboBox);
 
 	// =========================
-	// 分类 ID
+	// 分类
 	// =========================
 
-	categoryIdSpinBox = new QSpinBox(this);
+	categoryComboBox = new QComboBox(this);
 
-	categoryIdSpinBox->setRange(0, 999999999);
-	categoryIdSpinBox->setSpecialValueText("未选择");
+	categoryComboBox->addItem("未选择",QVariant::fromValue<qlonglong>(0));
 
-	formLayout->addRow("分类 ID：", categoryIdSpinBox);
+	formLayout->addRow("分类：",categoryComboBox);
 
 	// =========================
 	// 出版年份
@@ -155,17 +156,35 @@ void BookEditDialog::setBook(const BookDTO& book) {
 
 	authorEdit->setText(QString::fromStdString(book.author));
 
-	publisherIdSpinBox->setValue(static_cast<int>(book.publisherId));
+	int publisherIndex = publisherComboBox->findData(QVariant::fromValue<qlonglong>(book.publisherId));
 
-	categoryIdSpinBox->setValue(static_cast<int>(book.categoryId));
+	if (publisherIndex >= 0)
+	{
+		publisherComboBox->setCurrentIndex(publisherIndex);
+	}
+	else
+	{
+		publisherComboBox->setCurrentIndex(0);
+	}
+
+	int categoryIndex = categoryComboBox->findData(QVariant::fromValue<qlonglong>(book.categoryId));
+
+	if (categoryIndex >= 0)
+	{
+		categoryComboBox->setCurrentIndex(categoryIndex);
+	}
+	else
+	{
+		categoryComboBox->setCurrentIndex(0);
+	}
 
 	publishYearSpinBox->setValue(book.publishYear);
 
 	priceSpinBox->setValue(book.price);
 
-	//coverUrlEdit->setText(QString::fromStdString(book.coverUrl));
+	coverUrlEdit->setText(QString::fromStdString(book.coverUrl));
 
-	//descriptionEdit->setPlainText(QString::fromStdString(book.description));
+	descriptionEdit->setPlainText(QString::fromStdString(book.description));
 
 	int status = statusComboBox->findText(QString::fromStdString(book.status));
 
@@ -184,17 +203,17 @@ BookDTO BookEditDialog::getBook() const {
 
 	book.author = authorEdit->text().trimmed().toStdString();
 
-	book.publisherId = publisherIdSpinBox->value();
+	book.publisherId = publisherComboBox->currentData().toLongLong();
 
-	book.categoryId = categoryIdSpinBox->value();
+	book.categoryId = categoryComboBox->currentData().toLongLong();
 
 	book.publishYear = publishYearSpinBox->value();
 
 	book.price = priceSpinBox->value();
 
-	//book.coverUrl = coverUrlEdit->text().trimmed().toStdString();
+	book.coverUrl = coverUrlEdit->text().trimmed().toStdString();
 
-	//book.description = descriptionEdit->toPlainText().trimmed().toStdString();
+	book.description = descriptionEdit->toPlainText().trimmed().toStdString();
 
 	book.status = statusComboBox->currentText().toStdString();
 
@@ -209,4 +228,34 @@ void BookEditDialog::updateOkButtonState()
 		!authorEdit->text().trimmed().isEmpty();
 
 	okButton->setEnabled(valid);
+}
+
+void BookEditDialog::loadPublishers()
+{
+	publisherComboBox->clear();
+
+	publisherComboBox->addItem("未选择",QVariant::fromValue<qlonglong>(0));
+
+	auto publishers = m_context.publisherController().getAllPublishers();
+
+	for (const auto& publisher : publishers)
+	{
+		publisherComboBox->addItem(QString::fromStdString(publisher.name),
+			QVariant::fromValue<qlonglong>(publisher.id));
+	}
+}
+
+void BookEditDialog::loadCategories()
+{
+	categoryComboBox->clear();
+
+	categoryComboBox->addItem("未选择",QVariant::fromValue<qlonglong>(0));
+
+	auto categories = m_context.categoryController().getAllCategories();
+
+	for (const auto& category : categories)
+	{
+		categoryComboBox->addItem(QString::fromStdString(category.name),
+			QVariant::fromValue<qlonglong>(category.id));
+	}
 }

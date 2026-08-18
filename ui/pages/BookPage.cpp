@@ -56,8 +56,9 @@ void BookPage::setupUI() {
 	//表格
 	bookTable = new QTableWidget(this);
 	TableUtil::init(bookTable);
-	bookTable->setColumnCount(9);
-	bookTable->setHorizontalHeaderLabels({ "Book ID","Isbn","Title","Author","Publisher","Category","PublishYear","Price","Status" });
+	bookTable->setColumnCount(11);
+	bookTable->setHorizontalHeaderLabels(
+		{ "Book ID","Isbn","Title","Author","Publisher","Category","PublishYear","Price","Cover URL","Description","Status" });
 	bookLayout->addWidget(bookTable);
 }
 
@@ -79,7 +80,7 @@ void BookPage::setConnections() {
 }
 
 void BookPage::addBook() {
-	BookEditDialog bookEditDialog(this); //图书编辑对话框
+	BookEditDialog bookEditDialog(m_context, this); //图书编辑对话框
 	bookEditDialog.setWindowTitle("添加图书");
 	if (bookEditDialog.exec() != QDialog::Accepted)
 		return;
@@ -112,7 +113,7 @@ void BookPage::updateBook() {
 	int bookId = bookTable->item(row, 0)->text().toInt();
 	auto book = m_context.bookController().findBookById(bookId);
 
-	BookEditDialog bookEditDialog(this);
+	BookEditDialog bookEditDialog(m_context, this);
 	bookEditDialog.setWindowTitle("修改图书");
 	bookEditDialog.setBook(book);
 
@@ -203,7 +204,11 @@ void BookPage::refreshBooksTable(const std::vector<BookDTO>& books)
 
 		bookTable->setItem(row, 7, new QTableWidgetItem(QString::number(book.price)));
 
-		bookTable->setItem(row, 8, new QTableWidgetItem(QString::fromStdString(book.status)));
+		bookTable->setItem(row, 8, new QTableWidgetItem(QString::fromStdString(book.coverUrl)));
+
+		bookTable->setItem(row, 9, new QTableWidgetItem(QString::fromStdString(book.description)));
+
+		bookTable->setItem(row, 10, new QTableWidgetItem(QString::fromStdString(book.status)));
 	}
 }
 

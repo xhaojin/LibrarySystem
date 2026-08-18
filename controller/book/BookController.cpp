@@ -10,7 +10,7 @@ bool BookController::addBook(const BookDTO& dto) {
 		Book book
 		(
 			0, dto.isbn, dto.title, dto.author, dto.publisherId,
-			dto.categoryId, dto.publishYear,dto.price, "", "",BookStatus::Normal, false
+			dto.categoryId, dto.publishYear,dto.price, dto.coverUrl, dto.description,BookStatus::Normal, false
 		);
 
 		return bookService.addBook(book);
@@ -38,7 +38,8 @@ bool BookController::updateBook(const BookDTO& dto) {
 			s = BookStatus::Disabled;
 		}
 		Book book(
-			dto.id, dto.isbn, dto.title, dto.author, dto.publisherId,dto.categoryId, dto.publishYear, dto.price, "", "",s, false
+			dto.id, dto.isbn, dto.title, dto.author, dto.publisherId,dto.categoryId, dto.publishYear, dto.price, 
+			dto.coverUrl, dto.description,s, false
 		);
 		return bookService.updateBook(book);
 	}

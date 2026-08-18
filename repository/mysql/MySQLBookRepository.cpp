@@ -74,7 +74,7 @@ bool MySQLBookRepository::remove(long long bookId)
 
 		std::unique_ptr<sql::PreparedStatement> stmt(
 			conn->prepareStatement(
-				"UPDATE books SET deleted = TRUE WHERE id = ?"));
+				"DELETE FROM books WHERE id = ?"));
 
 		stmt->setInt64(1, bookId);
 
@@ -106,7 +106,7 @@ bool MySQLBookRepository::update(const Book& book)
                     cover_url=?,
                     description=?,
                     status=?
-                WHERE id=?)"));
+                WHERE id=? AND deleted = FALSE)"));
 
 		stmt->setString(1, book.getISBN());
 		stmt->setString(2, book.getTitle());
@@ -139,8 +139,9 @@ bool MySQLBookRepository::update(const Book& book)
 
 		return stmt->executeUpdate() > 0;
 	}
-	catch (...)
+	catch (const std::exception& e)
 	{
+		std::cout << e.what() << std::endl;
 		return false;
 	}
 }
