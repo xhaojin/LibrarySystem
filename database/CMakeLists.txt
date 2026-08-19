@@ -4,12 +4,8 @@ add_library(database STATIC)
 # Source Files
 # ==============================
 target_sources(database PRIVATE
-    "sqlite/SQLiteDatabase.cpp"
-    "sqlite/SQLiteDatabase.h"
-
     "mysql/MySQLDatabase.cpp"
     "mysql/MySQLDatabase.h"
-
     "test/DatabaseTest.cpp"
     "test/DatabaseTest.h"
 
