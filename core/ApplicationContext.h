@@ -5,6 +5,8 @@
 #include "database/mysql/MySQLDatabase.h"
 #include "repository/mysql/MySQLUserRepository.h"
 #include "repository/mysql/MySQLBookRepository.h"
+#include "repository/mysql/MySQLBookCopyRepository.h"
+#include "repository/mysql/MySQLBorrowRecordRepository.h"
 #include "repository/mysql/MySQLPublisherRepository.h"
 #include "repository/mysql/MySQLCategoryRepository.h"
 
@@ -42,7 +44,8 @@ private:
     std::unique_ptr<MySQLDatabase> database_;
     std::unique_ptr<MySQLBookRepository> bookRepo_;
     std::unique_ptr<MySQLUserRepository> userRepo_;
-    //std::unique_ptr<SQLiteBorrowRecordRepository> borrowRepo_;
+    std::unique_ptr<MySQLBookCopyRepository> bookCopyRepo_;
+    std::unique_ptr<MySQLBorrowRecordRepository> borrowRecordRepo_;
     std::unique_ptr<MySQLPublisherRepository> publisherRepo_;
     std::unique_ptr<MySQLCategoryRepository> categoryRepo_;
 

@@ -7,7 +7,7 @@
 
 #include "ui/pages/BookPage.h"
 #include "ui/pages/UserPage.h"
-#include "ui/pages/BorrowRecordPage.h"
+#include "ui/pages/BorrowPage.h"
 #include "ui/pages/PublisherPage.h"
 #include "ui/pages/CategoryPage.h"
 
@@ -22,7 +22,7 @@ private:
 
 	BookPage* bookpage; //图书管理页面
 	UserPage* userpage; //用户管理页面
-	BorrowRecordPage* borrowpage; //借阅记录页面
+	BorrowPage* borrowpage; //借阅记录页面
 	PublisherPage* publisherpage; //出版社管理页面
 	CategoryPage* categorypage; //分类管理页面
 

@@ -5,7 +5,7 @@ target_sources(ui PRIVATE
     dialogs/LoginDialog.cpp
     pages/BookPage.cpp
     pages/UserPage.cpp
-    pages/BorrowRecordPage.cpp
+    pages/BorrowPage.cpp
     dialogs/BookEditDialog.cpp
     pages/base/BasePage.cpp
     pages/base/BasePage.h

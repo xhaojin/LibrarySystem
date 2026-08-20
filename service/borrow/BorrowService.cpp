@@ -1,99 +1,203 @@
 #include "BorrowService.h"
 
-BorrowService::BorrowService(IBookRepository& bookRepo, IUserRepository& userRepo, IBorrowRecordRepository& borrowRepo)
-	:bookRepo(bookRepo),userRepo(userRepo),borrowRepo(borrowRepo) {
+#include "common/utils/Time.h"
 
+BorrowService::BorrowService(MySQLDatabase& database,MySQLUserRepository& userRepository,
+    MySQLBookCopyRepository& bookCopyRepository,
+    MySQLBorrowRecordRepository& borrowRecordRepository)
+    : m_database(database),m_userRepository(userRepository),
+    m_bookCopyRepository(bookCopyRepository),m_borrowRecordRepository(borrowRecordRepository)
+{
 }
 
-void BorrowService::borrowBook(int userId, int bookId) {
-	auto user = userRepo.findById(userId);
-	if (!user) {
-		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	auto book = bookRepo.findById(bookId);
-	if (!book) {
-		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	//if (book->isBorrowed()) {
-	//	std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-	//	Logger::log(msg);
-	//	throw std::runtime_error(msg);
-	//}
-	//// 修改图书状态
-	//book->setBorrowedStatus(true);
+bool BorrowService::borrowBook(std::int64_t userId,std::int64_t bookId,std::int64_t operatorId,const std::string& dueTime,const std::string& remark)
+{
+    try
+    {
+        // =========================
+        // 1. 检查用户
+        // =========================
 
-	//if (!bookRepo.updateBookStatus(*book))
-	//{
-	//	throw std::runtime_error("Failed to update book status");
-	//}
+        auto user = m_userRepository.findById(userId);
 
-	// 创建借阅记录
-	auto record = std::make_shared<BorrowRecord>(0, userId, bookId, QDateTime::currentDateTime(), std::nullopt);
+        if (!user)
+        {
+            return false;
+        }
 
-	if (!borrowRepo.add(record))
-	{
-		throw std::runtime_error("Failed to create borrow record");
-	}
+        // =========================
+        // 2. 开启事务
+        // =========================
 
-	Logger::log("[BORROW_SUCCESS] User " + std::to_string(userId) + " borrowed book " + std::to_string(bookId));
+        m_database.beginTransaction();
+
+        // =========================
+        // 3. 查询并锁定可借副本
+        // =========================
+
+        auto copy = m_bookCopyRepository.findAvailableByBookIdForUpdate(bookId);
+
+        if (!copy)
+        {
+            m_database.rollback();
+
+            return false;
+        }
+
+        // =========================
+        // 4. 创建借阅记录
+        // =========================
+
+        BorrowRecordDTO record{};
+
+        record.id = 0;
+
+        record.userId = userId;
+
+        record.copyId = copy->id;
+
+        record.operatorId = operatorId;
+
+        record.borrowTime = Time::getCurrentDateTime();
+
+        record.dueTime = dueTime;
+
+        record.returnTime = "";
+
+        record.status = 0;
+
+        record.remark = remark;
+
+        m_borrowRecordRepository.insert(record);
+
+        // =========================
+        // 5. 修改副本状态
+        // =========================
+
+        copy->status = 1;
+
+        if (!m_bookCopyRepository.update(*copy))
+        {
+            m_database.rollback();
+
+            return false;
+        }
+
+        // =========================
+        // 6. 提交事务
+        // =========================
+
+        m_database.commit();
+
+        return true;
+    }
+    catch (...)
+    {
+        try
+        {
+            m_database.rollback();
+        }
+        catch (...)
+        {
+        }
+
+        throw;
+    }
 }
 
-void BorrowService::returnBook(int userId, int bookId) {
-	auto user = userRepo.findById(userId);
-	if (!user) {
-		std::string msg = "[USER_ERROR] User not found: " + std::to_string(userId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	auto book = bookRepo.findById(bookId);
-	if (!book) {
-		std::string msg = "[BOOK_ERROR] Book not found: " + std::to_string(bookId);
-		Logger::log(msg);
-		throw std::runtime_error(msg);
-	}
-	//if (!book->isBorrowed()) {
-	//	std::string msg = "[STATE_ERROR] Book already borrowed: " + std::to_string(bookId);
-	//	Logger::log(msg);
-	//	throw std::runtime_error(msg);
-	//}
-	auto record = borrowRepo.findActiveRecord(userId, bookId);
+bool BorrowService::returnBook(std::int64_t borrowRecordId,std::int64_t operatorId,const std::string& remark)
+{
+    try
+    {
+        // =========================
+        // 1. 查询借阅记录
+        // =========================
 
-	if (!record)
-	{
-		std::string msg = "[RECORD_ERROR] Active borrow record not found";
+        auto record = m_borrowRecordRepository.findById(borrowRecordId);
 
-		Logger::log(msg);
+        if (!record)
+        {
+            return false;
+        }
 
-		throw std::runtime_error(msg);
-	}
+        // 已经归还
+        if (record->status == 1)
+        {
+            return false;
+        }
 
-	// 更新借阅记录
-	record->setReturnTime(QDateTime::currentDateTime());
+        // =========================
+        // 2. 查询副本
+        // =========================
 
-	if (!borrowRepo.update(*record))
-	{
-		throw std::runtime_error("Failed to update borrow record");
-	}
+        auto copy = m_bookCopyRepository.findById(record->copyId);
 
-	// 更新图书状态
-	//book->setBorrowedStatus(false);
+        if (!copy)
+        {
+            return false;
+        }
 
-	//if (!bookRepo.updateBookStatus(*book))
-	//{
-	//	throw std::runtime_error("Failed to update book status");
-	//}
+        // =========================
+        // 3. 开启事务
+        // =========================
 
-	Logger::log("[RETURN_SUCCESS] User " + std::to_string(userId) + " returned book " + std::to_string(bookId));
+        m_database.beginTransaction();
+
+        // =========================
+        // 4. 更新借阅记录
+        // =========================
+
+        record->returnTime = Time::getCurrentDateTime();
+
+        record->operatorId = operatorId;
+
+        record->remark = remark;
+
+        record->status = 1;
+
+        if (!m_borrowRecordRepository.update(*record))
+        {
+            m_database.rollback();
+
+            return false;
+        }
+
+        // =========================
+        // 5. 更新副本状态
+        // =========================
+
+        copy->status = 0;
+
+        if (!m_bookCopyRepository.update(*copy))
+        {
+            m_database.rollback();
+
+            return false;
+        }
+
+        // =========================
+        // 6. 提交
+        // =========================
+
+        m_database.commit();
+
+        return true;
+    }
+    catch (...)
+    {
+        try
+        {
+            m_database.rollback();
+        }
+        catch (...)
+        {
+        }
+
+        throw;
+    }
 }
 
-std::vector<BorrowRecordDTO> BorrowService::findRecordsByNameAndBookTitle(const std::string& name, const std::string& bookTitle) const {
-	return borrowRepo.findRecordsByCondition(name, bookTitle);
-}
-
-std::vector<BorrowRecordDTO> BorrowService::getAllBorrowRecords() const {
-	return borrowRepo.findAllDTO();
+std::vector<BorrowRecordDTO> BorrowService::getAllBorrowRecords() const
+{
+    return m_borrowRecordRepository.findAll();
 }

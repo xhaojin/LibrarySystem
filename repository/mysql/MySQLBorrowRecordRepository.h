@@ -8,7 +8,7 @@
 class MySQLBorrowRecordRepository : public IBorrowRecordRepository
 {
 public:
-    explicit MySQLBorrowRecordRepository(std::shared_ptr<MySQLDatabase> database);
+    explicit MySQLBorrowRecordRepository(MySQLDatabase& database);
 
     std::optional<BorrowRecordDTO> findById(std::int64_t id) const override;
 
@@ -25,5 +25,5 @@ public:
     bool remove(std::int64_t id) override;
 
 private:
-    std::shared_ptr<MySQLDatabase> m_database;
+    MySQLDatabase& m_database;
 };

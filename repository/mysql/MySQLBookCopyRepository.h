@@ -9,7 +9,7 @@
 class MySQLBookCopyRepository : public IBookCopyRepository
 {
 public:
-    explicit MySQLBookCopyRepository(std::shared_ptr<MySQLDatabase> database);
+    explicit MySQLBookCopyRepository(MySQLDatabase& database);
 
     std::optional<BookCopyDTO> findById(std::int64_t id) const override;
 
@@ -27,6 +27,8 @@ public:
 
     bool remove(std::int64_t id) override;
 
+    std::optional<BookCopyDTO> findAvailableByBookIdForUpdate(std::int64_t bookId) const override;
+
 private:
-    std::shared_ptr<MySQLDatabase> m_database;
+    MySQLDatabase& m_database;
 };

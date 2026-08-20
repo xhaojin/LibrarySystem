@@ -1,38 +1,20 @@
 #include "BorrowController.h"
 
-BorrowController::BorrowController(BorrowService& borrowService) : borrowService(borrowService) {
-}
-
-void BorrowController::borrowBook(int userId, int bookId)
+BorrowController::BorrowController(BorrowService& borrowService) : borrowService(borrowService) 
 {
-	try
-	{
-		borrowService.borrowBook(userId, bookId);
-	}
-	catch (const std::exception& e)
-	{
-		Logger::log(std::string("[UI_ERROR] ") + e.what());
-		throw; // 继续抛给UI（Qt可显示弹窗）
-	}
 }
 
-void BorrowController::returnBook(int userId, int bookId)
+bool BorrowController::borrowBook(std::int64_t userId, std::int64_t bookId, std::int64_t operatorId, const std::string& dueTime, const std::string& remark)
 {
-	try
-	{
-		borrowService.returnBook(userId, bookId);
-	}
-	catch (const std::exception& e)
-	{
-		Logger::log(std::string("[UI_ERROR] ") + e.what());
-		throw;
-	}
+    return borrowService.borrowBook(userId, bookId, operatorId, dueTime, remark);
 }
 
-std::vector<BorrowRecordDTO> BorrowController::findBorrowRecordByNameAndBookTitle(const std::string& name, const std::string& bookTitle) const {
-	return borrowService.findRecordsByNameAndBookTitle(name, bookTitle);
+bool BorrowController::returnBook(std::int64_t borrowRecordId, std::int64_t operatorId, const std::string& remark)
+{
+    return borrowService.returnBook(borrowRecordId, operatorId, remark);
 }
 
-std::vector<BorrowRecordDTO> BorrowController::getAllBorrowRecords() const {
-	return borrowService.getAllBorrowRecords();
+std::vector<BorrowRecordDTO> BorrowController::getAllBorrowRecords() const
+{
+    return borrowService.getAllBorrowRecords();
 }

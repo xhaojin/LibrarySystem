@@ -1,23 +1,34 @@
-#include "repository/interfaces/IBookRepository.h"
-#include "repository/interfaces/IUserRepository.h"
-#include "repository/interfaces/IBorrowRecordRepository.h"
-#include "dto/BorrowRecordDTO.h"
-#include "dto/UserDTO.h"
-#include "common/utils/logger.h"
+#pragma once
 
-class BorrowService {
-private:
-	IBookRepository& bookRepo;
-	IUserRepository& userRepo;
-	IBorrowRecordRepository& borrowRepo;
+#include "repository/mysql/MySQLUserRepository.h"
+#include "repository/mysql/MySQLBookCopyRepository.h"
+#include "repository/mysql/MySQLBorrowRecordRepository.h"
+#include "database/mysql/MySQLDatabase.h"
 
+#include <cstdint>
+#include <memory>
+
+class BorrowService
+{
 public:
-	explicit BorrowService(IBookRepository& bookRepo, IUserRepository& userRepo, IBorrowRecordRepository& borrowRepo);
+    BorrowService(
+        MySQLDatabase& database,
+        MySQLUserRepository& userRepository,
+        MySQLBookCopyRepository& bookCopyRepository,
+        MySQLBorrowRecordRepository& borrowRecordRepository);
 
-	// 借阅业务
-	void borrowBook(int userId, int bookId);
-	void returnBook(int userId, int bookId);
-	std::vector<BorrowRecordDTO> findRecordsByNameAndBookTitle(const std::string& name, const std::string& bookTitle) const;
-	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
-	std::vector<BorrowRecordDTO> getBorrowRecords(const UserDTO& currentUser) const;
+    bool borrowBook(std::int64_t userId,std::int64_t bookId,std::int64_t operatorId,const std::string& dueTime,const std::string& remark = "");
+
+    bool returnBook(std::int64_t borrowRecordId,std::int64_t operatorId,const std::string& remark = "");
+
+    std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
+
+private:
+    MySQLDatabase& m_database;
+
+    MySQLUserRepository& m_userRepository;
+
+    MySQLBookCopyRepository& m_bookCopyRepository;
+
+    MySQLBorrowRecordRepository& m_borrowRecordRepository;
 };

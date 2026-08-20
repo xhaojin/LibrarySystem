@@ -4,11 +4,10 @@
 
 #include <mapper/BorrowRecordDTOMapper.h>
 
-#include <memory>
 #include <stdexcept>
 #include <string>
 
-MySQLBorrowRecordRepository::MySQLBorrowRecordRepository(std::shared_ptr<MySQLDatabase> database): m_database(std::move(database))
+MySQLBorrowRecordRepository::MySQLBorrowRecordRepository(MySQLDatabase& database): m_database(database)
 {
 }
 
@@ -31,7 +30,7 @@ std::optional<BorrowRecordDTO> MySQLBorrowRecordRepository::findById(std::int64_
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -70,7 +69,7 @@ std::vector<BorrowRecordDTO> MySQLBorrowRecordRepository::findAll() const
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -111,7 +110,7 @@ std::vector<BorrowRecordDTO> MySQLBorrowRecordRepository::findByUserId(std::int6
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -154,7 +153,7 @@ std::vector<BorrowRecordDTO> MySQLBorrowRecordRepository::findByCopyId(std::int6
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -194,7 +193,7 @@ std::int64_t MySQLBorrowRecordRepository::insert(const BorrowRecordDTO& record)
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -255,7 +254,7 @@ bool MySQLBorrowRecordRepository::update(const BorrowRecordDTO& record)
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -293,7 +292,7 @@ bool MySQLBorrowRecordRepository::remove(std::int64_t id)
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 

@@ -2,7 +2,6 @@
 
 #include <mysql/jdbc.h>
 
-#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -31,7 +30,7 @@ namespace
     }
 }
 
-MySQLBookCopyRepository::MySQLBookCopyRepository(std::shared_ptr<MySQLDatabase> database): m_database(std::move(database))
+MySQLBookCopyRepository::MySQLBookCopyRepository(MySQLDatabase& database): m_database(database)
 {
 }
 
@@ -50,7 +49,7 @@ std::optional<BookCopyDTO> MySQLBookCopyRepository::findById(std::int64_t id) co
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -88,7 +87,7 @@ std::vector<BookCopyDTO> MySQLBookCopyRepository::findAll() const
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -125,7 +124,7 @@ std::vector<BookCopyDTO> MySQLBookCopyRepository::findByBookId(std::int64_t book
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -161,7 +160,7 @@ std::optional<BookCopyDTO> MySQLBookCopyRepository::findByInventoryNo(const std:
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -200,7 +199,7 @@ std::optional<BookCopyDTO> MySQLBookCopyRepository::findAvailableByBookId(std::i
 
     try
     {
-        sql::Connection* connection =m_database->getConnection();
+        sql::Connection* connection =m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -236,7 +235,7 @@ std::int64_t MySQLBookCopyRepository::insert(const BookCopyDTO& copy)
 
     try
     {
-        sql::Connection* connection =m_database->getConnection();
+        sql::Connection* connection =m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -287,7 +286,7 @@ bool MySQLBookCopyRepository::update(const BookCopyDTO& copy)
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -320,7 +319,7 @@ bool MySQLBookCopyRepository::remove(std::int64_t id)
 
     try
     {
-        sql::Connection* connection = m_database->getConnection();
+        sql::Connection* connection = m_database.getConnection();
 
         std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
 
@@ -331,5 +330,45 @@ bool MySQLBookCopyRepository::remove(std::int64_t id)
     catch (const sql::SQLException& e)
     {
         throw std::runtime_error("MySQLBookCopyRepository::remove failed: "+ std::string(e.what()));
+    }
+}
+
+std::optional<BookCopyDTO> MySQLBookCopyRepository::findAvailableByBookIdForUpdate(std::int64_t bookId) const
+{
+    const std::string sql = R"(
+        SELECT
+            id,
+            book_id,
+            inventory_no,
+            location,
+            status
+        FROM book_copies
+        WHERE book_id = ?
+          AND status = 0
+        ORDER BY id ASC
+        LIMIT 1
+        FOR UPDATE
+    )";
+
+    try
+    {
+        sql::Connection* connection = m_database.getConnection();
+
+        std::unique_ptr<sql::PreparedStatement> statement(connection->prepareStatement(sql));
+
+        statement->setInt64(1, bookId);
+
+        std::unique_ptr<sql::ResultSet> result(statement->executeQuery());
+
+        if (!result->next())
+        {
+            return std::nullopt;
+        }
+
+        return mapToDTO(result.get());
+    }
+    catch (const sql::SQLException& e)
+    {
+        throw std::runtime_error("MySQLBookCopyRepository::""findAvailableByBookIdForUpdate failed: "+ std::string(e.what()));
     }
 }

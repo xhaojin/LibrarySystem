@@ -33,14 +33,14 @@ private:
 	void onFindByTitleClicked(); //按标题查找
 	void onSortPriceClicked(); //按价格排序
 	void onSortTitleClicked(); //按标题排序
-	void onBorrowBookClicked(); //借阅图书
-	void onReturnBookClicked(); //归还图书
+	//void onBorrowBookClicked(); //借阅图书
+	//void onReturnBookClicked(); //归还图书
 
 private:
 	ApplicationContext& m_context;
 
-	QPushButton* borrowButton; //借阅书籍按钮
-	QPushButton* returnButton; //归还书籍按钮
+	//QPushButton* borrowButton; //借阅书籍按钮
+	//QPushButton* returnButton; //归还书籍按钮
 
 	QPushButton* refreshBookButton; //刷新
 

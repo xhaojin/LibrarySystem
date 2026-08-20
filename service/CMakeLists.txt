@@ -22,6 +22,7 @@ target_link_libraries(service PRIVATE
     repository
     model
     dto
+    database
 )
 
-target_link_libraries(service PRIVATE Qt6::Widgets Qt6::Sql)
+target_link_libraries(service PRIVATE Qt6::Widgets Qt6::Sql MySQLConnector)

@@ -25,12 +25,12 @@ void BookPage::setupUI() {
 		toolbar->addSpacing(20);
 	}
 
-	if (m_context.sessionManager().isUser()) {
-		borrowButton = new QPushButton("借阅书籍");
-		returnButton = new QPushButton("归还书籍");
-		toolbar->addWidget(borrowButton);
-		toolbar->addWidget(returnButton);
-	}
+	//if (m_context.sessionManager().isUser()) {
+	//	borrowButton = new QPushButton("借阅书籍");
+	//	returnButton = new QPushButton("归还书籍");
+	//	toolbar->addWidget(borrowButton);
+	//	toolbar->addWidget(returnButton);
+	//}
 
 	toolbar->addStretch();
 	refreshBookButton = new QPushButton("刷新");
@@ -73,10 +73,10 @@ void BookPage::setConnections() {
 	connect(sortPriceButton, &QPushButton::clicked, this, &BookPage::onSortPriceClicked);
 	connect(sortTitleButton, &QPushButton::clicked, this, &BookPage::onSortTitleClicked);
 	connect(searchButton, &QPushButton::clicked, this, &BookPage::onFindByTitleClicked);
-	if (m_context.sessionManager().isUser()) {
-		connect(borrowButton, &QPushButton::clicked, this, &BookPage::onBorrowBookClicked);
-		connect(returnButton, &QPushButton::clicked, this, &BookPage::onReturnBookClicked);
-	}
+	//if (m_context.sessionManager().isUser()) {
+	//	connect(borrowButton, &QPushButton::clicked, this, &BookPage::onBorrowBookClicked);
+	//	connect(returnButton, &QPushButton::clicked, this, &BookPage::onReturnBookClicked);
+	//}
 }
 
 void BookPage::addBook() {
@@ -236,52 +236,52 @@ void BookPage::onFindByTitleClicked() {
 	refreshBooksTable(books);
 }
 
-void BookPage::onBorrowBookClicked()
-{
-	int userId = m_context.sessionManager().currentUser().id;
-	auto items = bookTable->selectedItems();
-	if (items.isEmpty()) {
-		showWarning("请先选择一本图书");
-		return;
-	}
-	auto row = bookTable->currentRow();
-	int bookId = bookTable->item(row, 0)->text().toInt();
-
-	try
-	{
-		m_context.borrowController().borrowBook(userId, bookId);
-
-		refresh();
-
-		showInfo("借书成功");
-	}
-	catch (const std::exception& e)
-	{
-		showError(e.what());
-	}
-}
-
-void BookPage::onReturnBookClicked()
-{
-	int userId = m_context.sessionManager().currentUser().id;
-	auto items = bookTable->selectedItems();
-	if (items.isEmpty()) {
-		showWarning("请先选择一本图书");
-		return;
-	}
-	auto row = bookTable->currentRow();
-	int bookId = bookTable->item(row, 0)->text().toInt();
-
-	try
-	{
-		m_context.borrowController().returnBook(userId, bookId);
-
-		refresh();
-
-		showInfo("还书成功");
-	}
-	catch (const std::exception& e)
-	{
-		showError(e.what());
-	}
-}
+//void BookPage::onBorrowBookClicked()
+//{
+//	int userId = m_context.sessionManager().currentUser().id;
+//	auto items = bookTable->selectedItems();
+//	if (items.isEmpty()) {
+//		showWarning("请先选择一本图书");
+//		return;
+//	}
+//	auto row = bookTable->currentRow();
+//	int bookId = bookTable->item(row, 0)->text().toInt();
+//
+//	try
+//	{
+//		m_context.borrowController().borrowBook(userId, bookId);
+//
+//		refresh();
+//
+//		showInfo("借书成功");
+//	}
+//	catch (const std::exception& e)
+//	{
+//		showError(e.what());
+//	}
+//}
+//
+//void BookPage::onReturnBookClicked()
+//{
+//	int userId = m_context.sessionManager().currentUser().id;
+//	auto items = bookTable->selectedItems();
+//	if (items.isEmpty()) {
+//		showWarning("请先选择一本图书");
+//		return;
+//	}
+//	auto row = bookTable->currentRow();
+//	int bookId = bookTable->item(row, 0)->text().toInt();
+//
+//	try
+//	{
+//		m_context.borrowController().returnBook(userId, bookId);
+//
+//		refresh();
+//
+//		showInfo("还书成功");
+//	}
+//	catch (const std::exception& e)
+//	{
+//		showError(e.what());
+//	}
+//}

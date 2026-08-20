@@ -26,4 +26,6 @@ public:
     virtual bool update(const BookCopyDTO& copy) = 0;
 
     virtual bool remove(std::int64_t id) = 0;
+
+    virtual std::optional<BookCopyDTO> findAvailableByBookIdForUpdate(std::int64_t bookId) const = 0;
 };

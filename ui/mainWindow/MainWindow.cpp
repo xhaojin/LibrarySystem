@@ -56,10 +56,10 @@ void MainWindow::setupUI()
 	// =========================
 	borrowMenuBtn = new QPushButton("借阅记录管理");
 	navLeftLayout->addWidget(borrowMenuBtn);
-	//borrowpage = new BorrowRecordPage(m_context);
-	//stackedWidget->addWidget(borrowpage);
-	//connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
-	//pageId++;
+	borrowpage = new BorrowPage(m_context);
+	stackedWidget->addWidget(borrowpage);
+	connect(borrowMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); borrowpage->refresh();});
+	pageId++;
 
 	// =========================
 	// Publisher Page

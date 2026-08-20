@@ -35,3 +35,24 @@ QDateTime Time::stringToDateTime(const QString& str) {
         return QDateTime();  // 转换失败，返回空
     }
 }
+
+std::string Time::getCurrentDateTime()
+{
+    auto now = std::chrono::system_clock::now();
+
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+
+    std::tm localTime{};
+
+    #ifdef _WIN32
+        localtime_s(&localTime, &time);
+    #else
+        localtime_r(&time, &localTime);
+    #endif
+
+    std::ostringstream oss;
+
+    oss << std::put_time(&localTime,"%Y-%m-%d %H:%M:%S");
+
+    return oss.str();
+}

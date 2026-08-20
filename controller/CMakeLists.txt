@@ -18,4 +18,4 @@ target_include_directories(controller PUBLIC
     ${CMAKE_SOURCE_DIR}
 )
 
-target_link_libraries(controller PUBLIC Qt6::Widgets Qt6::Core Qt6::Sql)
+target_link_libraries(controller PUBLIC Qt6::Widgets Qt6::Core Qt6::Sql MySQLConnector)
