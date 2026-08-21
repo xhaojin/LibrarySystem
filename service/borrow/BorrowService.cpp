@@ -201,3 +201,13 @@ std::vector<BorrowRecordDTO> BorrowService::getAllBorrowRecords() const
 {
     return m_borrowRecordRepository.findAll();
 }
+
+std::vector<BorrowRecordViewDTO> BorrowService::findCurrentBorrowRecords(std::int64_t userId) const
+{
+    if (userId <= 0)
+    {
+        throw std::invalid_argument("Invalid userId.");
+    }
+
+    return m_borrowRecordRepository.findCurrentViewByUserId(userId);
+}

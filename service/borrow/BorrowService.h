@@ -23,6 +23,8 @@ public:
 
     std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
 
+    std::vector<BorrowRecordViewDTO> findCurrentBorrowRecords(std::int64_t userId) const;
+
 private:
     MySQLDatabase& m_database;
 

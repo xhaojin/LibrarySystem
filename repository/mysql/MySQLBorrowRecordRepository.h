@@ -14,6 +14,8 @@ public:
 
     std::vector<BorrowRecordDTO> findAll() const override;
 
+    std::vector<BorrowRecordViewDTO> findAllView() const override;
+
     std::vector<BorrowRecordDTO> findByUserId(std::int64_t userId) const override;
 
     std::vector<BorrowRecordDTO> findByCopyId(std::int64_t copyId) const override;
@@ -23,6 +25,10 @@ public:
     bool update(const BorrowRecordDTO& record) override;
 
     bool remove(std::int64_t id) override;
+
+    std::vector<BorrowRecordViewDTO> findViewRecords(const std::string& keyword = "",int status = -1) const override;
+
+    std::vector<BorrowRecordViewDTO> findCurrentViewByUserId(std::int64_t userId) const override;
 
 private:
     MySQLDatabase& m_database;

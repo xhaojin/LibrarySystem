@@ -35,8 +35,10 @@ public:
     BorrowController& borrowController();
 	PublisherController& publisherController();
     CategoryController& categoryController();
-    //SQLiteUserRepository& userRepository();
+
     MySQLUserRepository& userRepository();
+    MySQLBorrowRecordRepository& borrowRecordRepository();
+
     SessionManager& sessionManager();
 
 private:

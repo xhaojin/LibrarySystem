@@ -101,13 +101,15 @@ CategoryController& ApplicationContext::categoryController()
 	return *categoryController_;
 }
 
-//SQLiteUserRepository& ApplicationContext::userRepository() {
-//	return *userRepo_;
-//}
 
 MySQLUserRepository& ApplicationContext::userRepository()
 {
 	return *userRepo_;
+}
+
+MySQLBorrowRecordRepository& ApplicationContext::borrowRecordRepository()
+{
+	return *borrowRecordRepo_;
 }
 
 SessionManager& ApplicationContext::sessionManager() {

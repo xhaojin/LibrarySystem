@@ -1,389 +1,814 @@
 #include "BorrowPage.h"
 
-BorrowPage::BorrowPage(ApplicationContext& context, QWidget* parent) :m_context(context), BasePage(parent)
+#include <QMessageBox>
+#include <QListWidgetItem>
+#include <QTableWidgetItem>
+#include <QAbstractItemView>
+
+#include <exception>
+
+
+BorrowPage::BorrowPage(ApplicationContext& context, QWidget* parent) : BasePage(parent), m_context(context)
 {
 	setupUI();
 	setConnections();
-	loadUsers();
-	loadBooks();
-	loadBorrowRecords();
+
 	refresh();
 }
 
-void BorrowPage::setupUI() {
-    auto* mainLayout = new QVBoxLayout(this);
 
-    // =====================================================
-    // 借书
-    // =====================================================
+// =========================================================
+// UI
+// =========================================================
 
-    auto* borrowGroup = new QGroupBox("借书", this);
+void BorrowPage::setupUI()
+{
+	auto* mainLayout = new QVBoxLayout(this);
 
-    auto* borrowLayout = new QFormLayout(borrowGroup);
+	// =====================================================
+	// 上半部分：借书 + 还书
+	// =====================================================
 
-    m_userComboBox = new QComboBox(this);
+	auto* operationLayout = new QHBoxLayout();
 
-    m_bookComboBox = new QComboBox(this);
+	// =====================================================
+	// 借书
+	// =====================================================
 
-    m_borrowOperatorComboBox = new QComboBox(this);
+	auto* borrowGroup = new QGroupBox("借书", this);
 
-    m_dueDateEdit = new QDateEdit(this);
+	auto* borrowLayout = new QVBoxLayout(borrowGroup);
 
-    m_dueDateEdit->setCalendarPopup(true);
+	// -------------------------
+	// 用户搜索
+	// -------------------------
 
-    m_dueDateEdit->setDate(QDate::currentDate().addMonths(1));
+	borrowLayout->addWidget(new QLabel("用户：", this));
 
-    m_borrowRemarkEdit = new QLineEdit(this);
+	auto* userSearchLayout = new QHBoxLayout();
 
-    m_borrowButton = new QPushButton("借书", this);
+	m_userSearchEdit = new QLineEdit(this);
 
-    borrowLayout->addRow("用户：",m_userComboBox);
+	m_userSearchEdit->setPlaceholderText("输入用户姓名");
 
-    borrowLayout->addRow("图书：",m_bookComboBox);
+	m_userSearchButton = new QPushButton("搜索", this);
 
-    borrowLayout->addRow("操作员：",m_borrowOperatorComboBox);
+	userSearchLayout->addWidget(m_userSearchEdit);
 
-    borrowLayout->addRow("应还日期：",m_dueDateEdit);
+	userSearchLayout->addWidget(m_userSearchButton);
 
-    borrowLayout->addRow("备注：",m_borrowRemarkEdit);
+	borrowLayout->addLayout(userSearchLayout);
 
-    borrowLayout->addRow("",m_borrowButton);
+	m_userSearchList = new QListWidget(this);
 
-    mainLayout->addWidget(borrowGroup);
+	m_userSearchList->setMaximumHeight(100);
 
-    // =====================================================
-    // 还书
-    // =====================================================
+	borrowLayout->addWidget(m_userSearchList);
 
-    auto* returnGroup = new QGroupBox("还书", this);
+	m_selectedUserLabel = new QLabel("未选择用户", this);
 
-    auto* returnLayout = new QFormLayout(returnGroup);
+	borrowLayout->addWidget(m_selectedUserLabel);
 
-    m_borrowRecordComboBox = new QComboBox(this);
+	// -------------------------
+	// 图书搜索
+	// -------------------------
 
-    m_returnOperatorComboBox = new QComboBox(this);
+	borrowLayout->addWidget(new QLabel("图书：", this));
 
-    m_returnRemarkEdit = new QLineEdit(this);
+	auto* bookSearchLayout = new QHBoxLayout();
 
-    m_returnButton = new QPushButton("还书", this);
+	m_bookSearchEdit = new QLineEdit(this);
 
-    returnLayout->addRow("借阅记录：",m_borrowRecordComboBox);
+	m_bookSearchEdit->setPlaceholderText("输入书名");
 
-    returnLayout->addRow("操作员：",m_returnOperatorComboBox);
+	m_bookSearchButton = new QPushButton("搜索", this);
 
-    returnLayout->addRow("备注：",m_returnRemarkEdit);
+	bookSearchLayout->addWidget(m_bookSearchEdit);
 
-    returnLayout->addRow("",m_returnButton);
+	bookSearchLayout->addWidget(m_bookSearchButton);
 
-    mainLayout->addWidget(returnGroup);
+	borrowLayout->addLayout(bookSearchLayout);
 
-    // =====================================================
-    // 借阅记录
-    // =====================================================
+	m_bookSearchList = new QListWidget(this);
 
-    auto* recordGroup = new QGroupBox("借阅记录", this);
+	m_bookSearchList->setMaximumHeight(100);
 
-    auto* recordLayout = new QVBoxLayout(recordGroup);
+	borrowLayout->addWidget(m_bookSearchList);
 
-    m_refreshButton = new QPushButton("刷新", this);
+	m_selectedBookLabel = new QLabel("未选择图书", this);
 
-    recordLayout->addWidget(m_refreshButton);
+	borrowLayout->addWidget(m_selectedBookLabel);
 
-    m_recordTable = new QTableWidget(this);
+	// -------------------------
+	// 应还日期
+	// -------------------------
 
-    m_recordTable->setColumnCount(8);
+	auto* dueDateLayout = new QHBoxLayout();
 
-    m_recordTable->setHorizontalHeaderLabels({
-        "ID",
-        "用户",
-        "图书",
-        "副本",
-        "借阅时间",
-        "应还时间",
-        "归还时间",
-        "状态"
-        });
+	dueDateLayout->addWidget(new QLabel("应还日期：", this));
 
-    TableUtil::init(m_recordTable);
+	m_dueDateEdit = new QDateEdit(this);
 
-    recordLayout->addWidget(m_recordTable);
+	m_dueDateEdit->setCalendarPopup(true);
 
-    mainLayout->addWidget(recordGroup);
+	m_dueDateEdit->setDate(QDate::currentDate().addMonths(1));
 
-    mainLayout->setStretch(2,1);
+	dueDateLayout->addWidget(m_dueDateEdit);
+
+	borrowLayout->addLayout(dueDateLayout);
+
+	// -------------------------
+	// 备注
+	// -------------------------
+
+	m_borrowRemarkEdit = new QLineEdit(this);
+
+	m_borrowRemarkEdit->setPlaceholderText("备注（可选）");
+
+	borrowLayout->addWidget(m_borrowRemarkEdit);
+
+	// -------------------------
+	// 借书按钮
+	// -------------------------
+
+	m_borrowButton = new QPushButton("确认借书", this);
+
+	borrowLayout->addWidget(m_borrowButton);
+
+	operationLayout->addWidget(borrowGroup, 1);
+
+	// =====================================================
+	// 还书
+	// =====================================================
+
+	auto* returnGroup = new QGroupBox("还书", this);
+
+	auto* returnLayout = new QVBoxLayout(returnGroup);
+
+	// -------------------------
+	// 用户搜索
+	// -------------------------
+
+	returnLayout->addWidget(new QLabel("用户：", this));
+
+	auto* returnUserSearchLayout = new QHBoxLayout();
+
+	m_returnUserSearchEdit = new QLineEdit(this);
+
+	m_returnUserSearchEdit->setPlaceholderText("输入用户姓名");
+
+	m_returnUserSearchButton = new QPushButton("搜索", this);
+
+	returnUserSearchLayout->addWidget(m_returnUserSearchEdit);
+
+	returnUserSearchLayout->addWidget(m_returnUserSearchButton);
+
+	returnLayout->addLayout(returnUserSearchLayout);
+
+	m_returnUserSearchList = new QListWidget(this);
+
+	m_returnUserSearchList->setMaximumHeight(100);
+
+	returnLayout->addWidget(m_returnUserSearchList);
+
+	m_selectedReturnUserLabel = new QLabel("未选择用户", this);
+
+	returnLayout->addWidget(m_selectedReturnUserLabel);
+
+	// -------------------------
+	// 当前借阅
+	// -------------------------
+
+	returnLayout->addWidget(new QLabel("当前借阅：", this));
+
+	m_currentBorrowTable = new QTableWidget(this);
+
+	m_currentBorrowTable->setColumnCount(4);
+
+	m_currentBorrowTable->setHorizontalHeaderLabels({ "图书","副本","应还日期","操作" });
+
+	m_currentBorrowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+	m_currentBorrowTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+	m_currentBorrowTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	m_currentBorrowTable->setAlternatingRowColors(true);
+
+	returnLayout->addWidget(m_currentBorrowTable, 1);
+
+	operationLayout->addWidget(returnGroup, 1);
+
+	mainLayout->addLayout(operationLayout, 2);
+
+	// =====================================================
+	// 借阅记录
+	// =====================================================
+
+	auto* recordGroup = new QGroupBox("借阅记录", this);
+
+	auto* recordLayout = new QVBoxLayout(recordGroup);
+
+	// -------------------------
+	// 查询栏
+	// -------------------------
+
+	auto* recordSearchLayout = new QHBoxLayout();
+
+	m_recordSearchEdit = new QLineEdit(this);
+
+	m_recordSearchEdit->setPlaceholderText("搜索用户 / 图书 / 副本");
+
+	m_statusComboBox = new QComboBox(this);
+
+	m_statusComboBox->addItem("全部", -1);
+
+	m_statusComboBox->addItem("借阅中", 0);
+
+	m_statusComboBox->addItem("已归还", 1);
+
+	m_statusComboBox->addItem("逾期", 2);
+
+	m_recordSearchButton = new QPushButton("查询", this);
+
+	m_refreshButton = new QPushButton("刷新", this);
+
+	recordSearchLayout->addWidget(m_recordSearchEdit, 1);
+
+	recordSearchLayout->addWidget(m_statusComboBox);
+
+	recordSearchLayout->addWidget(m_recordSearchButton);
+
+	recordSearchLayout->addWidget(m_refreshButton);
+
+	recordLayout->addLayout(recordSearchLayout);
+
+	// -------------------------
+	// 借阅记录表
+	// -------------------------
+
+	m_recordTable = new QTableWidget(this);
+
+	m_recordTable->setColumnCount(7);
+
+	m_recordTable->setHorizontalHeaderLabels({ "用户","图书","副本","借阅时间","应还时间","归还时间","状态" });
+
+	m_recordTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+	m_recordTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+	m_recordTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	m_recordTable->setAlternatingRowColors(true);
+
+	recordLayout->addWidget(m_recordTable);
+
+	mainLayout->addWidget(recordGroup, 3);
 }
+
+
+// =========================================================
+// Connections
+// =========================================================
 
 void BorrowPage::setConnections()
 {
-    connect(m_borrowButton,&QPushButton::clicked,this,&BorrowPage::onBorrowClicked);
+	// 借书 - 用户搜索
+	connect(m_userSearchButton, &QPushButton::clicked, this, &BorrowPage::onUserSearch);
 
-    connect(m_returnButton,&QPushButton::clicked,this,&BorrowPage::onReturnClicked);
+	connect(m_userSearchEdit, &QLineEdit::returnPressed, this, &BorrowPage::onUserSearch);
 
-    connect(m_refreshButton, &QPushButton::clicked, this, [this]() {refresh();});
+	connect(m_userSearchList, &QListWidget::itemClicked, this, &BorrowPage::onUserSelected);
+
+	// 借书 - 图书搜索
+	connect(m_bookSearchButton, &QPushButton::clicked, this, &BorrowPage::onBookSearch);
+
+	connect(m_bookSearchEdit, &QLineEdit::returnPressed, this, &BorrowPage::onBookSearch);
+
+	connect(m_bookSearchList, &QListWidget::itemClicked, this, &BorrowPage::onBookSelected);
+
+	// 借书
+	connect(m_borrowButton, &QPushButton::clicked, this, &BorrowPage::onBorrowClicked);
+
+	// 还书 - 用户搜索
+	connect(m_returnUserSearchButton, &QPushButton::clicked, this, &BorrowPage::onReturnUserSearch);
+
+	connect(m_returnUserSearchEdit, &QLineEdit::returnPressed, this, &BorrowPage::onReturnUserSearch);
+
+	connect(m_returnUserSearchList, &QListWidget::itemClicked, this, &BorrowPage::onReturnUserSelected);
+
+	// 借阅记录
+	connect(m_recordSearchButton, &QPushButton::clicked, this, &BorrowPage::onRecordSearch);
+
+	connect(m_recordSearchEdit, &QLineEdit::returnPressed, this, &BorrowPage::onRecordSearch);
+
+	// 刷新
+	connect(m_refreshButton, &QPushButton::clicked, this, &BorrowPage::onRefreshClicked);
 }
+
+// =========================================================
+// Refresh
+// =========================================================
 
 void BorrowPage::refresh()
 {
-    loadUsers();
-    loadBooks();
-    loadBorrowRecords();
-	//if (m_context.sessionManager().isAdmin()) {
-	//	refreshBorrowRecordsTable(m_context.borrowController().getAllBorrowRecords());
-	//}
-	//else {
-	//	refreshBorrowRecordsTable(m_context.borrowController().findBorrowRecordByNameAndBookTitle(m_context.sessionManager().currentUser().name,""));
-	//}
+	loadBorrowRecords();
+
+	m_currentBorrowTable->clearContents();
+	m_currentBorrowTable->setRowCount(0);
+
+	clearUserSelection();
+	clearBookSelection();
+	clearReturnUserSelection();
 }
 
-void BorrowPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordDTO>& records)
+// =========================================================
+// User Search
+// =========================================================
+
+void BorrowPage::onUserSearch()
 {
-	//borrowRecordTable->clearContents();
+	const QString keyword = m_userSearchEdit->text().trimmed();
 
-	//borrowRecordTable->setRowCount(static_cast<int>(records.size()));
+	m_userSearchList->clear();
 
-	//for (int row = 0; row < records.size(); ++row)
-	//{
-	//	const auto& re = records[row];
+	if (keyword.isEmpty())
+	{
+		return;
+	}
 
-	//	borrowRecordTable->setItem(row, 0, new QTableWidgetItem(QString::number(re.id)));
+	try
+	{
+		auto users = m_context.userRepository().findByName(keyword.toStdString());
 
-	//	borrowRecordTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(re.username)));
+		for (const auto& user : users)
+		{
+			if (!user)continue;
 
-	//	borrowRecordTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(re.bookTitle)));
+			QString text = QString::fromStdString(user->getName());
 
-	//	borrowRecordTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(re.borrowTime)));
+			auto* item = new QListWidgetItem(text);
 
-	//	borrowRecordTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(re.returnTime)));
-	//}
-    loadBorrowRecords();
+			item->setData(Qt::UserRole, static_cast<qlonglong>(user->getId()));
+
+			m_userSearchList->addItem(item);
+		}
+
+		if (m_userSearchList->count() == 0)
+		{
+			m_userSearchList->addItem("没有找到匹配的用户");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError("搜索失败");
+	}
 }
 
-void BorrowPage::loadUsers()
+
+// =========================================================
+// User Selected
+// =========================================================
+
+void BorrowPage::onUserSelected(QListWidgetItem* item)
 {
-    m_userComboBox->clear();
+	if (!item)return;
 
-    m_borrowOperatorComboBox->clear();
+	bool ok = false;
 
-    m_returnOperatorComboBox->clear();
+	const qlonglong id = item->data(Qt::UserRole).toLongLong(&ok);
 
-    try
-    {
-        auto users = m_context.userController().getAllUsers();
+	if (!ok || id <= 0)return;
 
-        for (const auto& user : users)
-        {
-            QString text = QString::fromStdString(std::to_string(user.id)+ " - "+ user.name);
+	m_selectedUserId = static_cast<std::int64_t>(id);
 
-            m_userComboBox->addItem(text,QVariant::fromValue(static_cast<qlonglong>(user.id)));
+	m_selectedUserLabel->setText("已选择用户：" + item->text());
 
-            m_borrowOperatorComboBox->addItem(text,QVariant::fromValue(static_cast<qlonglong>(user.id)));
-
-            m_returnOperatorComboBox->addItem(text,QVariant::fromValue(static_cast<qlonglong>(user.id)));
-        }
-    }
-    catch (const std::exception& e)
-    {
-        showError("错误");
-    }
+	m_userSearchList->clear();
 }
 
-void BorrowPage::loadBooks()
+
+// =========================================================
+// Book Search
+// =========================================================
+
+void BorrowPage::onBookSearch()
 {
-    m_bookComboBox->clear();
+	const QString keyword = m_bookSearchEdit->text().trimmed();
 
-    try
-    {
-        auto books = m_context.bookController().getAllBooks();
+	m_bookSearchList->clear();
 
-        for (const auto& book : books)
-        {
-            QString text =QString::fromStdString(std::to_string(book.id)+ " - "+ book.title);
+	if (keyword.isEmpty())
+	{
+		return;
+	}
 
-            m_bookComboBox->addItem(text,QVariant::fromValue(static_cast<qlonglong>(book.id)));
-        }
-    }
-    catch (const std::exception& e)
-    {
-        showError("错误");
-    }
+	try
+	{
+		auto books = m_context.bookController().findBooksByTitle(keyword.toStdString());
+
+		for (const auto& book : books)
+		{
+
+			QString text = QString::fromStdString(book.title);
+
+			auto* item = new QListWidgetItem(text);
+
+			item->setData(Qt::UserRole, static_cast<qlonglong>(book.id));
+
+			m_bookSearchList->addItem(item);
+		}
+
+		if (m_bookSearchList->count() == 0)
+		{
+			m_bookSearchList->addItem("没有找到匹配的图书");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError("搜索失败");
+	}
 }
 
-void BorrowPage::loadBorrowRecords()
+
+// =========================================================
+// Book Selected
+// =========================================================
+
+void BorrowPage::onBookSelected(QListWidgetItem* item)
 {
-    m_recordTable->setRowCount(0);
+	if (!item)return;
 
-    m_borrowRecordComboBox->clear();
+	bool ok = false;
 
-    try
-    {
-        auto records = m_context.borrowController().getAllBorrowRecords();
+	const qlonglong id = item->data(Qt::UserRole).toLongLong(&ok);
 
-        for (const auto& record : records)
-        {
-            const int row = m_recordTable->rowCount();
+	if (!ok || id <= 0)return;
 
-            m_recordTable->insertRow(row);
+	m_selectedBookId = static_cast<std::int64_t>(id);
 
-            m_recordTable->setItem(row,0,new QTableWidgetItem(QString::number(record.id)));
+	m_selectedBookLabel->setText("已选择图书：" + item->text());
 
-            m_recordTable->setItem(row,1,new QTableWidgetItem(QString::number(record.userId)));
-
-            m_recordTable->setItem(row,2,new QTableWidgetItem(QString::number(record.copyId)));
-
-            m_recordTable->setItem(row,3,new QTableWidgetItem(QString::number(record.operatorId)));
-
-            m_recordTable->setItem(row,4,new QTableWidgetItem(QString::fromStdString(record.borrowTime)));
-
-            m_recordTable->setItem(row,5,new QTableWidgetItem(QString::fromStdString(record.dueTime)));
-
-            m_recordTable->setItem(row,6,new QTableWidgetItem(QString::fromStdString(record.returnTime)));
-
-            QString statusText;
-
-            switch (record.status)
-            {
-            case 0:
-                statusText = "借阅中";
-                break;
-
-            case 1:
-                statusText = "已归还";
-                break;
-
-            case 2:
-                statusText = "逾期";
-                break;
-
-            default:
-                statusText = "未知";
-                break;
-            }
-
-            m_recordTable->setItem(row,7,new QTableWidgetItem(statusText));
-
-            // 添加到还书下拉框
-            if (record.status != 1)
-            {
-                QString text = QString("记录 %1 - 用户 %2 - 副本 %3")
-                    .arg(record.id)
-                    .arg(record.userId)
-                    .arg(record.copyId);
-
-                m_borrowRecordComboBox->addItem(text,QVariant::fromValue(static_cast<qlonglong>(record.id)));
-            }
-        }
-    }
-    catch (const std::exception& e)
-    {
-        showInfo("错误");
-    }
+	m_bookSearchList->clear();
 }
+
+
+// =========================================================
+// Borrow
+// =========================================================
 
 void BorrowPage::onBorrowClicked()
 {
-    if (m_userComboBox->currentIndex() < 0)
-    {
-        showInfo("请选择用户");
+	if (m_selectedUserId <= 0)
+	{
+		showWarning("请先选择用户");
 
-        return;
-    }
+		return;
+	}
 
-    if (m_bookComboBox->currentIndex() < 0)
-    {
-        showInfo("请选择图书");
+	if (m_selectedBookId <= 0)
+	{
+		showWarning("请先选择图书");
 
-        return;
-    }
+		return;
+	}
 
-    if (m_borrowOperatorComboBox->currentIndex() < 0)
-    {
-        showInfo("请选择操作员");
+	const QString dueTime = m_dueDateEdit->date().toString("yyyy-MM-dd") + " 23:59:59";
 
-        return;
-    }
+	try
+	{
 
-    const std::int64_t userId = m_userComboBox->currentData() .toLongLong();
+		const std::int64_t operatorId = m_context.sessionManager().currentUser().id;
 
-    const std::int64_t bookId = m_bookComboBox->currentData().toLongLong();
+		const bool success = m_context.borrowController().borrowBook(
+			m_selectedUserId,
+			m_selectedBookId,
+			operatorId,
+			dueTime.toStdString(),
+			m_borrowRemarkEdit->text().toStdString());
 
-    const std::int64_t operatorId = m_borrowOperatorComboBox->currentData().toLongLong();
+		if (!success)
+		{
+			showWarning("借书失败，请查询图书库存或用户状态");
 
-    const QString dueDate = m_dueDateEdit->date().toString("yyyy-MM-dd")+ " 23:59:59";
+			return;
+		}
 
-    const std::string remark = m_borrowRemarkEdit->text().toStdString();
+		showInfo("借书成功");
 
-    try
-    {
-        bool success = m_context.borrowController().borrowBook(
-                userId,
-                bookId,
-                operatorId,
-                dueDate.toStdString(),
-                remark);
+		clearUserSelection();
+		clearBookSelection();
 
-        if (!success)
-        {
-            showInfo("借书失败,没有可借副本，或者用户不存在");
+		m_borrowRemarkEdit->clear();
 
-            return;
-        }
-
-        showInfo("借书成功！");
-
-        m_borrowRemarkEdit->clear();
-
-        loadBorrowRecords();
-    }
-    catch (const std::exception& e)
-    {
-        showInfo("借书异常");
-    }
+		loadBorrowRecords();
+	}
+	catch (const std::exception& e)
+	{
+		showError("借书异常");
+	}
 }
 
-void BorrowPage::onReturnClicked()
+
+// =========================================================
+// Return User Search
+// =========================================================
+
+void BorrowPage::onReturnUserSearch()
 {
-    if (m_borrowRecordComboBox->currentIndex() < 0)
-    {
-        showInfo("请选择借阅记录");
+	const QString keyword = m_returnUserSearchEdit->text().trimmed();
 
-        return;
-    }
+	m_returnUserSearchList->clear();
 
-    if (m_returnOperatorComboBox->currentIndex() < 0)
-    {
-        showInfo("请选择操作员");
+	if (keyword.isEmpty())
+	{
+		return;
+	}
 
-        return;
-    }
+	try
+	{
+		auto users = m_context.userRepository().findByName(keyword.toStdString());
 
-    const std::int64_t borrowRecordId = m_borrowRecordComboBox->currentData().toLongLong();
+		for (const auto& user : users)
+		{
+			if (!user)continue;
 
-    const std::int64_t operatorId = m_returnOperatorComboBox->currentData().toLongLong();
+			QString text = QString::fromStdString(user->getName());
 
-    const std::string remark = m_returnRemarkEdit->text().toStdString();
+			auto* item = new QListWidgetItem(text);
 
-    try
-    {
-        bool success = m_context.borrowController().returnBook(
-                borrowRecordId,
-                operatorId,
-                remark);
+			item->setData(Qt::UserRole, static_cast<qlonglong>(user->getId()));
 
-        if (!success)
-        {
-            showInfo("借阅记录不存在，或者已经归还");
+			m_returnUserSearchList->addItem(item);
+		}
 
-            return;
-        }
+		if (m_returnUserSearchList->count() == 0)
+		{
+			m_returnUserSearchList->addItem("没有找到匹配的用户");
+		}
+	}
+	catch (const std::exception& e)
+	{
+		showError("搜索失败");
+	}
+}
 
-        showInfo("还书成功");
 
-        m_returnRemarkEdit->clear();
+// =========================================================
+// Return User Selected
+// =========================================================
 
-        loadBorrowRecords();
-    }
-    catch (const std::exception& e)
-    {
-        showError("还书异常");
-    }
+void BorrowPage::onReturnUserSelected(QListWidgetItem* item)
+{
+	if (!item)return;
+
+	bool ok = false;
+
+	const qlonglong id = item->data(Qt::UserRole).toLongLong(&ok);
+
+	if (!ok || id <= 0)return;
+
+	m_selectedReturnUserId = static_cast<std::int64_t>(id);
+
+	m_selectedReturnUserLabel->setText("已选择用户：" + item->text());
+
+	m_returnUserSearchList->clear();
+
+	loadCurrentBorrowRecords(m_selectedReturnUserId);
+}
+
+
+// =========================================================
+// Load Current Borrow Records
+// =========================================================
+
+void BorrowPage::loadCurrentBorrowRecords(std::int64_t userId)
+{
+	m_currentBorrowTable->clearContents();
+	m_currentBorrowTable->setRowCount(0);
+
+	if (userId <= 0)return;
+
+	try
+	{
+		auto records = m_context.borrowController().findCurrentBorrowRecords(userId);
+
+		refreshCurrentBorrowTable(records);
+	}
+	catch (const std::exception& e)
+	{
+		showError("加载失败");
+	}
+}
+
+
+// =========================================================
+// Refresh Current Borrow Table
+// =========================================================
+
+void BorrowPage::refreshCurrentBorrowTable(const std::vector<BorrowRecordViewDTO>& records)
+{
+	m_currentBorrowTable->clearContents();
+
+	m_currentBorrowTable->setRowCount(static_cast<int>(records.size()));
+
+	for (int row = 0;row < static_cast<int>(records.size());++row)
+	{
+		const auto& record = records[row];
+
+		// 图书
+		m_currentBorrowTable->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(record.bookTitle)));
+
+		// 副本编号
+		m_currentBorrowTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(record.inventoryNo)));
+
+		// 应还日期
+		m_currentBorrowTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(record.dueTime)));
+
+		// 还书按钮
+		auto* returnButton =new QPushButton("还书",m_currentBorrowTable);
+
+		returnButton->setProperty("borrowRecordId",QVariant::fromValue(static_cast<qlonglong>(record.id)));
+
+		m_currentBorrowTable->setCellWidget(row,3,returnButton);
+
+		connect(returnButton,&QPushButton::clicked,this,[this, returnButton]()
+			{
+				const qlonglong recordId =returnButton->property("borrowRecordId").toLongLong();
+
+				if (recordId <= 0)
+				{
+					showWarning("无效的借阅记录id");
+
+					return;
+				}
+
+				try
+				{
+					const std::int64_t operatorId = 1;
+
+					m_context.borrowController().returnBook(static_cast<std::int64_t>(recordId),operatorId);
+
+					showInfo("还书成功");
+
+					// 刷新当前用户的借阅
+					loadCurrentBorrowRecords(m_selectedReturnUserId);
+
+					// 刷新下面的借阅记录
+					loadBorrowRecords();
+				}
+				catch (const std::exception& e)
+				{
+					showError("还书失败");
+				}
+			});
+	}
+}
+
+
+// =========================================================
+// Borrow Records
+// =========================================================
+
+void BorrowPage::loadBorrowRecords()
+{
+	try
+	{
+		auto records = m_context.borrowRecordRepository().findAllView();
+
+		refreshBorrowRecordsTable(records);
+	}
+	catch (const std::exception& e)
+	{
+		showError("加载借阅记录失败");
+	}
+}
+
+
+// =========================================================
+// Search Records
+// =========================================================
+
+void BorrowPage::onRecordSearch()
+{
+	const QString keyword = m_recordSearchEdit->text().trimmed();
+
+	const int status = m_statusComboBox->currentData().toInt();
+
+	try
+	{
+		auto records = m_context.borrowRecordRepository().findViewRecords(keyword.toStdString(), status);
+
+		refreshBorrowRecordsTable(records);
+	}
+	catch (const std::exception& e)
+	{
+		showError("查询失败");
+	}
+}
+
+
+// =========================================================
+// Refresh Record Table
+// =========================================================
+
+void BorrowPage::refreshBorrowRecordsTable(const std::vector<BorrowRecordViewDTO>& records)
+{
+	m_recordTable->clearContents();
+
+	m_recordTable->setRowCount(static_cast<int>(records.size()));
+
+	for (int row = 0;row < static_cast<int>(records.size());++row)
+	{
+		const auto& record = records[row];
+
+		m_recordTable->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(record.username)));
+
+		m_recordTable->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(record.bookTitle)));
+
+		m_recordTable->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(record.inventoryNo)));
+
+		m_recordTable->setItem(row, 3, new QTableWidgetItem(QString::fromStdString(record.borrowTime)));
+
+		m_recordTable->setItem(row, 4, new QTableWidgetItem(QString::fromStdString(record.dueTime)));
+
+		m_recordTable->setItem(row, 5, new QTableWidgetItem(record.returnTime.empty() ? "-" : QString::fromStdString(record.returnTime)));
+
+		QString statusText;
+
+		switch (record.status)
+		{
+		case 0:
+			statusText = "借阅中";
+			break;
+
+		case 1:
+			statusText = "已归还";
+			break;
+
+		case 2:
+			statusText = "逾期";
+			break;
+
+		default:
+			statusText = "未知";
+			break;
+		}
+
+		m_recordTable->setItem(row, 6, new QTableWidgetItem(statusText));
+	}
+}
+
+
+// =========================================================
+// Refresh Button
+// =========================================================
+
+void BorrowPage::onRefreshClicked()
+{
+	refresh();
+}
+
+
+// =========================================================
+// Clear Selection
+// =========================================================
+
+void BorrowPage::clearUserSelection()
+{
+	m_selectedUserId = 0;
+
+	m_selectedUserLabel->setText("未选择用户");
+
+	m_userSearchEdit->clear();
+
+	m_userSearchList->clear();
+}
+
+
+void BorrowPage::clearBookSelection()
+{
+	m_selectedBookId = 0;
+
+	m_selectedBookLabel->setText("未选择图书");
+
+	m_bookSearchEdit->clear();
+
+	m_bookSearchList->clear();
+}
+
+
+void BorrowPage::clearReturnUserSelection()
+{
+	m_selectedReturnUserId = 0;
+
+	m_selectedReturnUserLabel->setText("未选择用户");
+
+	m_returnUserSearchEdit->clear();
+
+	m_returnUserSearchList->clear();
+
+	m_currentBorrowTable->clearContents();
+
+	m_currentBorrowTable->setRowCount(0);
 }

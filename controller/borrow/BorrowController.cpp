@@ -18,3 +18,8 @@ std::vector<BorrowRecordDTO> BorrowController::getAllBorrowRecords() const
 {
     return borrowService.getAllBorrowRecords();
 }
+
+std::vector<BorrowRecordViewDTO> BorrowController::findCurrentBorrowRecords(std::int64_t userId)
+{
+    return borrowService.findCurrentBorrowRecords(userId);
+}

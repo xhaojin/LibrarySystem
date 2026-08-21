@@ -15,4 +15,6 @@ public:
 	bool returnBook(std::int64_t borrowRecordId, std::int64_t operatorId, const std::string& remark = "");
 
 	std::vector<BorrowRecordDTO> getAllBorrowRecords() const;
+
+	std::vector<BorrowRecordViewDTO> findCurrentBorrowRecords(std::int64_t userId);
 };

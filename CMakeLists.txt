@@ -48,7 +48,7 @@ add_subdirectory(dto)
 add_subdirectory(common)
 
 # ===== main =====
-add_executable(LibrarySystem main.cpp "dto/PublisherDTO.h")
+add_executable(LibrarySystem main.cpp "dto/PublisherDTO.h" "dto/BorrowRecordViewDTO.h")
 
 target_include_directories(LibrarySystem
 PUBLIC
