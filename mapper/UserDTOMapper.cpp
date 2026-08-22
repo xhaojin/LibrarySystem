@@ -29,3 +29,32 @@ UserDTO UserDTOMapper::toDTO(const User& user)
 
     return dto;
 }
+
+User UserDTOMapper::toModel(const UserDTO& dto)
+{
+    Gender gender;
+
+    if (dto.gender == "Male")
+    {
+        gender = Gender::Male;
+    }
+    else if (dto.gender == "Female")
+    {
+        gender = Gender::Female;
+    }
+    else
+    {
+        gender = Gender::Unknown;
+    }
+
+    return User(
+        dto.id,
+        dto.username,
+        "",
+        dto.name,
+        gender,
+        dto.age,
+        dto.phone,
+        dto.enabled
+    );
+}

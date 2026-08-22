@@ -9,4 +9,6 @@ class UserDTOMapper
 {
 public:
     static UserDTO toDTO(const User& user);
+
+    static User toModel(const UserDTO& dto);
 };

@@ -45,10 +45,10 @@ void MainWindow::setupUI()
 	if (m_context.sessionManager().isAdmin()) {
 		userMenuBtn = new QPushButton("用户管理");
 		navLeftLayout->addWidget(userMenuBtn);
-	//	userpage = new UserPage(m_context.userController());
-	//	stackedWidget->addWidget(userpage);
-	//	connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); userpage->refresh();});
-	//	pageId++;
+		userpage = new UserPage(m_context.userController());
+		stackedWidget->addWidget(userpage);
+		connect(userMenuBtn, &QPushButton::clicked, this, [=] {stackedWidget->setCurrentIndex(pageId); userpage->refresh();});
+		pageId++;
 	}
 
 	// =========================

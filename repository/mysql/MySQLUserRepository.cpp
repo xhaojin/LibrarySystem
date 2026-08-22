@@ -61,16 +61,15 @@ bool MySQLUserRepository::update(const User& user)
 
         std::unique_ptr<sql::PreparedStatement> stmt(
             conn->prepareStatement
-            (R"(UPDATE users SET username = ?,password = ?,name = ?,gender = ?,age = ?,phone = ?,enabled = ? WHERE id = ?)"));
+            (R"(UPDATE users SET username = ?,name = ?,gender = ?,age = ?,phone = ?,enabled = ? WHERE id = ?)"));
 
         stmt->setString(1, user.getUsername());
-        stmt->setString(2, user.getPassword());
-        stmt->setString(3, user.getName());
-        stmt->setInt(4, static_cast<int>(user.getGender()));
-        stmt->setInt(5, user.getAge());
-        stmt->setString(6, user.getPhone());
-        stmt->setBoolean(7, user.isEnabled());
-        stmt->setInt64(8, user.getId());
+        stmt->setString(2, user.getName());
+        stmt->setInt(3, static_cast<int>(user.getGender()));
+        stmt->setInt(4, user.getAge());
+        stmt->setString(5, user.getPhone());
+        stmt->setBoolean(6, user.isEnabled());
+        stmt->setInt64(7, user.getId());
 
         return stmt->executeUpdate() > 0;
     }

@@ -39,8 +39,8 @@ void UserPage::setupUI() {
 
 	userTable = new QTableWidget(this);
 	TableUtil::init(userTable);
-	userTable->setColumnCount(8);
-	userTable->setHorizontalHeaderLabels({ "User ID","name","gender","age","phone","username","role","borrowedCount" });
+	userTable->setColumnCount(6);
+	userTable->setHorizontalHeaderLabels({ "User ID","name","gender","age","phone","username" });
 	userLayout->addWidget(userTable);
 }
 

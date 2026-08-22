@@ -8,7 +8,7 @@ UserEditDialog::UserEditDialog(QWidget* parent) {
 	connect(ageBox, &QSpinBox::textChanged, this, &UserEditDialog::updateOkButtonState);
 	connect(phoneEdit, &QLineEdit::textChanged, this, &UserEditDialog::updateOkButtonState);
 	connect(usernameEdit, &QLineEdit::textChanged, this, &UserEditDialog::updateOkButtonState);
-	connect(roleBox, &QComboBox::currentTextChanged, this, &UserEditDialog::updateOkButtonState);
+	//connect(roleBox, &QComboBox::currentTextChanged, this, &UserEditDialog::updateOkButtonState);
 
 	connect(okButton, &QPushButton::clicked, this, [this]() {accept();});
 
@@ -48,9 +48,9 @@ void UserEditDialog::setupUI() {
 	layout->addRow(tr("Username:"), usernameEdit);
 
 	// 7. 角色下拉框（仅 Admin / User）
-	roleBox = new QComboBox(this);
-	roleBox->addItems({ "Admin", "User" });
-	layout->addRow(tr("Role:"), roleBox);
+	//roleBox = new QComboBox(this);
+	//roleBox->addItems({ "Admin", "User" });
+	//layout->addRow(tr("Role:"), roleBox);
 
 	// 8. 底部确认和取消按钮
 	QHBoxLayout* btnLayout = new QHBoxLayout();
@@ -82,6 +82,7 @@ UserDTO UserEditDialog::getUser() const
 	user.age = ageBox->value();
 	user.phone = phoneEdit->text().trimmed().toStdString();
 	user.username = usernameEdit->text().trimmed().toStdString();
+	user.enabled = true;
 	//user.role = roleBox->currentText() == "Admin" ? Role::Admin : Role::User;
 	return user;
 }
